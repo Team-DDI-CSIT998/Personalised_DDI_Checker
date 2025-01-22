@@ -1,45 +1,64 @@
-<h2>I’ll be writing down some features, ideas, and important things to add to the project on this page.</h2>
+# 🌟 Project Features and Ideas
 
-<h3>Where to integrate, what to integrate, when to integrate, we'll see later, ill just write it down here for future use. 
-    Even you guys can write below if you have anything.
-</h3>
-<h4>
-1) Make sure to add a dropdown that classifies drugs by medical specialty (e.g., general medicine, orthopedics, neurology, etc.).
+### ✍️ Where to integrate, what to integrate, and when to integrate will be decided later.  
+For now, I’ll just write down ideas here for future reference.  
+💡 *Feel free to add anything below if you have suggestions!*
 
-2) Make sure to add a models dropdown, where users can select from a list of available models.
-   
-3) We will focus on a general approach for the Drug-Drug Interaction (DDI) checker, where the platform is accessible to everyone, rather than having separate pages for doctors and patients.
-   This is because, at this stage, we aren't aiming to make the project industry-ready with complex features, such as EHR integrations or professional user management.
-   The idea is to build a solid foundation that can be expanded in the future by others who may want to take it to an industry level.
-   If the project grows, future developers could integrate advanced features like doctor-specific roles or connect the platform with EHRs.
-   For now, anyone can use the website, which makes it more versatile and simple to manage.
-   (basically who ever login's is a patient or is a person trying to enter a patient detials)
+---
 
-5) Add a section that provides drug information and details.
+## 🎯 Features
+1. 📋 **Drug Classification Dropdown**  
+   Add a dropdown that classifies drugs by medical specialty (e.g., General Medicine, Orthopedics, Neurology, etc.).
 
-6) page to store patient details or upload patient data or some file type. (they can choose either of the options, and our gpt will autofill and look for what's missing.
+2. 🧠 **Models Dropdown**  
+   Add a dropdown where users can select from a list of available models.
 
-7) may be we need to look into clinical guidelines and stuff, but i hope for this project that high level stuff wont be necessary (i hope so).
+3. 🌍 **General Approach for the DDI Checker**  
+   - The platform should be accessible to everyone without separate pages for doctors or patients.  
+   - Build a strong foundation that others can expand into industry-level applications in the future.  
+   - Advanced features like doctor-specific roles or EHR integration can be added later by developers.  
+   - For now, all users (patients or general users) will have the same access.
 
-8) keeping track of DDI interactions (maintaining history) (a feature which most of the pages dont have it i guess or may be they have integrated in premium version)
+4. 🔍 **Drug Information Section**  
+   Add a section that provides comprehensive drug information and details.
 
-9) Drug dosage information, as you guys suggested. (but need to find dataset for this.)
+5. 📂 **Patient Data Storage**  
+   Create a page to store patient details or upload patient data files.  
+   - Users can choose either option, and the system will autofill fields while checking for missing data.
 
-10) search should be in a way that they should be able to filter (find drug by some specific class, or name or ingredient, etc)
+6. 📜 **Clinical Guidelines (Optional)**  
+   Explore clinical guidelines and standards if needed (likely not required at this stage).
 
-11) information section where how this application also can be used to integrate with the EHR's and stuff and other informations about how benifical this project is. (like an about section)
+7. 🕒 **DDI Interaction History**  
+   Track and maintain a history of drug interactions.  
+   *(This feature may not be available on many platforms or might be part of their premium plans.)*
 
-12) most importantly, adding a feedback mechanism, (user feedback) as well as (feedbacks from people on what was the reaction when they took those drugs or something like that.)
+8. 💊 **Drug Dosage Information**  
+   Include dosage details, provided a suitable dataset is available.
 
-</h4>
+9. 🔎 **Advanced Search**  
+   Enable users to filter drugs by specific class, name, ingredient, etc.
 
+10. 📖 **Informational Section**  
+    Add a section about how this application can integrate with EHR systems and highlight the benefits of the project (like an "About" section).
 
-<h2> Current Structure of the project</h2>
-<h3>1) landing page (should have some details about the project, and login sign up part and a try now button which will make the ddi demo appear on the same screen so that people can test.
+11. 🗨️ **Feedback Mechanism**  
+    - Collect general user feedback.  
+    - Include user-reported reactions and experiences with certain drugs.
 
-2) login signup page, just integrate with google authentication (straight away sign up with google), lets not work much on that.
+---
 
-####################=> once the above 2 are ready we will discuss further.
+# 🏗️ Current Project Structure
 
-3) 
-</h3>
+### 1️⃣ **Landing Page:**  
+- 📌 Provide details about the project.  
+- 🔑 Include login/sign-up options.  
+- ▶️ Add a "Try Now" button to display a DDI demo directly on the screen for users to test.
+
+### 2️⃣ **Login/Signup Page:**  
+- ✨ Integrate Google authentication for a quick and seamless sign-up experience.  
+- 🚀 Skip complex authentication setups to save time.
+
+---
+
+> 🚧 *Once the above two features are ready, we’ll discuss the next steps!* 🚀
