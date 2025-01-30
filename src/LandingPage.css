@@ -1,0 +1,37 @@
+.landing-container {
+    text-align: center;
+    background: white;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    /* justify-content: center; */
+}
+
+.header {
+    background: #a0d6a4;
+    width: 100%;
+    padding: 20px;
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.content {
+    display: flex;
+    align-self: center;
+    width: 90%;
+    margin: 20px;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    justify-content: space-between;
+}
+
+.checker-container, .login-container {
+    flex: 1;
+    margin: 0 10px;
+}
