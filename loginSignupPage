@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MedSafe - Authentication</title>
+    <!-- Include Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: 'Segoe UI', sans-serif;
+      }
+
+      :root {
+          --primary: #2A5C82;
+          --secondary: #5BA4E6;
+          --accent: #FF6B6B;
+      }
+
+      body {
+          background: linear-gradient(135deg, var(--primary), var(--secondary));
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      .auth-container {
+          background: rgba(255, 255, 255, 0.95);
+          padding: 2.5rem;
+          border-radius: 20px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+          width: 100%;
+          max-width: 400px;
+          transition: all 0.3s ease;
+      }
+
+      .form-header {
+          text-align: center;
+          margin-bottom: 2rem;
+      }
+
+      .form-header h1 {
+          color: var(--primary);
+          margin-bottom: 0.5rem;
+      }
+
+      .auth-form .input-group {
+          margin-bottom: 1.5rem;
+      }
+
+      .auth-form input {
+          width: 100%;
+          padding: 12px;
+          border: 2px solid #e0e0e0;
+          border-radius: 8px;
+          font-size: 1rem;
+          transition: border-color 0.3s ease;
+      }
+
+      .auth-form input:focus {
+          outline: none;
+          border-color: var(--primary);
+      }
+
+      .auth-form button {
+          width: 100%;
+          padding: 12px;
+          background: var(--accent);
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: transform 0.3s ease;
+      }
+
+      .auth-form button:hover {
+          transform: translateY(-2px);
+      }
+
+      .google-auth {
+          margin-top: 1.5rem;
+          background: #4285F4 !important;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          padding: 12px;
+          border-radius: 8px;
+          color: white;
+          border: none;
+          width: 100%;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: transform 0.3s ease;
+      }
+
+      .google-auth img {
+          width: 24px;
+          height: 24px;
+      }
+
+      .google-auth:hover {
+          transform: translateY(-2px);
+      }
+
+      .toggle-form {
+          text-align: center;
+          margin-top: 1.5rem;
+          color: #666;
+      }
+
+      /* Add this for the divider */
+      .divider {
+          color: #666;
+          margin: 1.5rem 0;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+      }
+
+      .divider::before,
+      .divider::after {
+          content: "";
+          flex: 1;
+          border-bottom: 1px solid #e0e0e0;
+      }
+
+      .toggle-form a {
+          color: var(--primary);
+          text-decoration: none;
+          font-weight: 500;
+          cursor: pointer;
+      }
+
+      .error-message {
+          color: #e74c3c;
+          font-size: 0.9rem;
+          margin-top: 0.5rem;
+          display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-container">
+      <div class="form-header">
+        <h1>Welcome to MedSafe</h1>
+        <p>Secure access to DDI analysis</p>
+      </div>
+
+      <form class="auth-form" id="loginForm">
+        <div class="input-group">
+          <input type="email" id="email" placeholder="Email address" required />
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
+        </div>
+        <div class="error-message" id="errorMessage"></div>
+        <button type="submit">Sign In</button>
+      </form>
+
+      <div class="divider">or</div>
+
+      <button class="google-auth" id="googleSignIn">
+        <img
+          src="https://img.icons8.com/color/48/000000/google-logo.png"
+          alt="Google logo"
+        />
+        Continue with Google
+      </button>
+
+      <div class="toggle-form">
+        New user? <a id="toggleSignUp" href="#">Create account</a>
+      </div>
+    </div>
+
+    <script>
+      // Firebase Configuration (Replace with your config)
+      const firebaseConfig = {
+          apiKey: "YOUR_API_KEY",
+          authDomain: "YOUR_AUTH_DOMAIN",
+          projectId: "YOUR_PROJECT_ID",
+          storageBucket: "YOUR_STORAGE_BUCKET",
+          messagingSenderId: "YOUR_SENDER_ID",
+          appId: "YOUR_APP_ID"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      // Toggle between login/signup
+      const toggleButton = document.getElementById('toggleSignUp');
+      const loginForm = document.getElementById('loginForm');
+
+      toggleButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (loginForm.querySelector('button').textContent === 'Sign In') {
+              loginForm.innerHTML = `
+                  <div class="input-group">
+                      <input type="text" id="name" placeholder="Full name" required>
+                  </div>
+                  <div class="input-group">
+                      <input type="email" id="email" placeholder="Email address" required>
+                  </div>
+                  <div class="input-group">
+                      <input type="password" id="password" placeholder="Password" required>
+                  </div>
+                  <div class="error-message" id="errorMessage"></div>
+                  <button type="submit">Create Account</button>
+              `;
+              toggleButton.innerHTML = 'Already have an account? <a href="#">Sign In</a>';
+          } else {
+              loginForm.innerHTML = `
+                  <div class="input-group">
+                      <input type="email" id="email" placeholder="Email address" required>
+                  </div>
+                  <div class="input-group">
+                      <input type="password" id="password" placeholder="Password" required>
+                  </div>
+                  <div class="error-message" id="errorMessage"></div>
+                  <button type="submit">Sign In</button>
+              `;
+              toggleButton.innerHTML = 'New user? <a href="#">Create account</a>';
+          }
+      });
+
+      // Email/Password Authentication
+      loginForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = loginForm.querySelector('#email').value;
+          const password = loginForm.querySelector('#password').value;
+
+          if (loginForm.querySelector('button').textContent === 'Sign In') {
+              // Login
+              auth.signInWithEmailAndPassword(email, password)
+                  .catch(error => showError(error.message));
+          } else {
+              // Signup
+              const name = loginForm.querySelector('#name').value;
+              auth.createUserWithEmailAndPassword(email, password)
+                  .then(cred => cred.user.updateProfile({ displayName: name }))
+                  .catch(error => showError(error.message));
+          }
+      });
+
+      // Google Authentication
+      document.getElementById('googleSignIn').addEventListener('click', () => {
+          const provider = new firebase.auth.GoogleAuthProvider();
+          auth.signInWithPopup(provider)
+              .catch(error => showError(error.message));
+      });
+
+      // Error handling
+      function showError(message) {
+          const errorDiv = document.getElementById('errorMessage');
+          errorDiv.textContent = message;
+          errorDiv.style.display = 'block';
+          setTimeout(() => errorDiv.style.display = 'none', 5000);
+      }
+
+      // Auth state listener
+      auth.onAuthStateChanged(user => {
+          if (user) {
+              window.location.href = '/dashboard'; // Redirect to main app
+          }
+      });
+    </script>
+  </body>
+</html>
