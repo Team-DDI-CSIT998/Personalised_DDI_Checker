@@ -364,6 +364,7 @@
     <!-- Header -->
     <header>
       <div class="logo">
+        <i class="fas fa-heartbeat"></i>
         MedMatch <span>Patient Portal</span>
       </div>
       <nav>
@@ -463,7 +464,7 @@
     <!-- Chatbot -->
     <div class="chatbot-container">
       <div class="chatbot-button" id="chatbotButton">
-        <i class="fas fa-comments"></i>
+        <i class="fas fa-robot"></i>
       </div>
       <div class="chat-window" id="chatWindow">
         <div class="chat-header">
