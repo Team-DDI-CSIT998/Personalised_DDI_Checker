@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import MainLandingPage from './components/MainLandingPage';
+import HomePage from './components/HomePage';
+import Authentication from './components/Authentication';
+import DoctorDashboard from "./components/DoctorDashboard";
 import "./App.css";
 
 function App() {
@@ -7,11 +9,12 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MainLandingPage />} />
-        
+        <Route path="/" element={<HomePage />} />
+        <Route path="/Authentication" element={<Authentication />} />
+        <Route path="/DoctorDashboard" element={<DoctorDashboard />} />
       </Routes>
     </Router>
   );
 }
 
-export default App
+export default App;

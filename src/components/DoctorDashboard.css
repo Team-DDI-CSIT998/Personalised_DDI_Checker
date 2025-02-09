@@ -1,0 +1,368 @@
+/* Base Reset and Typography */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    --primary: #58c4c8;
+    --secondary: #5BA4E6;
+    --accent: #FF6B6B;
+    --bg-light: #f9f9f9;
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+/* Body */
+body {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    min-height: 100vh;
+    color: #333;
+}
+
+/* Header and Navigation */
+header {
+    background: var(--glass-bg);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-badge {
+    background: var(--accent);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--primary);
+    font-weight: 500;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+nav ul li a:hover {
+    color: var(--accent);
+}
+
+/* Main Content Area */
+main {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+    background: var(--glass-bg);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* Dashboard Metrics */
+.metrics {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.metric-card {
+    flex: 1;
+    min-width: 200px;
+    background: var(--glass-bg);
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.metric-card h2 {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.metric-card p {
+    font-size: 1rem;
+    color: #777;
+}
+
+/* AI Chat Bot */
+.chatbot-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.chatbot-button {
+    background: var(--accent);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s;
+}
+
+.chatbot-button:hover {
+    transform: scale(1.1);
+}
+
+.chat-window {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 300px;
+    background: var(--glass-bg);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    display: none;
+    backdrop-filter: blur(10px);
+}
+
+.chat-header {
+    padding: 1rem;
+    background: var(--primary);
+    color: white;
+    border-radius: 15px 15px 0 0;
+}
+
+.chat-messages {
+    height: 300px;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+/* Patient Section */
+.patient-section {
+    margin-top: 2rem;
+}
+
+.patient-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.patient-controls input[type="text"] {
+    flex: 1;
+    padding: 0.8rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #585858;
+    transition: border-color 0.3s;
+}
+
+.patient-controls input[type="text"]::placeholder {
+    color: #585858;
+}
+
+.patient-controls input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.patient-controls button {
+    padding: 0.8rem 1.5rem;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+}
+
+.patient-controls button:hover {
+    transform: translateY(-2px);
+    background: #ff5252;
+}
+
+/* Patient List */
+.patient-list {
+    margin-top: 1rem;
+    border-top: 1px solid var(--glass-border);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Custom Scrollbar */
+.patient-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.patient-list::-webkit-scrollbar-track {
+    background: var(--glass-bg);
+    border-radius: 10px;
+}
+
+.patient-list::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+.patient-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--glass-border);
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.patient-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.patient-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.patient-details span {
+    font-size: 1rem;
+    color: #333;
+}
+
+.patient-actions button {
+    margin-left: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+}
+
+.patient-actions button:hover {
+    background: var(--accent);
+}
+
+/* Modal for New Patient Form */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 400px;
+    position: relative;
+    border: 1px solid var(--glass-border);
+}
+
+.modal-content h2 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.modal-content .input-group {
+    margin-bottom: 1rem;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #585858;
+    transition: border-color 0.3s;
+}
+
+.modal-content input::placeholder {
+    color: #585858;
+}
+
+.modal-content input:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.modal-content button {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+}
+
+.modal-content button:hover {
+    transform: translateY(-2px);
+    background: #ff5252;
+}
+
+.close-modal {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close-modal:hover {
+    color: var(--accent);
+}
