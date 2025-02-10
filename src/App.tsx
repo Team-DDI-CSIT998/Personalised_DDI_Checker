@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from './components/HomePage';
 import Authentication from './components/Authentication';
 import DoctorDashboard from "./components/DoctorDashboard";
+import DoctorPatientPrescription from "./components/DoctorPatientPrescription";
+import PatientPortal from "./components/PatientPortal";
 import "./App.css";
 
 function App() {
@@ -12,6 +14,8 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/Authentication" element={<Authentication />} />
         <Route path="/DoctorDashboard" element={<DoctorDashboard />} />
+        <Route path="/DoctorPatientPrescription" element={<DoctorPatientPrescription />} />
+        <Route path="/PatientPortal" element={<PatientPortal />} />
       </Routes>
     </Router>
   );

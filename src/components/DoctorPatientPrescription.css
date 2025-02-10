@@ -1,0 +1,400 @@
+/* Import Google Font: Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    --primary: #58c4c8;
+    --secondary: #5BA4E6;
+    --accent: #FF6B6B;
+    --bg-light: #f9f9f9;
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --transition: 0.3s;
+}
+
+/* Body & Background */
+body {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    min-height: 100vh;
+    color: #333;
+}
+
+/* Header (unchanged) */
+header {
+    background: var(--glass-bg);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo span {
+    background: var(--accent);
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--primary);
+    font-weight: 500;
+    transition: color var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+nav ul li a:hover {
+    color: var(--accent);
+}
+
+/* Main Container */
+main {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+}
+
+/* Card Container */
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Card Styling */
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform var(--transition);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+/* Section Headings */
+.card h2 {
+    margin-bottom: 1rem;
+    color: var(--primary);
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.card h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+}
+
+/* Input Groups */
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: border-color var(--transition);
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* Button Styles */
+.btn {
+    padding: 10px 20px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.btn:hover {
+    background: #ff5252;
+}
+
+/* File Drop Area */
+.file-drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: border-color var(--transition);
+}
+
+.file-drop-area:hover {
+    border-color: var(--primary);
+}
+
+.file-drop-area input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+}
+
+/* Prescription Suggestion List */
+.input-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.input-container input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color var(--transition);
+}
+
+.input-container input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.suggestion-list {
+    background: var(--bg-light);
+    border: 1px solid #e0e0e0;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+}
+
+.suggestion-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.suggestion-item:hover {
+    background: #e0f7fa;
+}
+
+.suggestion-item.no-medicine {
+    text-align: center;
+    font-style: italic;
+    cursor: default;
+}
+
+/* Medicine Pills */
+.medicine-pill {
+    background: #e0f7fa;
+    color: var(--primary);
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    margin: 0.2rem;
+}
+
+.medicine-pill .remove-pill {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 1rem;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+/* Timeline (Visit History) */
+.timeline {
+    margin: 1rem 0;
+    border-left: 2px solid var(--primary);
+    padding-left: 20px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: background var(--transition);
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.timeline-item:hover {
+    background: #e0f7fa;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 15px;
+    width: 10px;
+    height: 10px;
+    background: var(--primary);
+    border-radius: 50%;
+}
+
+/* Timeline Date */
+.timeline-date {
+    font-size: 0.9rem;
+    color: var(--accent);
+    margin-bottom: 5px;
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    border: 1px solid var(--glass-border);
+    animation: slideIn 0.3s;
+}
+
+.modal-content.large {
+    max-width: 800px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close-modal {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #aaa;
+    transition: color var(--transition);
+}
+
+.close-modal:hover {
+    color: var(--accent);
+}
+
+/* History Modal Items */
+.history-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.history-item {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.history-item:hover {
+    background: #e0f7fa;
+}
+
+/* History Detail */
+.history-detail {
+    margin-top: 1rem;
+}
+
+.history-prescription {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    background: #fff;
+}

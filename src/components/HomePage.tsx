@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./HomePage.css";
 
 const availableMedicines = [
@@ -15,7 +15,6 @@ const availableMedicines = [
 ];
 
 const HomePage: React.FC = () => {
-  const navigate = useNavigate();
   const [input, setInput] = useState<string>("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedMedicines, setSelectedMedicines] = useState<string[]>([]);
