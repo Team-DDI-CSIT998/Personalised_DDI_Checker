@@ -141,6 +141,7 @@ section h2 {
 /* Medical History Section */
 .medical-history .history-input {
     margin-bottom: 1rem;
+    color-scheme: auto;
 }
 
 .medical-history textarea {
@@ -162,6 +163,7 @@ section h2 {
 
 .file-upload {
     margin-top: 1rem;
+    color-scheme: auto;
 }
 
 .file-upload label {
@@ -174,6 +176,7 @@ section h2 {
 .ddi-checker .input-container {
     position: relative;
     margin-bottom: 1rem;
+    color-scheme: auto;
 }
 
 #ddiInput {
