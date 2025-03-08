@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import "./HomePage.css";
-
-const availableMedicines = [
-  "Aspirin",
-  "Ibuprofen",
-  "Acetaminophen",
-  "Metformin",
-  "Lisinopril",
-  "Amoxicillin",
-  "Azithromycin",
-  "Simvastatin",
-  "Omeprazole",
-];
 
 const HomePage: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedMedicines, setSelectedMedicines] = useState<string[]>([]);
+  const [availableMedicines, setAvailableMedicines] = useState<string[]>([]);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [interactionResults, setInteractionResults] = useState<{ pair: string; description: string }[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  // Update suggestions when input changes.
+  // Fetch medicines from MongoDB when component mounts
+  useEffect(() => {
+    const fetchMedicines = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/medicines");
+        setAvailableMedicines(response.data.map((drug: { name: string }) => drug.name));
+      } catch (error) {
+        console.error("Error fetching medicines:", error);
+      }
+    };
+    fetchMedicines();
+  }, []);
+
+  // Update suggestions when input changes
   useEffect(() => {
     if (input.trim().length >= 3) {
       const filtered = availableMedicines.filter((med) =>
@@ -29,16 +35,19 @@ const HomePage: React.FC = () => {
     } else {
       setSuggestions([]);
     }
-  }, [input]);
+  }, [input, availableMedicines]);
 
-  // Add a medicine to the selected list (if not already added)
+  // Add a medicine to the selected list (limit to 5, prevent duplicates)
   const addMedicine = (medicine: string) => {
-    if (
-      !selectedMedicines.some(
-        (med) => med.toLowerCase() === medicine.toLowerCase()
-      )
-    ) {
+    if (selectedMedicines.length >= 5) {
+      setError("You can select up to 5 medicines only.");
+      setShowPopup(true);
+      return;
+    }
+    if (!selectedMedicines.some((med) => med.toLowerCase() === medicine.toLowerCase())) {
       setSelectedMedicines([...selectedMedicines, medicine]);
+      setInput("");
+      setSuggestions([]);
     }
   };
 
@@ -47,13 +56,26 @@ const HomePage: React.FC = () => {
     setSelectedMedicines(selectedMedicines.filter((med) => med !== medicine));
   };
 
-  // Simulate analyzing interactions
-  const analyzeInteractions = () => {
-    if (selectedMedicines.length === 0) {
-      alert("Please add at least one medicine before analyzing interactions.");
+  // Analyze interactions by calling the backend API
+  const analyzeInteractions = async () => {
+    if (selectedMedicines.length < 2) {
+      setError("Please select at least two medicines to analyze interactions.");
+      setShowPopup(true);
       return;
     }
-    alert("Analyzing interactions for: " + selectedMedicines.join(", "));
+    try {
+      const response = await axios.post("http://localhost:5000/api/interactions", {
+        medicines: selectedMedicines,
+      });
+      setInteractionResults(response.data);
+      setError(null);
+      setShowPopup(true);
+    } catch (error) {
+      console.error("Error analyzing interactions:", error);
+      setError("Failed to analyze interactions. Please try again.");
+      setInteractionResults([]);
+      setShowPopup(true);
+    }
   };
 
   return (
@@ -69,19 +91,10 @@ const HomePage: React.FC = () => {
             <Link to="/contact">Contact Us</Link>
           </nav>
           <div className="auth-buttons">
-            {/* Using Link with state so that the Authentication page knows which mode to load */}
-            <Link
-              to="/authentication"
-              state={{ isSignUp: false }}
-              className="signin-btn"
-            >
+            <Link to="/authentication" state={{ isSignUp: false }} className="signin-btn">
               Sign In
             </Link>
-            <Link
-              to="/authentication"
-              state={{ isSignUp: true }}
-              className="signup-btn"
-            >
+            <Link to="/authentication" state={{ isSignUp: true }} className="signup-btn">
               Sign Up
             </Link>
           </div>
@@ -95,7 +108,6 @@ const HomePage: React.FC = () => {
           <p>AI-powered drug interaction analysis for safer patient care.</p>
           <div className="checker-box">
             <h3>Check Interactions</h3>
-            {/* Display selected medicine pills */}
             <div id="selected-medicines">
               {selectedMedicines.map((med, index) => (
                 <span className="medicine-pill" key={index}>
@@ -110,7 +122,6 @@ const HomePage: React.FC = () => {
                 </span>
               ))}
             </div>
-            {/* Input field & suggestion dropdown */}
             <div className="input-container">
               <input
                 type="text"
@@ -119,9 +130,8 @@ const HomePage: React.FC = () => {
                 autoComplete="off"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                style={{ color: "#333" }} // Ensure text color is visible
+                style={{ color: "#333" }}
               />
-              {/* Show suggestions if available */}
               {input.trim().length >= 3 &&
                 (suggestions.length > 0 ? (
                   <div id="suggestion-list" style={{ display: "block" }}>
@@ -129,11 +139,7 @@ const HomePage: React.FC = () => {
                       <div
                         className="suggestion-item"
                         key={index}
-                        onClick={() => {
-                          addMedicine(suggestion);
-                          setInput("");
-                          setSuggestions([]);
-                        }}
+                        onClick={() => addMedicine(suggestion)}
                       >
                         {suggestion}
                       </div>
@@ -147,7 +153,6 @@ const HomePage: React.FC = () => {
                   </div>
                 ))}
             </div>
-            {/* Analyze Now button */}
             <button onClick={analyzeInteractions} className="btn-red">
               Analyze Now
             </button>
@@ -162,24 +167,15 @@ const HomePage: React.FC = () => {
           <div className="feature-list">
             <div className="feature-item">
               <h4>Personalized Alerts</h4>
-              <p>
-                Receive tailored notifications for potential drug interactions
-                based on your medication profile.
-              </p>
+              <p>Receive tailored notifications for potential drug interactions.</p>
             </div>
             <div className="feature-item">
               <h4>Custom Reports</h4>
-              <p>
-                Get detailed and personalized drug interaction reports to guide
-                safer medication use.
-              </p>
+              <p>Get detailed and personalized drug interaction reports.</p>
             </div>
             <div className="feature-item">
               <h4>Real-Time Analysis</h4>
-              <p>
-                Access up-to-date information with smart suggestions and
-                instant analysis.
-              </p>
+              <p>Access up-to-date information with instant analysis.</p>
             </div>
           </div>
         </div>
@@ -192,30 +188,46 @@ const HomePage: React.FC = () => {
           <div className="step-list">
             <div className="step-item">
               <h4>Step 1</h4>
-              <p>Type your medication name and select from the suggestions.</p>
+              <p>Type your medication name and select from suggestions.</p>
             </div>
             <div className="step-item">
               <h4>Step 2</h4>
-              <p>
-                Watch your chosen medicines appear as pills below the input.
-              </p>
+              <p>Watch your chosen medicines appear as pills below the input.</p>
             </div>
             <div className="step-item">
               <h4>Step 3</h4>
-              <p>
-                Click on "Analyze Now" to run a personalized interaction
-                analysis.
-              </p>
+              <p>Click 'Analyze Now' to run a personalized interaction analysis.</p>
             </div>
             <div className="step-item">
               <h4>Step 4</h4>
-              <p>
-                Review the detailed report and receive smart recommendations.
-              </p>
+              <p>Review the detailed report and receive smart recommendations.</p>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Popup Modal for Interaction Results */}
+      {showPopup && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Interaction Analysis</h3>
+            {error ? (
+              <p className="error">{error}</p>
+            ) : interactionResults.length > 0 ? (
+              <ul>
+                {interactionResults.map((result, index) => (
+                  <li key={index}>
+                    <strong>{result.pair}</strong>: {result.description}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No interactions found between the selected medicines.</p>
+            )}
+            <button onClick={() => setShowPopup(false)}>Close</button>
+          </div>
+        </div>
+      )}
 
       {/* Footer Section */}
       <footer>
@@ -237,7 +249,7 @@ const HomePage: React.FC = () => {
             <p>Reach out for any queries or support.</p>
           </div>
         </div>
-        <p>&copy; 2025 Med Match. All Rights Reserved.</p>
+        <p>© 2025 Med Match. All Rights Reserved.</p>
       </footer>
     </div>
   );
