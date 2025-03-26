@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom"; // Correct import for useNavigate
+import { loginUser } from '../backend/authApi'; // Import the loginUser function
+import { toast } from 'react-toastify'; // Import toast for notifications
 import "./Authentication.css";
 
 type UserType = "patient" | "doctor" | "";
@@ -9,11 +11,11 @@ type LocationState = {
 
 const Authentication: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate(); // Initialize useNavigate for redirection
   const initialMode =
     (location.state as LocationState)?.isSignUp !== undefined
       ? (location.state as LocationState).isSignUp
       : false;
-  console.log("Initial Mode:", initialMode);
 
   const [isSignUp, setIsSignUp] = useState<boolean>(initialMode);
   const [userType, setUserType] = useState<UserType>("");
@@ -61,19 +63,27 @@ const Authentication: React.FC = () => {
     setPasswordStrength(0);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      if (isSignUp) {
-        alert(
-          `Creating account for ${formData.name} (${formData.email}) as ${userType}.`
-        );
+    setErrorMessage("");
+
+    try {
+      const data = await loginUser(formData.email, formData.password);
+      // Handle successful login (e.g., store token, redirect user)
+      console.log("Login successful:", data);
+      navigate("/PatientPortal"); // Redirect to PatientPortal component
+      toast.success("Login successful!"); // Show toast notification with response message
+
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message); // Show toast notification with error message
       } else {
-        alert(`Signing in with ${formData.email} as ${userType}.`);
+        toast.error("An unknown error occurred."); // Show generic error message
       }
-    }, 1500);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
