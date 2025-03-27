@@ -1,4 +1,8 @@
 /* General Styles */
+html {
+    scroll-behavior: smooth;
+  }
+
 body {
     font-family: "Poppins", sans-serif;
     margin: 0;
@@ -33,6 +37,10 @@ header {
     font-size: 28px;
     font-weight: bold;
     margin-left: 30px;
+}
+
+.logo:hover{
+    color: #FF5252;
 }
 
 /* Navigation Wrapper */
@@ -109,14 +117,14 @@ header {
     color: white;
 }
 
-.hero h2 {
+.hero .container h2 {
     font-size: 42px;
     font-weight: bold;
     margin-bottom: 10px;
-    color: white;
+    color: white;    
 }
 
-.hero p {
+.hero .container p {
     font-size: 20px;
     margin-bottom: 30px;
 }
