@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom"; // Correct import for useNavigate
-import { loginUser } from '../backend/authApi'; // Import the loginUser function
+import { loginUser, registerUser } from '../backend/authApi'; // Import the loginUser and registerUser functions
 import { toast } from 'react-toastify'; // Import toast for notifications
 import "./Authentication.css";
 
@@ -63,17 +63,15 @@ const Authentication: React.FC = () => {
     setPasswordStrength(0);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSignUp = async () => {
     setIsLoading(true);
     setErrorMessage("");
 
     try {
-      const data = await loginUser(formData.email, formData.password);
-      // Handle successful login (e.g., store token, redirect user)
-      console.log("Login successful:", data);
+      const data = await registerUser(formData.name, formData.email, formData.password);
+      console.log("Signup successful:", data);
+      toast.success("Signup successful!"); // Show toast notification with response message
       navigate("/PatientPortal"); // Redirect to PatientPortal component
-      toast.success("Login successful!"); // Show toast notification with response message
 
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -84,6 +82,33 @@ const Authentication: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage("");
+
+    if (isSignUp) {
+      await handleSignUp();
+    } else {
+      try {
+        const data = await loginUser(formData.email, formData.password);
+        // Handle successful login (e.g., store token, redirect user)
+        console.log("Login successful:", data);
+        navigate("/PatientPortal"); // Redirect to PatientPortal component
+        toast.success("Login successful!"); // Show toast notification with response message
+
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          toast.error(error.message); // Show toast notification with error message
+        } else {
+          toast.error("An unknown error occurred."); // Show generic error message
+        }
+      }
+    }
+
+    setIsLoading(false);
   };
 
   return (
