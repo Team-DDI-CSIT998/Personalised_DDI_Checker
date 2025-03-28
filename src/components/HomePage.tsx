@@ -82,7 +82,9 @@ const HomePage: React.FC = () => {
     <div>
       {/* Header */}
       <header>
-        <a className="logo" href="#home">MedMatch</a>
+        <a className="logo" href="#home">
+        <i className="fas fa-heartbeat"></i>
+          MedMatch</a>
         <div className="nav-container">
           <nav className="nav-links">
             <a href="#home">Home</a>
