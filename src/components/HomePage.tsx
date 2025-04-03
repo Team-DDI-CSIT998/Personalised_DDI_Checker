@@ -82,13 +82,15 @@ const HomePage: React.FC = () => {
     <div>
       {/* Header */}
       <header>
-        <div className="logo">MedMatch</div>
+        <a className="logo" href="#home">
+        <i className="fas fa-heartbeat"></i>
+          MedMatch</a>
         <div className="nav-container">
           <nav className="nav-links">
-            <Link to="/">Home</Link>
-            <Link to="/how-it-works">How it Works</Link>
-            <Link to="/features">Features</Link>
-            <Link to="/contact">Contact Us</Link>
+            <a href="#home">Home</a>
+            <a href="#how_it_works">How it works</a>
+            <a href="#features">Features</a>
+            <a href="#contact_us">Contact Us</a>
           </nav>
           <div className="auth-buttons">
             <Link to="/authentication" state={{ isSignUp: false }} className="signin-btn">
@@ -102,7 +104,7 @@ const HomePage: React.FC = () => {
       </header>
 
       {/* Hero Section with DDI Checker */}
-      <section className="hero">
+      <section id="home" className="hero">
         <div className="container">
           <h2>Safer Medication Management Starts Here</h2>
           <p>AI-powered drug interaction analysis for safer patient care.</p>
@@ -161,7 +163,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Key Features Section */}
-      <section className="features">
+      <section id="features" className="features">
         <div className="container">
           <h3>Key Features of Personalized DDI</h3>
           <div className="feature-list">
@@ -182,7 +184,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="how-it-works">
+      <section id="how_it_works" className="how-it-works">
         <div className="container">
           <h3>How It Works</h3>
           <div className="step-list">
@@ -231,7 +233,7 @@ const HomePage: React.FC = () => {
 
       {/* Footer Section */}
       <footer>
-        <div className="footer-container">
+        <div id="contact_us" className="footer-container">
           <div>
             <h4>About Us</h4>
             <p>Learn more about our mission and team.</p>
