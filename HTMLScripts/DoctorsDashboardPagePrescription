@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MedMatch - Edit Patient</title>
+    <!-- Google Font: Poppins -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- FontAwesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      /* Base Reset & Variables */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+      
+      :root {
+        --primary: #58c4c8;
+        --secondary: #5BA4E6;
+        --accent: #FF6B6B;
+        --bg-light: #f9f9f9;
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --glass-border: rgba(255, 255, 255, 0.3);
+      }
+      
+      body {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        min-height: 100vh;
+        color: #333;
+      }
+      
+      /* Header (consistent with the Doctor Portal) */
+      header {
+        background: var(--glass-bg);
+        padding: 1rem 2rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        backdrop-filter: blur(10px);
+      }
+      
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .logo span {
+        background: var(--accent);
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+      }
+      
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 1.5rem;
+      }
+      
+      nav ul li a {
+        text-decoration: none;
+        color: var(--primary);
+        font-weight: 500;
+        transition: color 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      nav ul li a:hover {
+        color: var(--accent);
+      }
+      
+      /* Main Content Area */
+      main {
+        padding: 2rem;
+        max-width: 1000px;
+        margin: 2rem auto;
+        background: var(--glass-bg);
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+      
+      main h2 {
+        margin-bottom: 1rem;
+        color: var(--primary);
+      }
+      
+      .input-group {
+        margin-bottom: 1rem;
+      }
+      
+      .input-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+      
+      .input-group input,
+      .input-group select,
+      .input-group textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      
+      button.btn {
+        padding: 10px 20px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      
+      button.btn:hover {
+        background: #ff5252;
+      }
+      
+      /* Section Headings */
+      section {
+        margin-bottom: 2rem;
+      }
+      
+      /* Patient Information Section */
+      .patient-info { }
+      
+      /* Prescription Management Section */
+      .prescription-management { }
+      
+      #prescriptionList .prescription-item {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+      }
+      
+      /* File Upload & Notes Section */
+      .notes-upload { }
+      
+      /* Visit History Section */
+      .visit-history {
+        margin-bottom: 2rem;
+      }
+      
+      /* Modal Popup (for Prescription, History, History Details) */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+      }
+      
+      .modal-content {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        margin: 10% auto;
+        padding: 2rem;
+        border-radius: 10px;
+        max-width: 500px;
+        position: relative;
+        border: 1px solid var(--glass-border);
+      }
+      
+      .close-modal {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #aaa;
+      }
+      
+      .close-modal:hover {
+        color: var(--accent);
+      }
+      
+      /* Dynamic Medicine Input in Prescription Modal */
+      .input-container {
+        position: relative;
+        margin-bottom: 1rem;
+      }
+      
+      #prescriptionMedicineInput {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+      
+      #prescriptionMedicineInput:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+      
+      .suggestion-list {
+        background: var(--bg-light);
+        border: 1px solid #e0e0e0;
+        border-top: none;
+        max-height: 200px;
+        overflow-y: auto;
+        position: absolute;
+        width: 100%;
+        display: none;
+        z-index: 10;
+      }
+      
+      .suggestion-item {
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+      
+      .suggestion-item:hover {
+        background: #e0f7fa;
+      }
+      
+      .suggestion-item.no-medicine {
+        text-align: center;
+        font-style: italic;
+        cursor: default;
+      }
+      
+      /* Medicine Pills in Prescription Modal */
+      .medicine-pill {
+        background: #e0f7fa;
+        color: var(--primary);
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        margin: 0.2rem;
+      }
+      
+      .medicine-pill .remove-pill {
+        background: none;
+        border: none;
+        color: var(--accent);
+        font-size: 1rem;
+        margin-left: 8px;
+        cursor: pointer;
+      }
+      
+      /* History List Items */
+      .history-item {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      
+      .history-item:hover {
+        background: #e0f7fa;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        MedMatch <span>MD Portal</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="#"><i class="fas fa-prescription-bottle-alt"></i> DDI Check</a></li>
+          <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+          <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+    
+    <!-- Main Content -->
+    <main>
+      <!-- Patient Information Section -->
+      <section class="patient-info">
+        <h2>Patient Information</h2>
+        <form id="patientInfoForm">
+          <div class="input-group">
+            <label for="patientID">Patient ID</label>
+            <input type="text" id="patientID" value="P001" readonly />
+          </div>
+          <div class="input-group">
+            <label for="patientName">Name</label>
+            <input type="text" id="patientName" value="John Doe" required />
+          </div>
+          <div class="input-group">
+            <label for="patientAge">Age</label>
+            <input type="number" id="patientAge" value="35" required />
+          </div>
+          <div class="input-group">
+            <label for="patientWeight">Weight (kg)</label>
+            <input type="number" id="patientWeight" value="70" required />
+          </div>
+          <div class="input-group">
+            <label for="patientGender">Gender</label>
+            <select id="patientGender" required>
+              <option value="male" selected>Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="patientContact">Contact Info</label>
+            <input type="text" id="patientContact" value="+1-555-1234567" required />
+          </div>
+          <div class="input-group">
+            <label for="patientAllergies">Allergies</label>
+            <input type="text" id="patientAllergies" placeholder="e.g. Penicillin" />
+          </div>
+          <button type="submit" class="btn">Save Patient Info</button>
+        </form>
+      </section>
+      
+      <!-- Prescription Management Section -->
+      <section class="prescription-management">
+        <h2>Prescription History</h2>
+        <div id="prescriptionList">
+          <!-- Existing prescriptions will be appended here -->
+        </div>
+        <button id="addPrescriptionBtn" class="btn">
+          <i class="fas fa-plus"></i> Add New Prescription
+        </button>
+      </section>
+      
+      <!-- File Upload & General Notes Section -->
+      <section class="notes-upload">
+        <h2>Additional Patient Information</h2>
+        <div class="input-group">
+          <label for="fileUpload">Upload Patient File</label>
+          <input type="file" id="fileUpload" />
+        </div>
+        <div class="input-group">
+          <label for="generalNotes">General Visit Notes</label>
+          <textarea id="generalNotes" placeholder="Enter notes here..."></textarea>
+        </div>
+        <button id="saveNotesBtn" class="btn">Save Notes</button>
+      </section>
+      
+      <!-- Visit History Section -->
+      <section class="visit-history">
+        <h2>Visit History</h2>
+        <button id="viewHistoryBtn" class="btn">
+          <i class="fas fa-history"></i> View Visit History
+        </button>
+      </section>
+    </main>
+    
+    <!-- Prescription Modal Popup -->
+    <div id="prescriptionModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closePrescriptionModal">&times;</span>
+        <h2>Add New Prescription</h2>
+        <form id="prescriptionForm">
+          <!-- Medicine input with dynamic dropdown -->
+          <div class="input-container">
+            <input type="text" id="prescriptionMedicineInput" placeholder="Type medicine name..." autocomplete="off" />
+            <div id="prescriptionSuggestionList" class="suggestion-list"></div>
+          </div>
+          <!-- Display selected medicines as pills -->
+          <div id="selectedMedicines"></div>
+          <div class="input-group">
+            <label for="dosage">Dosage</label>
+            <input type="text" id="dosage" placeholder="e.g. 500 mg" required />
+          </div>
+          <div class="input-group">
+            <label for="duration">Duration</label>
+            <input type="text" id="duration" placeholder="e.g. 7 days" required />
+          </div>
+          <div class="input-group">
+            <label for="frequency">Frequency</label>
+            <input type="text" id="frequency" placeholder="e.g. Twice a day" required />
+          </div>
+          <div class="input-group">
+            <label for="prescriptionNote">Note</label>
+            <textarea id="prescriptionNote" placeholder="Additional instructions..." required></textarea>
+          </div>
+          <button type="submit" class="btn">Save Prescription</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Visit History Modal Popup -->
+    <div id="historyModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closeHistoryModal">&times;</span>
+        <h2>Visit History</h2>
+        <div id="historyList">
+          <!-- List of visits will be rendered here -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- History Detail Modal Popup -->
+    <div id="historyDetailModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closeHistoryDetailModal">&times;</span>
+        <h2>Visit Details</h2>
+        <div id="historyDetailContent">
+          <!-- Detailed info for a selected visit -->
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      /* ===============================
+         Prescription Modal Functionality
+      =============================== */
+      const medicineDatabase = [
+        "Aspirin",
+        "Ibuprofen",
+        "Acetaminophen",
+        "Metformin",
+        "Lisinopril",
+        "Amoxicillin",
+        "Azithromycin",
+        "Simvastatin",
+        "Omeprazole"
+      ];
+      
+      // Elements for Prescription Modal
+      const prescriptionModal = document.getElementById("prescriptionModal");
+      const addPrescriptionBtn = document.getElementById("addPrescriptionBtn");
+      const closePrescriptionModal = document.getElementById("closePrescriptionModal");
+      const prescriptionMedicineInput = document.getElementById("prescriptionMedicineInput");
+      const prescriptionSuggestionList = document.getElementById("prescriptionSuggestionList");
+      const selectedMedicinesContainer = document.getElementById("selectedMedicines");
+      
+      addPrescriptionBtn.addEventListener("click", () => {
+        prescriptionModal.style.display = "block";
+      });
+      
+      closePrescriptionModal.addEventListener("click", () => {
+        prescriptionModal.style.display = "none";
+      });
+      
+      window.addEventListener("click", (e) => {
+        if (e.target == prescriptionModal) {
+          prescriptionModal.style.display = "none";
+        }
+        if (e.target == historyModal) {
+          historyModal.style.display = "none";
+        }
+        if (e.target == historyDetailModal) {
+          historyDetailModal.style.display = "none";
+        }
+      });
+      
+      prescriptionMedicineInput.addEventListener("input", function() {
+        const query = prescriptionMedicineInput.value.trim().toLowerCase();
+        if (query.length < 3) {
+          clearPrescriptionSuggestions();
+          return;
+        }
+        const suggestions = medicineDatabase.filter(med => med.toLowerCase().includes(query));
+        displayPrescriptionSuggestions(suggestions);
+      });
+      
+      function displayPrescriptionSuggestions(suggestions) {
+        prescriptionSuggestionList.innerHTML = "";
+        if (suggestions.length === 0) {
+          const noDiv = document.createElement("div");
+          noDiv.className = "suggestion-item no-medicine";
+          noDiv.textContent = "No medicines found";
+          prescriptionSuggestionList.appendChild(noDiv);
+          prescriptionSuggestionList.style.display = "block";
+          return;
+        }
+        suggestions.forEach(suggestion => {
+          const div = document.createElement("div");
+          div.className = "suggestion-item";
+          div.textContent = suggestion;
+          div.addEventListener("click", function() {
+            addPrescriptionMedicine(suggestion);
+            clearPrescriptionSuggestions();
+            prescriptionMedicineInput.value = "";
+          });
+          prescriptionSuggestionList.appendChild(div);
+        });
+        prescriptionSuggestionList.style.display = "block";
+      }
+      
+      function clearPrescriptionSuggestions() {
+        prescriptionSuggestionList.innerHTML = "";
+        prescriptionSuggestionList.style.display = "none";
+      }
+      
+      function addPrescriptionMedicine(medicine) {
+        const existingPills = document.querySelectorAll(".medicine-pill");
+        for (let pill of existingPills) {
+          if (pill.firstChild.textContent.trim().toLowerCase() === medicine.toLowerCase()) {
+            return;
+          }
+        }
+        const pill = document.createElement("span");
+        pill.className = "medicine-pill";
+        pill.textContent = medicine;
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "remove-pill";
+        removeBtn.textContent = "×";
+        removeBtn.addEventListener("click", function() {
+          selectedMedicinesContainer.removeChild(pill);
+        });
+        pill.appendChild(removeBtn);
+        selectedMedicinesContainer.appendChild(pill);
+      }
+      
+      // Handle Prescription Form Submission
+      const prescriptionForm = document.getElementById("prescriptionForm");
+      const prescriptionListDiv = document.getElementById("prescriptionList");
+      
+      prescriptionForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const pills = document.querySelectorAll(".medicine-pill");
+        if (pills.length === 0) {
+          alert("Please add at least one medicine.");
+          return;
+        }
+        let medicineNames = [];
+        pills.forEach(pill => {
+          medicineNames.push(pill.firstChild.textContent.trim());
+        });
+        const dosage = document.getElementById("dosage").value;
+        const duration = document.getElementById("duration").value;
+        const frequency = document.getElementById("frequency").value;
+        const note = document.getElementById("prescriptionNote").value;
+        
+        // Create a new prescription entry
+        const prescriptionItem = document.createElement("div");
+        prescriptionItem.className = "prescription-item";
+        prescriptionItem.innerHTML = `
+          <p><strong>Medicines:</strong> ${medicineNames.join(", ")}</p>
+          <p><strong>Dosage:</strong> ${dosage}</p>
+          <p><strong>Duration:</strong> ${duration}</p>
+          <p><strong>Frequency:</strong> ${frequency}</p>
+          <p><strong>Note:</strong> ${note}</p>
+        `;
+        prescriptionListDiv.appendChild(prescriptionItem);
+        
+        // Reset form and close modal
+        prescriptionForm.reset();
+        selectedMedicinesContainer.innerHTML = "";
+        prescriptionModal.style.display = "none";
+      });
+      
+      /* ===============================
+         Visit History Functionality
+      =============================== */
+      // Dummy history data
+      const patientHistory = [
+        {
+          date: "2023-01-15",
+          healthReason: "Routine Checkup",
+          prescriptions: [
+            { medicines: ["Aspirin", "Lisinopril"], dosage: "100 mg", duration: "7 days", frequency: "Once a day", note: "Take with food" }
+          ],
+          notes: "Patient is in good health."
+        },
+        {
+          date: "2023-03-10",
+          healthReason: "Follow-up Visit",
+          prescriptions: [
+            { medicines: ["Ibuprofen"], dosage: "200 mg", duration: "5 days", frequency: "Twice a day", note: "Monitor pain levels" }
+          ],
+          notes: "Mild headache reported."
+        }
+      ];
+      
+      // Elements for History Modal
+      const historyModal = document.getElementById("historyModal");
+      const viewHistoryBtn = document.getElementById("viewHistoryBtn");
+      const closeHistoryModal = document.getElementById("closeHistoryModal");
+      const historyListDiv = document.getElementById("historyList");
+      
+      viewHistoryBtn.addEventListener("click", function() {
+        renderHistory();
+        historyModal.style.display = "block";
+      });
+      
+      // Close History Modal
+      // Create a close button dynamically if not exists
+      if (!document.getElementById("closeHistoryModal")) {
+        const closeHistoryBtn = document.createElement("span");
+        closeHistoryBtn.className = "close-modal";
+        closeHistoryBtn.id = "closeHistoryModal";
+        closeHistoryBtn.innerHTML = "&times;";
+        historyModal.querySelector(".modal-content").appendChild(closeHistoryBtn);
+        closeHistoryBtn.addEventListener("click", () => {
+          historyModal.style.display = "none";
+        });
+      }
+      
+      function renderHistory() {
+        historyListDiv.innerHTML = "";
+        if (patientHistory.length === 0) {
+          historyListDiv.innerHTML = "<p style='text-align: center;'>No visit history available.</p>";
+          return;
+        }
+        patientHistory.forEach((visit, index) => {
+          const item = document.createElement("div");
+          item.className = "history-item";
+          item.innerHTML = `
+            <p><strong>Date:</strong> ${visit.date}</p>
+            <p><strong>Reason:</strong> ${visit.healthReason}</p>
+          `;
+          item.addEventListener("click", function() {
+            renderHistoryDetail(visit);
+            historyDetailModal.style.display = "block";
+          });
+          historyListDiv.appendChild(item);
+        });
+      }
+      
+      // Elements for History Detail Modal
+      const historyDetailModal = document.getElementById("historyDetailModal");
+      const closeHistoryDetailModal = document.getElementById("closeHistoryDetailModal");
+      const historyDetailContent = document.getElementById("historyDetailContent");
+      
+      closeHistoryDetailModal.addEventListener("click", function() {
+        historyDetailModal.style.display = "none";
+      });
+      
+      function renderHistoryDetail(visit) {
+        historyDetailContent.innerHTML = `
+          <p><strong>Date:</strong> ${visit.date}</p>
+          <p><strong>Health Reason:</strong> ${visit.healthReason}</p>
+          <p><strong>Notes:</strong> ${visit.notes}</p>
+          <h3>Prescriptions:</h3>
+        `;
+        visit.prescriptions.forEach((presc, idx) => {
+          const prescDiv = document.createElement("div");
+          prescDiv.style.border = "1px solid #ccc";
+          prescDiv.style.padding = "0.5rem";
+          prescDiv.style.marginBottom = "0.5rem";
+          prescDiv.style.borderRadius = "4px";
+          prescDiv.innerHTML = `
+            <p><strong>Medicines:</strong> ${presc.medicines.join(", ")}</p>
+            <p><strong>Dosage:</strong> ${presc.dosage}</p>
+            <p><strong>Duration:</strong> ${presc.duration}</p>
+            <p><strong>Frequency:</strong> ${presc.frequency}</p>
+            <p><strong>Note:</strong> ${presc.note}</p>
+          `;
+          historyDetailContent.appendChild(prescDiv);
+        });
+      }
+      
+      /* ===============================
+         Patient Info & Notes (Simulation)
+      =============================== */
+      const patientInfoForm = document.getElementById("patientInfoForm");
+      patientInfoForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        alert("Patient information saved!");
+      });
+      
+      const saveNotesBtn = document.getElementById("saveNotesBtn");
+      saveNotesBtn.addEventListener("click", function() {
+        const notes = document.getElementById("generalNotes").value;
+        alert("General notes saved: " + notes);
+      });
+    </script>
+  </body>
+</html>
