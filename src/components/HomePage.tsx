@@ -1,23 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import "./HomePage.css";
+// HomePage.tsx - Modern Redesign (Updated)
+import React, { useState, useEffect, KeyboardEvent } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import {
+  FaBrain,
+  FaBell,
+  FaChartLine,
+  FaUserMd,
+  FaComments,
+  FaFileMedical,
+  FaCheckCircle,
+  FaCogs,
+  FaShieldAlt,
+} from 'react-icons/fa';
+import './HomePage.css';
 
 const HomePage: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [activeSuggestion, setActiveSuggestion] = useState<number>(-1);
   const [selectedMedicines, setSelectedMedicines] = useState<string[]>([]);
   const [availableMedicines, setAvailableMedicines] = useState<string[]>([]);
   const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [interactionResults, setInteractionResults] = useState<{ pair: string; description: string }[]>([]);
+  const [interactionResults, setInteractionResults] = useState<
+    { pair: string; shortDescription: string }[]
+  >([]);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch medicines from MongoDB when component mounts
+  // Fetch available medicines from the backend
   useEffect(() => {
     const fetchMedicines = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/medicines");
-        setAvailableMedicines(response.data.map((drug: { name: string }) => drug.name));
+        setAvailableMedicines(
+          response.data.map((drug: { name: string }) => drug.name)
+        );
       } catch (error) {
         console.error("Error fetching medicines:", error);
       }
@@ -25,7 +42,7 @@ const HomePage: React.FC = () => {
     fetchMedicines();
   }, []);
 
-  // Update suggestions when input changes
+  // Update suggestions based on input
   useEffect(() => {
     if (input.trim().length >= 3) {
       const filtered = availableMedicines.filter((med) =>
@@ -35,31 +52,61 @@ const HomePage: React.FC = () => {
     } else {
       setSuggestions([]);
     }
+    setActiveSuggestion(-1); // reset active suggestion on input change
   }, [input, availableMedicines]);
 
-  // Add a medicine to the selected list (limit to 5, prevent duplicates)
+  // Add a medicine to selected list
   const addMedicine = (medicine: string) => {
     if (selectedMedicines.length >= 5) {
-      setError("You can select up to 5 medicines only.");
+      setError("You can only add up to 5 medications at a time.");
       setShowPopup(true);
       return;
     }
-    if (!selectedMedicines.some((med) => med.toLowerCase() === medicine.toLowerCase())) {
+    if (
+      !selectedMedicines.some(
+        (med) => med.toLowerCase() === medicine.toLowerCase()
+      )
+    ) {
       setSelectedMedicines([...selectedMedicines, medicine]);
       setInput("");
       setSuggestions([]);
+      setActiveSuggestion(-1);
     }
   };
 
-  // Remove a medicine from the selected list
+  // Remove a selected medicine
   const removeMedicine = (medicine: string) => {
-    setSelectedMedicines(selectedMedicines.filter((med) => med !== medicine));
+    setSelectedMedicines(
+      selectedMedicines.filter((med) => med !== medicine)
+    );
   };
 
-  // Analyze interactions by calling the backend API
+  // Handle arrow keys and Enter for suggestions
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (suggestions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveSuggestion((prev) =>
+          prev + 1 >= suggestions.length ? 0 : prev + 1
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveSuggestion((prev) =>
+          prev <= 0 ? suggestions.length - 1 : prev - 1
+        );
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeSuggestion >= 0 && activeSuggestion < suggestions.length) {
+          addMedicine(suggestions[activeSuggestion]);
+        }
+      }
+    }
+  };
+
+  // Trigger the API to analyze interactions
   const analyzeInteractions = async () => {
     if (selectedMedicines.length < 2) {
-      setError("Please select at least two medicines to analyze interactions.");
+      setError("Please add at least two medications to perform an interaction check.");
       setShowPopup(true);
       return;
     }
@@ -67,55 +114,96 @@ const HomePage: React.FC = () => {
       const response = await axios.post("http://localhost:5000/api/interactions", {
         medicines: selectedMedicines,
       });
-      setInteractionResults(response.data);
+      const interactions = response.data;
+
+      if (interactions.length === 0) {
+        setInteractionResults([]);
+        setError(null);
+        setShowPopup(true);
+        return;
+      }
+
+      const simplified = await axios.post(
+        "http://localhost:5000/api/simplify_interactions",
+        { interactions }
+      );
+
+      setInteractionResults(simplified.data);
       setError(null);
       setShowPopup(true);
     } catch (error) {
       console.error("Error analyzing interactions:", error);
-      setError("Failed to analyze interactions. Please try again.");
+      setError("An error occurred while analyzing interactions. Please try again later.");
       setInteractionResults([]);
       setShowPopup(true);
     }
   };
 
-  return (
-    <div>
-      {/* Header */}
-      <header>
-        <a className="logo" href="#home">
-        <i className="fas fa-heartbeat"></i>
-          MedMatch</a>
-        <div className="nav-container">
-          <nav className="nav-links">
-            <a href="#home">Home</a>
-            <a href="#how_it_works">How it works</a>
-            <a href="#features">Features</a>
-            <a href="#contact_us">Contact Us</a>
-          </nav>
-          <div className="auth-buttons">
-            <Link to="/authentication" state={{ isSignUp: false }} className="signin-btn">
-              Sign In
-            </Link>
-            <Link to="/authentication" state={{ isSignUp: true }} className="signup-btn">
-              Sign Up
-            </Link>
-          </div>
-        </div>
-      </header>
+  const features = [
+    {
+      title: "Intelligent Interaction Detection",
+      icon: <FaBrain size={24} />,
+      description: "Leveraging AI to pinpoint potential drug interactions with unmatched accuracy."
+    },
+    {
+      title: "Instant Safety Alerts",
+      icon: <FaBell size={24} />,
+      description: "Receive immediate alerts when risky drug combinations are detected."
+    },
+    {
+      title: "Risk Stratification",
+      icon: <FaChartLine size={24} />,
+      description: "In-depth analysis that prioritizes risks and offers actionable guidance."
+    },
+    {
+      title: "Intuitive Chatbot Assistant",
+      icon: <FaComments size={24} />,
+      description: "Access quick, interactive support and receive tailored answers to your drug interaction queries instantly."
+    },
+    {
+      title: "Clinician-Centric Interface",
+      icon: <FaUserMd size={24} />,
+      description: "Designed with clinicians in mind for a seamless, intuitive workflow."
+    },
+    {
+      title: "Unified Health Profile",
+      icon: <FaFileMedical size={24} />,
+      description: "Effortlessly consolidate your medications, doctor details, and treatment history in one seamless, easy-to-use interface."
+    },
+    {
+      title: "Verified Drug Sources",
+      icon: <FaCheckCircle size={24} />,
+      description: "Backed by DrugBank—the gold standard in pharmaceutical data—for trustworthy and clinically validated interaction information."
+    },
+    {
+      title: "Fine-Tuned AI Model",
+      icon: <FaCogs size={24} />,
+      description: "Our custom-trained model on DrugBank data delivers precise predictions tailored for real-world clinical scenarios."
+    },
+    {
+      title: "Private & Secure Predictions",
+      icon: <FaShieldAlt size={24} />,
+      description: "No third-party data sharing. Your input stays encrypted and securely processed within our system—guaranteed."
+    }
+  ];
 
-      {/* Hero Section with DDI Checker */}
-      <section id="home" className="hero">
+  return (
+    <div className="home-page">
+      <section className="hero">
         <div className="container">
-          <h2>Safer Medication Management Starts Here</h2>
-          <p>AI-powered drug interaction analysis for safer patient care.</p>
+          <h2>Real-Time Interaction Alerts for Safer Prescriptions</h2>
+          <p>
+            Our advanced AI swiftly identifies risky drug combinations, ensuring patient safety and empowering informed clinical decisions.
+          </p>
+          
           <div className="checker-box">
-            <h3>Check Interactions</h3>
+            <h3>Drug Interaction Checker</h3>
+            
             <div id="selected-medicines">
-              {selectedMedicines.map((med, index) => (
-                <span className="medicine-pill" key={index}>
+              {selectedMedicines.map((med) => (
+                <span className="medicine-pill" key={med}>
                   {med}
-                  <button
-                    type="button"
+                  <button 
                     className="remove-pill"
                     onClick={() => removeMedicine(med)}
                   >
@@ -124,94 +212,58 @@ const HomePage: React.FC = () => {
                 </span>
               ))}
             </div>
+
             <div className="input-container">
               <input
                 type="text"
                 id="medicine-input"
-                placeholder="Type medicine name..."
-                autoComplete="off"
+                placeholder="Enter a drug name..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                style={{ color: "#333" }}
+                onKeyDown={handleKeyDown}
               />
-              {input.trim().length >= 3 &&
-                (suggestions.length > 0 ? (
-                  <div id="suggestion-list" style={{ display: "block" }}>
-                    {suggestions.map((suggestion, index) => (
-                      <div
-                        className="suggestion-item"
-                        key={index}
-                        onClick={() => addMedicine(suggestion)}
-                      >
-                        {suggestion}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div id="suggestion-list" style={{ display: "block" }}>
-                    <div className="suggestion-item no-medicine">
-                      No medicines found
+              {suggestions.length > 0 && (
+                <div id="suggestion-list">
+                  {suggestions.map((suggestion, index) => (
+                    <div
+                      key={index}
+                      className={`suggestion-item ${index === activeSuggestion ? 'active' : ''}`}
+                      onClick={() => addMedicine(suggestion)}
+                    >
+                      {suggestion}
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              )}
             </div>
-            <button onClick={analyzeInteractions} className="btn-red">
-              Analyze Now
+
+            <button 
+              onClick={analyzeInteractions} 
+              className="btn-red"
+            >
+              Check Interactions →
             </button>
           </div>
         </div>
       </section>
 
-      {/* Key Features Section */}
       <section id="features" className="features">
         <div className="container">
-          <h3>Key Features of Personalized DDI</h3>
-          <div className="feature-list">
-            <div className="feature-item">
-              <h4>Personalized Alerts</h4>
-              <p>Receive tailored notifications for potential drug interactions.</p>
-            </div>
-            <div className="feature-item">
-              <h4>Custom Reports</h4>
-              <p>Get detailed and personalized drug interaction reports.</p>
-            </div>
-            <div className="feature-item">
-              <h4>Real-Time Analysis</h4>
-              <p>Access up-to-date information with instant analysis.</p>
-            </div>
+          <h3>Why Choose MedMatch?</h3>
+          <div className="feature-grid">
+            {features.map((feature, index) => (
+              <div className="feature-card" key={index}>
+                <h4>{feature.icon} {feature.title}</h4>
+                <p>{feature.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section id="how_it_works" className="how-it-works">
-        <div className="container">
-          <h3>How It Works</h3>
-          <div className="step-list">
-            <div className="step-item">
-              <h4>Step 1</h4>
-              <p>Type your medication name and select from suggestions.</p>
-            </div>
-            <div className="step-item">
-              <h4>Step 2</h4>
-              <p>Watch your chosen medicines appear as pills below the input.</p>
-            </div>
-            <div className="step-item">
-              <h4>Step 3</h4>
-              <p>Click 'Analyze Now' to run a personalized interaction analysis.</p>
-            </div>
-            <div className="step-item">
-              <h4>Step 4</h4>
-              <p>Review the detailed report and receive smart recommendations.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Popup Modal for Interaction Results */}
       {showPopup && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="modal-overlay" onClick={() => setShowPopup(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>Interaction Analysis</h3>
             {error ? (
               <p className="error">{error}</p>
@@ -219,40 +271,17 @@ const HomePage: React.FC = () => {
               <ul>
                 {interactionResults.map((result, index) => (
                   <li key={index}>
-                    <strong>{result.pair}</strong>: {result.description}
+                    <strong>{result.pair}</strong>: {result.shortDescription}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p>No interactions found between the selected medicines.</p>
+              <p>No interactions found between the selected medications.</p>
             )}
             <button onClick={() => setShowPopup(false)}>Close</button>
           </div>
         </div>
       )}
-
-      {/* Footer Section */}
-      <footer>
-        <div id="contact_us" className="footer-container">
-          <div>
-            <h4>About Us</h4>
-            <p>Learn more about our mission and team.</p>
-          </div>
-          <div>
-            <h4>Privacy Policy</h4>
-            <p>Understand how we protect your data.</p>
-          </div>
-          <div>
-            <h4>Help & Support</h4>
-            <p>Get assistance with our services.</p>
-          </div>
-          <div>
-            <h4>Contact Us</h4>
-            <p>Reach out for any queries or support.</p>
-          </div>
-        </div>
-        <p>© 2025 Med Match. All Rights Reserved.</p>
-      </footer>
     </div>
   );
 };

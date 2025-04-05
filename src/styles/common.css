@@ -1,0 +1,318 @@
+/* common.css - Modern Redesign */
+:root {
+    --primary: #2A9D8F;
+    --primary-dark: #21867A;
+    --secondary: #264653;
+    --accent: #E76F51;
+    --text-light: #FDFEFE;
+    --text-dark: #2B2D42;
+    --bg-light: #F8F9FA;
+    --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    --border-radius: 12px;
+    --header-height: 80px;
+    --glass: rgba(255, 255, 255, 0.05);
+}
+
+/* =============================== */
+/*          Dark Theme             */
+/* =============================== */
+.dark {
+    --primary: #1e3a3a;
+    --primary-dark: #162e2e;
+    --secondary: #101d2d;
+    --accent: #f97316;
+    --text-light: #f4f4f4;
+    --text-dark: #000000;
+    --bg-light: #0f1115;
+    --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    --glass: rgba(255, 255, 255, 0.08);
+    --shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Base Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--header-height);
+}
+
+body {
+    min-height: 100vh;
+    font-family: var(--font-family);
+    line-height: 1.5;
+    color: var(--text-dark);
+    background: var(--bg-light);
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.4s, color 0.4s;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Modern Header */
+.header {
+    background: var(--primary);
+    background: var(--gradient);
+    height: var(--header-height);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow);
+    border-bottom: 1px solid var(--glass);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+/* Light Mode (when dark mode is not active) */
+:not(.dark) .logo i {
+    font-size: 2rem;
+    color: var(--text-light);
+    /* Or choose a color that contrasts well with your gradient */
+}
+
+/* Dark Mode */
+.dark .logo i {
+    font-size: 2rem;
+    color: var(--accent);
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-left: auto;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    position: relative;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: var(--glass);
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: var(--accent);
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-left: 2rem;
+}
+
+.signin-btn {
+    color: var(--text-light);
+    padding: 8px 20px;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    border: 1px solid var(--glass);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.signin-btn:hover {
+    background: var(--glass);
+    transform: translateY(-1px);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.signup-btn {
+    background: var(--accent);
+    color: var(--text-light);
+    padding: 8px 24px;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: var(--transition);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.signup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 111, 81, 0.3);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding-top: var(--header-height);
+}
+
+/* Modern Footer */
+.footer {
+    background: var(--secondary);
+    color: var(--text-light);
+    padding: 4rem 5% 2rem;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 3rem;
+}
+
+.footer-section {
+    text-align: left;
+}
+
+.footer-section h4 {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.75rem;
+}
+
+.footer-section h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+}
+
+.footer-section p {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 3rem;
+    margin-top: 3rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-bottom p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.footer-section a {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+    text-decoration: none;
+    opacity: 0.9;
+    transition: color 0.3s;
+}
+
+.footer-section a:hover {
+    color: var(--accent);
+}
+
+.footer-trust-badges {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+}
+
+.footer-trust-badges p {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+    opacity: 0.85;
+}
+
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .nav-links {
+        gap: 1rem;
+    }
+
+    .auth-buttons {
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 0 5%;
+        height: 70px;
+    }
+
+    .nav-container {
+        display: none;
+    }
+
+    .logo span {
+        font-size: 1.5rem;
+    }
+
+    .main-content {
+        padding-top: 70px;
+    }
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: block;
+    }
+}
