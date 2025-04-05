@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MedMatch - Patient Portal</title>
+    <!-- Google Font: Poppins -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- FontAwesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      /* Base Reset & Typography */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+      
+      :root {
+        --primary: #58c4c8;
+        --secondary: #5BA4E6;
+        --accent: #FF6B6B;
+        --bg-light: #f9f9f9;
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --glass-border: rgba(255, 255, 255, 0.3);
+      }
+      
+      body {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        min-height: 100vh;
+        color: #333;
+      }
+      
+      /* Header & Navigation */
+      header {
+        background: var(--glass-bg);
+        padding: 1rem 2rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        backdrop-filter: blur(10px);
+      }
+      
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .logo span {
+        background: var(--accent);
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+      }
+      
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 1.5rem;
+      }
+      
+      nav ul li a {
+        text-decoration: none;
+        color: var(--primary);
+        font-weight: 500;
+        transition: color 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      nav ul li a:hover {
+        color: var(--accent);
+      }
+      
+      /* Main Content Container */
+      main {
+        padding: 2rem;
+        max-width: 1000px;
+        margin: 2rem auto;
+        background: var(--glass-bg);
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
+      }
+      
+      section {
+        margin-bottom: 2rem;
+      }
+      
+      section h2 {
+        margin-bottom: 1rem;
+        color: var(--primary);
+      }
+      
+      /* Dashboard Overview Cards */
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+      
+      .card {
+        background: var(--glass-bg);
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        text-align: center;
+      }
+      
+      .card h3 {
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+      
+      .card p {
+        color: #555;
+      }
+      
+      /* Medical History Section */
+      .history-input, .file-upload {
+        margin-bottom: 1rem;
+      }
+      
+      textarea {
+        width: 100%;
+        height: 100px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      
+      .summary {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+      }
+      
+      /* DDI Checker Section */
+      .input-container {
+        position: relative;
+        margin-bottom: 1rem;
+      }
+      
+      #ddiInput {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+      
+      #ddiInput:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+      
+      .suggestion-list {
+        position: absolute;
+        top: 110%;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        border: 1px solid #ccc;
+        max-height: 150px;
+        overflow-y: auto;
+        display: none;
+        z-index: 5;
+      }
+      
+      .suggestion-item {
+        padding: 8px 10px;
+        cursor: pointer;
+      }
+      
+      .suggestion-item:hover {
+        background: #f0f8ff;
+      }
+      
+      .selected-medicines {
+        margin: 1rem 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      
+      .medicine-pill {
+        background: #e0f7fa;
+        color: var(--primary);
+        padding: 6px 10px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+      }
+      
+      .medicine-pill .remove-pill {
+        margin-left: 8px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: var(--accent);
+      }
+      
+      .buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+      
+      .results {
+        margin-top: 1rem;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 1rem;
+        border-radius: 8px;
+      }
+      
+      /* Lab Results Section */
+      .file-upload label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+      
+      /* Appointments */
+      .appointments ul {
+        list-style: none;
+        padding-left: 0;
+      }
+      
+      .appointments li {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        padding: 0.8rem;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+      }
+      
+      /* Buttons */
+      button.btn {
+        padding: 10px 20px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      
+      button.btn:hover {
+        background: #ff5252;
+      }
+      
+      button.btn.clear {
+        background: #d9534f;
+      }
+      
+      /* Chatbot Styles */
+      .chatbot-container {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 1000;
+      }
+      
+      .chatbot-button {
+        background: var(--accent);
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        transition: transform 0.3s;
+      }
+      
+      .chatbot-button:hover {
+        transform: scale(1.1);
+      }
+      
+      .chat-window {
+        display: none;
+        position: fixed;
+        bottom: 80px;
+        right: 2rem;
+        width: 300px;
+        background: var(--glass-bg);
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        backdrop-filter: blur(10px);
+        overflow: hidden;
+      }
+      
+      .chat-header {
+        background: var(--primary);
+        padding: 1rem;
+        color: white;
+      }
+      
+      .chat-messages {
+        height: 200px;
+        overflow-y: auto;
+        padding: 1rem;
+        background: #fff;
+      }
+      
+      .chat-input {
+        display: flex;
+        padding: 0.5rem;
+        background: #f1f1f1;
+      }
+      
+      .chat-input input {
+        flex: 1;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      
+      .chat-input button {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 0 1rem;
+        margin-left: 0.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      .user-message {
+        text-align: right;
+        margin: 0.5rem 0;
+        color: var(--primary);
+      }
+      
+      .bot-message {
+        text-align: left;
+        margin: 0.5rem 0;
+        color: var(--secondary);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <i class="fas fa-heartbeat"></i>
+        MedMatch <span>Patient Portal</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li><a href="#"><i class="fas fa-notes-medical"></i> My Profile</a></li>
+          <li><a href="#"><i class="fas fa-flask"></i> Lab Results</a></li>
+          <li><a href="#"><i class="fas fa-pills"></i> Medications</a></li>
+          <li><a href="#"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
+          <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+    
+    <!-- Main Content -->
+    <main>
+      <!-- Dashboard Overview Section -->
+      <section class="dashboard-overview">
+        <h2>Your Health Dashboard</h2>
+        <div class="cards">
+          <div class="card">
+            <h3>Current Medications</h3>
+            <p id="medicationsSummary">Aspirin, Ibuprofen</p>
+          </div>
+          <div class="card">
+            <h3>Upcoming Appointments</h3>
+            <p id="appointmentsSummary">March 25, 2025 - 10:00 AM</p>
+          </div>
+          <div class="card">
+            <h3>Lab Results Summary</h3>
+            <p id="labSummary">All lab results are normal.</p>
+          </div>
+          <div class="card">
+            <h3>Health Tips</h3>
+            <p id="healthTips">Stay hydrated and exercise regularly.</p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Medical History Section -->
+      <section class="medical-history">
+        <h2>Medical History</h2>
+        <div class="history-input">
+          <textarea id="medicalHistoryText" placeholder="Enter your medical history..."></textarea>
+          <button id="processHistoryBtn" class="btn">Process History</button>
+        </div>
+        <div id="historySummary" class="summary"></div>
+        <div class="file-upload">
+          <label for="historyFileUpload">Upload your medical documents:</label>
+          <input type="file" id="historyFileUpload" />
+          <button id="processFileBtn" class="btn">Process File</button>
+        </div>
+      </section>
+      
+      <!-- DDI Checker Section -->
+      <section class="ddi-checker">
+        <h2>Drug Interaction Checker</h2>
+        <div class="input-container">
+          <input type="text" id="ddiInput" placeholder="Type medicine name..." autocomplete="off" />
+          <div id="ddiSuggestionList" class="suggestion-list"></div>
+        </div>
+        <div id="ddiSelectedMedicines" class="selected-medicines"></div>
+        <div class="buttons">
+          <button id="ddiAnalyzeBtn" class="btn">Analyze Interactions</button>
+          <button id="ddiClearBtn" class="btn clear">Clear All</button>
+        </div>
+        <div id="ddiResults" class="results" style="display:none;">
+          <h3>Interaction Results</h3>
+          <p id="ddiResultsText"></p>
+        </div>
+      </section>
+      
+      <!-- Lab Results Summary Section -->
+      <section class="lab-results">
+        <h2>Lab Results</h2>
+        <div class="file-upload">
+          <label for="labFileUpload">Upload Lab Results:</label>
+          <input type="file" id="labFileUpload" />
+          <button id="summarizeLabBtn" class="btn">Summarize Lab Results</button>
+        </div>
+        <div id="labSummaryOutput" class="summary" style="display:none;">
+          <h3>Lab Summary</h3>
+          <p id="labSummaryText"></p>
+        </div>
+      </section>
+      
+      <!-- Appointments Section -->
+      <section class="appointments">
+        <h2>Upcoming Appointments</h2>
+        <ul id="appointmentsList">
+          <li>March 25, 2025 - 10:00 AM with Dr. Smith</li>
+          <li>April 10, 2025 - 2:00 PM with Dr. Johnson</li>
+        </ul>
+      </section>
+    </main>
+    
+    <!-- Chatbot -->
+    <div class="chatbot-container">
+      <div class="chatbot-button" id="chatbotButton">
+        <i class="fas fa-robot"></i>
+      </div>
+      <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+          <h3>Your Health Assistant</h3>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="bot-message">Hi there! How can I help you today?</div>
+        </div>
+        <div class="chat-input">
+          <input type="text" id="chatInput" placeholder="Type your message..." />
+          <button id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      /* ===============================
+         DDI Checker Functionality
+      =============================== */
+      const medicineDatabase = ["Aspirin", "Ibuprofen", "Acetaminophen", "Metformin", "Lisinopril", "Amoxicillin", "Azithromycin", "Simvastatin", "Omeprazole"];
+      const ddiInput = document.getElementById("ddiInput");
+      const ddiSuggestionList = document.getElementById("ddiSuggestionList");
+      const ddiSelectedMedicines = document.getElementById("ddiSelectedMedicines");
+      const ddiAnalyzeBtn = document.getElementById("ddiAnalyzeBtn");
+      const ddiClearBtn = document.getElementById("ddiClearBtn");
+      const ddiResults = document.getElementById("ddiResults");
+      const ddiResultsText = document.getElementById("ddiResultsText");
+      
+      ddiInput.addEventListener("input", function() {
+        const query = ddiInput.value.trim().toLowerCase();
+        if(query.length < 3) {
+          clearDdiSuggestions();
+          return;
+        }
+        const suggestions = medicineDatabase.filter(med => med.toLowerCase().includes(query));
+        displayDdiSuggestions(suggestions);
+      });
+      
+      function displayDdiSuggestions(suggestions) {
+        ddiSuggestionList.innerHTML = "";
+        if(suggestions.length === 0) {
+          const noDiv = document.createElement("div");
+          noDiv.className = "suggestion-item no-medicine";
+          noDiv.textContent = "No medicines found";
+          ddiSuggestionList.appendChild(noDiv);
+          ddiSuggestionList.style.display = "block";
+          return;
+        }
+        suggestions.forEach(suggestion => {
+          const div = document.createElement("div");
+          div.className = "suggestion-item";
+          div.textContent = suggestion;
+          div.addEventListener("click", function() {
+            addDdiMedicine(suggestion);
+            clearDdiSuggestions();
+            ddiInput.value = "";
+          });
+          ddiSuggestionList.appendChild(div);
+        });
+        ddiSuggestionList.style.display = "block";
+      }
+      
+      function clearDdiSuggestions() {
+        ddiSuggestionList.innerHTML = "";
+        ddiSuggestionList.style.display = "none";
+      }
+      
+      function addDdiMedicine(medicine) {
+        const existing = ddiSelectedMedicines.querySelectorAll(".medicine-pill");
+        for(let pill of existing) {
+          if(pill.firstChild.textContent.trim().toLowerCase() === medicine.toLowerCase()) {
+            return;
+          }
+        }
+        const pill = document.createElement("span");
+        pill.className = "medicine-pill";
+        pill.textContent = medicine;
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "remove-pill";
+        removeBtn.textContent = "×";
+        removeBtn.addEventListener("click", () => {
+          ddiSelectedMedicines.removeChild(pill);
+        });
+        pill.appendChild(removeBtn);
+        ddiSelectedMedicines.appendChild(pill);
+      }
+      
+      ddiAnalyzeBtn.addEventListener("click", function() {
+        const pills = ddiSelectedMedicines.querySelectorAll(".medicine-pill");
+        if(pills.length === 0) {
+          alert("Please add at least one medicine before analyzing interactions.");
+          return;
+        }
+        let meds = [];
+        pills.forEach(pill => {
+          meds.push(pill.firstChild.textContent.trim());
+        });
+        ddiResults.style.display = "block";
+        ddiResultsText.textContent = "Analyzing interactions for: " + meds.join(", ") + "...";
+        setTimeout(() => {
+          ddiResultsText.textContent = "No significant interactions detected.";
+        }, 1500);
+      });
+      
+      ddiClearBtn.addEventListener("click", function() {
+        ddiSelectedMedicines.innerHTML = "";
+        ddiResults.style.display = "none";
+      });
+      
+      /* ===============================
+         Medical History NLP Simulation
+      =============================== */
+      const processHistoryBtn = document.getElementById("processHistoryBtn");
+      const medicalHistoryText = document.getElementById("medicalHistoryText");
+      const historySummary = document.getElementById("historySummary");
+      
+      processHistoryBtn.addEventListener("click", function() {
+        const text = medicalHistoryText.value.trim();
+        if(text === "") {
+          alert("Please enter your medical history.");
+          return;
+        }
+        historySummary.style.display = "block";
+        historySummary.innerHTML = "<p>Extracted Insights: <em>Chronic migraine, seasonal allergies, previous hypertension detected.</em></p>";
+      });
+      
+      const processFileBtn = document.getElementById("processFileBtn");
+      const historyFileUpload = document.getElementById("historyFileUpload");
+      processFileBtn.addEventListener("click", function() {
+        if(historyFileUpload.files.length === 0) {
+          alert("Please upload a document.");
+          return;
+        }
+        historySummary.style.display = "block";
+        historySummary.innerHTML = "<p>File processed: <em>No abnormal findings detected.</em></p>";
+      });
+      
+      /* ===============================
+         Lab Results Summary Simulation
+      =============================== */
+      const labFileUpload = document.getElementById("labFileUpload");
+      const summarizeLabBtn = document.getElementById("summarizeLabBtn");
+      const labSummaryOutput = document.getElementById("labSummaryOutput");
+      const labSummaryText = document.getElementById("labSummaryText");
+      
+      summarizeLabBtn.addEventListener("click", function() {
+        if(labFileUpload.files.length === 0) {
+          alert("Please upload your lab results.");
+          return;
+        }
+        labSummaryOutput.style.display = "block";
+        labSummaryText.textContent = "Lab Summary: All parameters within normal ranges.";
+      });
+      
+      /* ===============================
+         Chatbot Functionality
+      =============================== */
+      const chatbotButton = document.getElementById("chatbotButton");
+      const chatWindow = document.getElementById("chatWindow");
+      const chatMessages = document.getElementById("chatMessages");
+      const chatInput = document.getElementById("chatInput");
+      const chatSendBtn = document.getElementById("chatSendBtn");
+      
+      chatbotButton.addEventListener("click", function() {
+        chatWindow.style.display = chatWindow.style.display === "block" ? "none" : "block";
+      });
+      
+      chatSendBtn.addEventListener("click", function() {
+        const message = chatInput.value.trim();
+        if(message === "") return;
+        const userMsg = document.createElement("div");
+        userMsg.className = "user-message";
+        userMsg.textContent = message;
+        chatMessages.appendChild(userMsg);
+        chatInput.value = "";
+        setTimeout(() => {
+          const botMsg = document.createElement("div");
+          botMsg.className = "bot-message";
+          botMsg.textContent = "I'm here to help! Could you please elaborate?";
+          chatMessages.appendChild(botMsg);
+        }, 1000);
+      });
+      
+      const observer = new MutationObserver(() => {
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      });
+      observer.observe(chatMessages, { childList: true });
+    </script>
+  </body>
+</html>
