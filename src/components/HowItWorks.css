@@ -1,0 +1,176 @@
+/* HowItWorks.css - Interactive Steps with Enclosed Panels and Arrows */
+.how-it-works {
+    padding: 4rem 2rem;
+    background: var(--gradient);
+    color: var(--text-light);
+    min-height: 100vh;
+}
+
+.how-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.how-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.how-header p {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0.5rem auto 0;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.step-card {
+    display: flex;
+    flex-direction: column;
+    /* Existing styles: background, padding, border, etc. */
+    background: var(--text-light);
+    color: var(--text-dark);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s;
+    cursor: pointer;
+    position: relative;
+    /* Optionally, force equal height (if grid items aren’t equal by default) */
+    height: 100%;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+}
+
+.step-icon {
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.step-card h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.step-card p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.view-details {
+    margin-top: auto;
+    /* Push the button to the bottom of the card */
+    background: var(--accent);
+    color: var(--text-light);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.view-details:hover {
+    background: var(--primary-dark);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: var(--text-light);
+    color: var(--text-dark);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    max-width: 600px;
+    width: 90%;
+    box-shadow: var(--shadow);
+    position: relative;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.modal-icon {
+    color: var(--primary);
+    font-size: 2rem;
+}
+
+.modal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.detail-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.detail-panel {
+    background: #f0f0f0;
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.detail-panel p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.detail-arrow-wrapper {
+    margin: 0.5rem 0;
+}
+
+.detail-arrow {
+    color: var(--primary);
+}
+
+.modal-close {
+    background: var(--primary);
+    color: var(--text-light);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    display: block;
+    margin: 0 auto;
+}
+
+.modal-close:hover {
+    background: var(--accent);
+}
