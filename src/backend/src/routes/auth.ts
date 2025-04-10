@@ -1,69 +1,84 @@
-// import express from "express";
+// routes/auth.ts
+import express, { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../models/User";
-import express, { Request, Response } from "express";
+import Account, { IAccount, Role } from "../models/Account";
 
 const router = express.Router();
 
-
-// Register Route
 router.post("/register", async (req: Request, res: Response) => {
   try {
-    const { username, email, password } = req.body;
-
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    console.log("existingUser", existingUser);
-    if (existingUser) { res.status(400).json({ message: "User already exists" }); }
-    else {
-      // Hash Password
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      // Save User
-      const newUser = new User({ username, email, password: hashedPassword });
-      await newUser.save();
-
-      res.status(201).json({ message: "User registered successfully" });
+    const { email, password, role, confirmRoleAddition } = req.body;
+    if (!email || !password || !role) {
+      res.status(400).json({ message: "Email, password, and role are required." });
+      return;
     }
 
-  }
-  catch (err: any) {
-    res.status(500).json({ error: err.message });
-    // res.status(500).json({ error: err});
+    const existingAccount: IAccount | null = await Account.findOne({ email });
+    if (existingAccount) {
+      if (existingAccount.roles.includes(role)) {
+        res.status(400).json({ message: "User already exists with this role." });
+        return;
+      } else {
+        if (!confirmRoleAddition) {
+          res.status(409).json({
+            message: "This email is already registered. Do you want to add the new role to your account?",
+            addNewRole: true
+          });
+          return;
+        } else {
+          existingAccount.roles.push(role);
+          await existingAccount.save();
+          const token = jwt.sign({ id: existingAccount._id }, process.env.JWT_SECRET as string, { expiresIn: "1h" });
+          res.json({ message: "Role added successfully", token, user: existingAccount });
+          return;
+        }
+      }
+    } else {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newAccount = new Account({
+        email,
+        password: hashedPassword,
+        roles: [role]
+      });
+      await newAccount.save();
+      const token = jwt.sign({ id: newAccount._id }, process.env.JWT_SECRET as string, { expiresIn: "1h" });
+      res.status(201).json({ message: "User registered successfully", token, user: newAccount });
+      return;
+    }
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ message: err.message || "Failed to register user" });
+    return;
   }
 });
 
-
-// Login Route
-router.post("/login", async (req, res) => {
+router.post("/login", async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-
-    // Find user
-    const user = await User.findOne({ email });
-    // if (!user) return res.status(400).json({ message: "User not found" });
-
-    if (!user) {
+    const account = await Account.findOne({ email });
+    if (!account) {
       res.status(400).json({ message: "User not found" });
-    } else {
-
-      // Compare Password
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) { res.status(400).json({ message: "Invalid credentials" }); } else {
-        // Generate Token
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: "1h" });
-
-        // res.json({ token, user: { id: user._id, username: user.username, email: user.email } });
-        res.status(200).json({ message: "Login successful", token, user: { id: user._id, username: user.username, email: user.email } });
-
-      }
-
+      return;
     }
 
+    const isMatch = await bcrypt.compare(password, account.password);
+    if (!isMatch) {
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
+    }
 
+    const token = jwt.sign({ id: account._id }, process.env.JWT_SECRET as string, { expiresIn: "1h" });
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: { id: account._id, email: account.email, roles: account.roles }
+    });
+    return;
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ message: err.message || "Failed to login" });
+    return;
   }
 });
 
