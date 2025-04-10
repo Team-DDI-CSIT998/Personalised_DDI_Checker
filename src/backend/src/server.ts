@@ -6,7 +6,7 @@ import path from 'path';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from './models/User';
+import Account, { IAccount, Role } from "./models/Account";
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
@@ -14,7 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const MONGO_URI = `mongodb+srv://medmatchproject2025:${process.env.MONGO_PASSWORD}@medmatchcluster.rrxor.mongodb.net/drugbank_db?retryWrites=true&w=majority&appName=MedMatchCluster`;
+const MONGO_URI = `mongodb+srv://medmatchproject2025:${process.env.MONGO_PASSWORD}@medmatchcluster.rrxor.mongodb.net/MedPortalDB?retryWrites=true&w=majority&appName=MedMatchCluster`;
 
 mongoose
     .connect(MONGO_URI)
@@ -130,50 +130,128 @@ app.post('/api/simplify_interactions', (req: Request, res: Response): void => {
     })();
 });
 
-// Register
-app.post('/api/auth/register', (req: Request, res: Response): void => {
-    (async () => {
-        try {
-            const { username, email, password } = req.body;
-            const existing = await User.findOne({ email });
-            if (existing) return res.status(400).json({ error: 'User already exists' });
+// Updated Registration Endpoint for Multi-Role Account
+app.post("/api/auth/register", async (req: Request, res: Response) => {
+    try {
+        const { email, password, role, confirmRoleAddition } = req.body;
+        // Validate required fields.
+        if (!email || !password || !role) {
+            res.status(400).json({ error: "Email, password, and role are required." });
+            return;
+        }
 
+        // Find an existing account with the same email.
+        const existingAccount: IAccount | null = await Account.findOne({ email });
+
+        if (existingAccount) {
+            // If the account already includes the requested role, return an error.
+            if (existingAccount.roles.includes(role)) {
+                res.status(400).json({ error: "User already exists with this role." });
+                return;
+            } else {
+                // The account exists but does not have the new role.
+                if (!confirmRoleAddition) {
+                    // Send a 409 response asking the client to confirm role addition.
+                    res.status(409).json({
+                        error: "Account exists",
+                        message:
+                            "This email is already registered. Do you want to add the new role to your existing account?",
+                        addNewRole: true,
+                    });
+                    return;
+                } else {
+                    // Client confirmed. Add the new role and update the account.
+                    existingAccount.roles.push(role);
+                    await existingAccount.save();
+                    const token = jwt.sign(
+                        { id: existingAccount._id },
+                        process.env.JWT_SECRET as string,
+                        { expiresIn: "1h" }
+                    );
+                    res.json({ token, user: existingAccount });
+                    return;
+                }
+            }
+        } else {
+            // No existing account; create a new one with the provided role.
             const hashed = await bcrypt.hash(password, 10);
-            const newUser = new User({ username, email, password: hashed });
-            await newUser.save();
-            const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
-            res.json({ token, user: newUser });
-        } catch (err: any) {
-            console.error(err);
-            res.status(500).json({ error: 'Failed to register user' });
+            const newAccount = new Account({
+                email,
+                password: hashed,
+                roles: [role],
+            });
+            await newAccount.save();
+            const token = jwt.sign(
+                { id: newAccount._id },
+                process.env.JWT_SECRET as string,
+                { expiresIn: "1h" }
+            );
+            res.json({ token, user: newAccount });
+            return;
         }
-    })();
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to register user" });
+        return;
+    }
 });
 
-// Login
-app.post('/api/auth/login', (req: Request, res: Response): void => {
-    (async () => {
-        try {
-            const { email, password } = req.body;
-            const user = await User.findOne({ email });
-            if (!user) return res.status(400).json({ error: 'User not found' });
-
-            const isMatch = await bcrypt.compare(password, user.password);
-            if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
-
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
-            res.json({ token, user });
-        } catch (err: any) {
-            console.error(err);
-            res.status(500).json({ error: 'Failed to login' });
+// Updated Login Endpoint
+app.post("/api/auth/login", async (req: Request, res: Response) => {
+    try {
+        const { email, password } = req.body;
+        const account = await Account.findOne({ email });
+        if (!account) {
+            res.status(400).json({ error: "User not found" });
+            return;
         }
-    })();
+
+        const isMatch = await bcrypt.compare(password, account.password);
+        if (!isMatch) {
+            res.status(400).json({ error: "Invalid credentials" });
+            return;
+        }
+
+        const token = jwt.sign(
+            { id: account._id },
+            process.env.JWT_SECRET as string,
+            { expiresIn: "1h" }
+        );
+        res.json({ token, user: account });
+        return;
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to login" });
+        return;
+    }
 });
 
+app.post("/api/auth/check-email", async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+        console.log(req.body);
+        if (!email) {
+            res.status(400).json({ error: "Email is required." });
+            return;
+        }
+        const existingAccount: IAccount | null = await Account.findOne({ email });
+        // Respond with a boolean flag indicating if the email exists.
+        res.status(200).json({ exists: !!existingAccount });
+        return;
+    } catch (err: any) {
+        console.error("Error checking email:", err.message);
+        res.status(500).json({ error: "Error checking email" });
+        return;
+    }
+});
+
+
+// =======================
 // Graceful Shutdown
-process.on('SIGINT', () => {
+// =======================
+process.on("SIGINT", () => {
     mongoose.connection.close().then(() => {
-        console.log('MongoDB connection closed due to app termination');
+        console.log("MongoDB connection closed due to app termination");
         process.exit(0);
     });
 });

@@ -1,46 +1,66 @@
-export const loginUser = async (email: string, password: string) => {
-  const url = "http://localhost:5000/api/auth/login";
-  const requestData = {
-    email,
-    password,
-  };
+// src/api/authApi.ts
 
+export class ApiError extends Error {
+  status: number;
+  body: any;
+  constructor(message: string, status: number, body: any) {
+    super(message);
+    this.status = status;
+    this.body = body;
+  }
+}
+
+export const loginUser = async (
+  email: string,
+  password: string,
+  role?: string
+) => {
+  const url = "http://localhost:5000/api/auth/login";
   const response = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestData),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password, role }),
   });
-
+  const data = await response.json();
   if (!response.ok) {
-    const data = await response.json();
-    throw new Error(data.message || "Login failed");
+    throw new ApiError(data.error || data.message || "Login failed", response.status, data);
   }
-
-  return await response.json();
+  return data;
 };
 
-export const registerUser = async (username: string, email: string, password: string) => {
+export const registerUser = async (
+  email: string,
+  password: string,
+  role: string,
+  confirmRoleAddition: boolean = false
+) => {
   const url = "http://localhost:5000/api/auth/register";
-  const requestData = {
-    username,
-    email,
-    password,
-  };
-
   const response = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestData),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password, role, confirmRoleAddition }),
   });
-
+  const data = await response.json();
   if (!response.ok) {
-    const data = await response.json();
-    throw new Error(data.message || "Signup failed");
+    throw new ApiError(
+      data.message || data.error || "Signup failed",
+      response.status,
+      data
+    );
   }
+  return data;
+};
 
-  return await response.json();
+export const checkEmail = async (email: string) => {
+  const url = "http://localhost:5000/api/auth/check-email";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new ApiError(data.error || "Email check failed", response.status, data);
+  }
+  return data; // { exists: boolean }
 };

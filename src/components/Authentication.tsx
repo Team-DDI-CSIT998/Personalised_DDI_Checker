@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { loginUser, registerUser } from "../api/authApi";
+import { ApiError, registerUser, loginUser, checkEmail } from "../api/authApi";
 import { toast } from "react-toastify";
+import CustomModal from "./CustomModal"; 
 import "./Authentication.css";
 
 type UserType = "patient" | "doctor" | "";
 type LocationState = {
   isSignUp: boolean;
 };
+
+
+
+const MIN_PASSWORD_STRENGTH = 60; // Adjust your password threshold
 
 const Authentication: React.FC = () => {
   const location = useLocation();
@@ -20,18 +25,53 @@ const Authentication: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState<boolean>(initialMode);
   const [userType, setUserType] = useState<UserType>("");
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [passwordStrength, setPasswordStrength] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const handleUserTypeSelect = (type: UserType) => {
-    setUserType(type);
+  // State for custom modal
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalConfirmCallback, setModalConfirmCallback] = useState<(() => void) | null>(null);
+  const [modalCancelCallback, setModalCancelCallback] = useState<(() => void) | null>(null);
+
+  const [isExistingEmail, setIsExistingEmail] = useState<boolean>(false);
+
+  // A helper to open the modal with dynamic content
+  const openModal = (
+    title: string,
+    message: string,
+    onConfirm?: () => void,
+    onCancel?: () => void
+  ) => {
+    setModalTitle(title);
+    setModalMessage(message);
+    setModalConfirmCallback(() => onConfirm || null);
+    setModalCancelCallback(() => onCancel || null);
+    setModalOpen(true);
   };
 
+  // A helper to close the modal
+  const closeModal = () => {
+    setModalOpen(false);
+    setModalTitle("");
+    setModalMessage("");
+    setModalConfirmCallback(null);
+    setModalCancelCallback(null);
+  };
+
+  // Called when user selects patient or doctor
+  const handleUserTypeSelect = (type: UserType) => {
+    setUserType(type);
+    setErrorMessage("");
+  };
+
+  // Basic password strength
   const calculatePasswordStrength = (password: string): number => {
     let strength = 0;
     if (password.length >= 8) strength += 30;
@@ -41,6 +81,7 @@ const Authentication: React.FC = () => {
     return Math.min(strength, 100);
   };
 
+  // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -52,65 +93,176 @@ const Authentication: React.FC = () => {
   const toggleSignUp = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setIsSignUp(true);
-    setFormData({ username: "", email: "", password: "" });
+    setFormData({ email: "", password: "", confirmPassword: "" });
     setPasswordStrength(0);
   };
 
   const toggleSignIn = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setIsSignUp(false);
-    setFormData({ username: "", email: "", password: "" });
+    setFormData({ email: "", password: "", confirmPassword: "" });
     setPasswordStrength(0);
   };
 
-  const handleSignUp = async () => {
-    setIsLoading(true);
-    setErrorMessage("");
-    try {
-      const data = await registerUser(
-        formData.username,
-        formData.email,
-        formData.password
+  // Inside your handleSignUp function:
+const handleSignUp = async (confirmRoleAddition = false) => {
+  
+  // Check email existence using our helper function
+  const emailResult = await checkEmail(formData.email);
+  setIsExistingEmail(emailResult.exists);
+  console.log("Email exists:", emailResult.exists);
+  
+  // If the email is new, enforce password validations
+  if (!emailResult.exists) {
+
+    if (!userType) {
+      openModal(
+        "Role Required",
+        "Please select either 'Patient' or 'Healthcare Pro' before proceeding."
       );
-      console.log("Signup successful:", data);
-      toast.success("Signup successful!");
-      navigate("/PatientPortal");
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("An unknown error occurred.");
-      }
-    } finally {
       setIsLoading(false);
+      return;
+    }
+  
+    if (formData.password !== formData.confirmPassword) {
+      openModal("Password Mismatch", "Passwords do not match.");
+      setIsLoading(false);
+      return;
+    }
+    if (passwordStrength < MIN_PASSWORD_STRENGTH) {
+      openModal("Weak Password", "Please use a stronger password.");
+      setIsLoading(false);
+      return;
+    }
+  }
+  
+  // Proceed with registration as before...
+  setIsLoading(true);
+  setErrorMessage("");
+  try {
+    const data = await registerUser(
+      formData.email,
+      formData.password,
+      userType,
+      confirmRoleAddition
+    );
+    toast.success("Signup successful!");
+    navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
+  } catch (err: any) {
+    if (err instanceof ApiError && err.status === 409 && err.body.addNewRole) {
+      // server told us to ask for role addition
+      openModal(
+        "Account Exists",
+        err.body.message,
+        async () => {
+          closeModal();
+          // confirm role addition
+          try {
+            const data2 = await registerUser(
+              formData.email,
+              formData.password,
+              userType,
+              true
+            );
+            toast.success("Role added successfully!");
+            navigate(userType === "patient" ? "/PatientPortal" : "/DoctorPortal");
+          } catch (err2: any) {
+            const msg =
+              err2 instanceof ApiError
+                ? err2.body.error || err2.message
+                : err2.message;
+            toast.error(msg);
+          }
+        },
+        () => {
+          closeModal();
+          toast.info("Role linking cancelled.");
+        }
+      );
+    } else {
+      // any other error: display its message
+      const msg = err instanceof ApiError ? err.body.error || err.message : err.message;
+      toast.error(msg || "An unknown error occurred.");
+    }
+  } finally {
+    setIsLoading(false);
+  }
+};
+  
+  
+  // --- Login process
+  const handleLogin = async () => {
+    try {
+      const data = await loginUser(formData.email, formData.password, userType);
+      console.log("Login successful:", data);
+  
+      // Check if this account has the selected role.
+      if (!data.user.roles.includes(userType)) {
+        // Ask if we want to link the role.
+        openModal(
+          "Add New Role?",
+          `Your account does not currently have the ${userType} role. Would you like to add it?`,
+          async () => {
+            closeModal();
+            try {
+              const updatedData = await registerUser(
+                formData.email,
+                formData.password,
+                userType,
+                true
+              );
+              console.log("Role linked successfully:", updatedData);
+              toast.success("Role linked successfully!");
+              navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
+            } catch (error: any) {
+              toast.error(error.response?.data?.error || error.message || "An error occurred linking the role.");
+            }
+          },
+          () => {
+            closeModal();
+            toast.info("Role linking cancelled.");
+          }
+        );
+      } else {
+        // Already has this role.
+        navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
+        toast.success("Login successful!");
+      }
+    } catch (error: any) {
+      // Use error.message if error.response is undefined.
+      toast.error(error.response?.data?.error || error.message || "An unknown error occurred.");
     }
   };
+  
 
+  // Form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage("");
+
     if (isSignUp) {
       await handleSignUp();
     } else {
-      try {
-        const data = await loginUser(formData.email, formData.password);
-        console.log("Login successful:", data);
-        navigate("/PatientPortal");
-        toast.success("Login successful!");
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        } else {
-          toast.error("An unknown error occurred.");
-        }
+      if (!userType) {
+        openModal("Role Required", "Please select either 'Patient' or 'Healthcare Pro' before logging in.");
+        setIsLoading(false);
+        return;
       }
+      await handleLogin();
     }
     setIsLoading(false);
   };
 
   return (
     <div className="authentication">
+      <button
+        className="back-button"
+        onClick={() => navigate("/")}
+        aria-label="Back to Home"
+      >
+        &#8592;
+      </button>
       <div className="auth-wrapper">
         <div className="auth-container">
           <div className="form-header">
@@ -118,6 +270,7 @@ const Authentication: React.FC = () => {
             <p>Your Gateway to Safe Medication Management</p>
           </div>
 
+          {/* User Role Selection */}
           <div className="user-type-selector">
             <div
               className={`user-type-card ${
@@ -140,19 +293,6 @@ const Authentication: React.FC = () => {
           </div>
 
           <form className="auth-form" onSubmit={handleSubmit}>
-            {isSignUp && (
-              <div className="input-group">
-                <input
-                  type="text"
-                  id="username"
-                  placeholder=" "
-                  required
-                  value={formData.username}
-                  onChange={handleInputChange}
-                />
-                <label className="floating-label">Full Name</label>
-              </div>
-            )}
             <div className="input-group">
               <input
                 type="email"
@@ -185,10 +325,23 @@ const Authentication: React.FC = () => {
                 ></div>
               </div>
             </div>
+            {isSignUp && (
+              <div className="input-group">
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  placeholder=" "
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                />
+                <label className="floating-label">Confirm Password</label>
+              </div>
+            )}
             {errorMessage && (
-            <div className="error-message" id="errorMessage">
-              {errorMessage}
-            </div>
+              <div className="error-message" id="errorMessage">
+                {errorMessage}
+              </div>
             )}
 
             <button type="submit">
@@ -221,6 +374,27 @@ const Authentication: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Our custom popup: we pass it the relevant props from state. */}
+      <CustomModal
+        isOpen={modalOpen}
+        title={modalTitle}
+        message={modalMessage}
+        confirmText="OK"
+        cancelText="Cancel"
+        onConfirm={() => {
+          if (modalConfirmCallback) {
+            modalConfirmCallback();
+          }
+          closeModal();
+        }}
+        onCancel={() => {
+          if (modalCancelCallback) {
+            modalCancelCallback();
+          }
+          closeModal();
+        }}
+      />
     </div>
   );
 };

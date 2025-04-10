@@ -28,6 +28,7 @@ const Header: React.FC = () => {
   const isHowItWorks = location.pathname === '/how-it-works';
   // Determine if we're on the Authentication page
   const isAuthPage = location.pathname === '/Authentication';
+  const isDoctorPortal = location.pathname === '/MedMatchDoctorPortal';
 
   return (
     <header className="header">
@@ -59,11 +60,13 @@ const Header: React.FC = () => {
           </Link>
           )}
           {/* Only show these links if NOT on the Authentication page */}
-          {!isAuthPage && (
+          {!isAuthPage && !isDoctorPortal && (
             <>
+            {!isHowItWorks && (
               <a href="#features" className="nav-link">
                 Features
               </a>
+            )}
               <a href="#footer" className="nav-link">
                 Get in Touch
               </a>
