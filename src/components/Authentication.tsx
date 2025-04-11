@@ -146,8 +146,12 @@ const handleSignUp = async (confirmRoleAddition = false) => {
       userType,
       confirmRoleAddition
     );
+    localStorage.setItem("token", data.token);
     toast.success("Signup successful!");
-    navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
+    navigate("/ProfileSetup", {
+      state: { role: userType }   // pass the chosen role
+    });
+    //navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
   } catch (err: any) {
     if (err instanceof ApiError && err.status === 409 && err.body.addNewRole) {
       // server told us to ask for role addition
@@ -212,6 +216,7 @@ const handleSignUp = async (confirmRoleAddition = false) => {
                 true
               );
               console.log("Role linked successfully:", updatedData);
+              localStorage.setItem("token", data.token);
               toast.success("Role linked successfully!");
               navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
             } catch (error: any) {
@@ -225,6 +230,7 @@ const handleSignUp = async (confirmRoleAddition = false) => {
         );
       } else {
         // Already has this role.
+        localStorage.setItem("token", data.token);
         navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
         toast.success("Login successful!");
       }

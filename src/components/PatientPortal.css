@@ -13,7 +13,8 @@
 /* Sidebar */
 .patient-portal .sidebar {
   width: 250px;
-  background-color: #59BCD0;
+  background-color: var(--primary);
+  ;
   /* Primary color */
   color: #fff;
   display: flex;
@@ -67,7 +68,6 @@
 
 /* Patient Portal Header (override if necessary) */
 .patient-portal header {
-  background-color: blue;
   border-bottom: 1px solid #ccc;
   padding: 1rem;
 }

@@ -183,7 +183,7 @@ body {
 }
 
 /* Main Content */
-.main-content {
+.layout-content {
     flex: 1;
     padding-top: var(--header-height);
 }
