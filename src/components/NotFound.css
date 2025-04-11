@@ -1,0 +1,22 @@
+.notfound-container {
+    text-align: center;
+    padding: 5rem 2rem;
+    color: var(--text-dark);
+}
+
+.notfound-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 10px 20px;
+    background: var(--accent);
+    color: white;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: bold;
+    transition: var(--transition);
+}
+
+.notfound-link:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}

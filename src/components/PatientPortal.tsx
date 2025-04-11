@@ -180,8 +180,6 @@ const PatientPortal: React.FC = () => {
       {/* Sidebar Navigation */}
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <i className="fas fa-heartbeat"></i>
-          <span>MedMatch</span>
         </div>
         <ul className="sidebar-nav">
           <li

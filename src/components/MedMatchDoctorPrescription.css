@@ -1,0 +1,245 @@
+/* Scoped Entirely to DoctorPatientPrescription */
+.doctor-patient-prescription {
+    background: var(--gradient);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.doctor-patient-prescription .dashboard-main {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.doctor-patient-prescription .dashboard-header {
+    border-bottom: 2px solid var(--glass);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.doctor-patient-prescription .dashboard-header h1 {
+    color: var(--primary);
+}
+
+.doctor-patient-prescription .patient-meta {
+    display: flex;
+    gap: 1rem;
+    color: var(--text-light);
+}
+
+.doctor-patient-prescription .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.doctor-patient-prescription .card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+}
+
+.doctor-patient-prescription .card-header {
+    border-bottom: 1px solid var(--primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+}
+
+.doctor-patient-prescription .card-header h2 {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.doctor-patient-prescription .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.doctor-patient-prescription .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.doctor-patient-prescription input,
+.doctor-patient-prescription select,
+.doctor-patient-prescription textarea {
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--primary);
+    transition: var(--transition);
+}
+
+.doctor-patient-prescription input:focus,
+.doctor-patient-prescription select:focus,
+.doctor-patient-prescription textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(231, 111, 81, 0.3);
+}
+
+.doctor-patient-prescription .btn-primary {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background: var(--primary);
+    color: var(--text-light);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.doctor-patient-prescription .btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+/* Prescription Management button styling */
+.doctor-patient-prescription .btn-icon {
+    padding: 0.6rem 1rem;
+    background: var(--accent);
+    color: var(--text-light);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    margin-top: 8px;
+}
+
+.doctor-patient-prescription .btn-icon:hover {
+    transform: translateY(-3px);
+    background: var(--primary-dark);
+}
+
+.doctor-patient-prescription .timeline {
+    position: relative;
+    padding-left: 1rem;
+}
+
+.doctor-patient-prescription .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--primary);
+}
+
+.doctor-patient-prescription .timeline-item {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.doctor-patient-prescription .timeline-marker {
+    position: absolute;
+    left: -7px;
+    top: 0.3rem;
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+}
+
+.doctor-patient-prescription .timeline-content h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.doctor-patient-prescription .timeline-content .date {
+    font-size: 0.9rem;
+    color: var(--primary);
+}
+
+.doctor-patient-prescription .file-upload-area .drop-zone {
+    border: 2px dashed var(--primary);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    text-align: center;
+}
+
+.doctor-patient-prescription .file-upload-area .drop-zone:hover {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Modal styling */
+.doctor-patient-prescription .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.doctor-patient-prescription .modal-content {
+    background: var(--bg-light);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    width: 90%;
+    max-width: 600px;
+}
+
+.doctor-patient-prescription .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--accent);
+}
+
+.doctor-patient-prescription .notes-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.doctor-patient-prescription .notes-section label {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.doctor-patient-prescription .notes-section textarea {
+    resize: vertical;
+    min-height: 100px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 2px solid var(--primary);
+    border-radius: var(--border-radius);
+    background: var(--bg-light);
+    color: var(--text-dark);
+    transition: var(--transition);
+}
+
+.doctor-patient-prescription .notes-section textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(231, 111, 81, 0.2);
+}
+
+.doctor-patient-prescription .notes-section .btn-primary {
+    align-self: flex-end;
+    width: fit-content;
+    margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .doctor-patient-prescription {
+        padding: 1rem;
+    }
+}

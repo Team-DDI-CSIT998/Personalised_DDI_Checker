@@ -7,12 +7,16 @@ import axios from 'axios';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Account, { IAccount, Role } from "./models/Account";
+import profileRouter from "./routes/profileRouter";
+
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use("/api", profileRouter);
 
 const MONGO_URI = `mongodb+srv://medmatchproject2025:${process.env.MONGO_PASSWORD}@medmatchcluster.rrxor.mongodb.net/MedPortalDB?retryWrites=true&w=majority&appName=MedMatchCluster`;
 

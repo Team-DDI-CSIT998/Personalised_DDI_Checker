@@ -11,10 +11,11 @@ interface LayoutProps {
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
+
   return (
     <div className="app-container">
       <Header />
-      <main className="main-content">{children}</main>
+      <main className="layout-content">{children}</main>
       <Footer />
     </div>
   );
@@ -29,6 +30,7 @@ const Header: React.FC = () => {
   // Determine if we're on the Authentication page
   const isAuthPage = location.pathname === '/Authentication';
   const isDoctorPortal = location.pathname === '/MedMatchDoctorPortal';
+  const isPrescription = location.pathname === '/MedMatchDoctorPrescription';
 
   return (
     <header className="header">
@@ -50,7 +52,7 @@ const Header: React.FC = () => {
 
       <nav className={`nav-container ${isMobileOpen ? 'mobile-open' : ''}`}>
         <div className="nav-links">
-        {!isAuthPage && (
+        {!isAuthPage && !isDoctorPortal && !isPrescription &&(
           <Link
             to="/"
             className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
@@ -60,7 +62,7 @@ const Header: React.FC = () => {
           </Link>
           )}
           {/* Only show these links if NOT on the Authentication page */}
-          {!isAuthPage && !isDoctorPortal && (
+          {!isAuthPage && !isDoctorPortal && !isDoctorPortal && !isPrescription &&(
             <>
             {!isHowItWorks && (
               <a href="#features" className="nav-link">
@@ -72,7 +74,7 @@ const Header: React.FC = () => {
               </a>
             </>
           )}
-          {!isAuthPage && (
+          {!isAuthPage && !isDoctorPortal && !isPrescription &&(
           <Link 
             to="/how-it-works" 
             className={`nav-link ${isHowItWorks ? 'active' : ''}`}
@@ -87,7 +89,7 @@ const Header: React.FC = () => {
           <ThemeToggle />
           <div className="auth-buttons">
             
-            {!isAuthPage && (
+            {!isAuthPage && !isDoctorPortal && !isPrescription &&(
             <Link
               to="/Authentication"
               state={{ isSignUp: false }}
@@ -96,7 +98,7 @@ const Header: React.FC = () => {
               Sign In
             </Link>
              )}
-             {!isAuthPage && (
+             {!isAuthPage && !isDoctorPortal && !isPrescription &&(
             <Link
               to="/Authentication"
               state={{ isSignUp: true }}
