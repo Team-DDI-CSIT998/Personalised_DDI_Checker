@@ -1,505 +1,345 @@
-import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
-import "./PatientPortal.css";
+import React, { useState } from 'react';
+import './PatientPortal.css';
 
-const medicineDatabase = [
-  "Aspirin",
-  "Ibuprofen",
-  "Acetaminophen",
-  "Metformin",
-  "Lisinopril",
-  "Amoxicillin",
-  "Azithromycin",
-  "Simvastatin",
-  "Omeprazole",
-];
+const EnhancedPortal: React.FC = () => {
+  // Sidebar toggle function
+  const toggleSidebar = () => {
+    const sidebar = document.getElementById('left-sidebar');
+    const toggleBtnIcon = document.getElementById('toggle-icon');
+    if (sidebar && toggleBtnIcon) {
+      sidebar.classList.toggle('collapsed');
+      toggleBtnIcon.classList.toggle('fa-angle-left');
+      toggleBtnIcon.classList.toggle('fa-angle-right');
+    }
+  };
 
-const PatientPortal: React.FC = () => {
-  /** Dashboard Overview (static or pre‐loaded data) */
-  const [currentMedications] = useState("Aspirin, Ibuprofen");
-  const [upcomingAppointments] = useState("March 25, 2025 - 10:00 AM");
-  const [labSummary] = useState("All lab results are normal.");
-  const [healthTips] = useState("Stay hydrated and exercise regularly.");
+  // Chatbot toggle function
+  const toggleChatbot = () => {
+    const chatWindow = document.getElementById('chat-window');
+    if (chatWindow) {
+      chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex';
+    }
+  };
 
-  /** Medical History States */
-  const [medicalHistoryText, setMedicalHistoryText] = useState("");
-  const [historySummary, setHistorySummary] = useState("");
-  const [historyFile, setHistoryFile] = useState<File | null>(null);
-
-  // Keyword States
-  const [keywordInput, setKeywordInput] = useState("");
-  const [keywords, setKeywords] = useState<string[]>([]);
-
-  /** DDI Checker States */
-  const [ddiInput, setDdiInput] = useState("");
-  const [ddiSuggestions, setDdiSuggestions] = useState<string[]>([]);
-  const [selectedMedicines, setSelectedMedicines] = useState<string[]>([]);
-  const [ddiResults, setDdiResults] = useState("");
-
-  /** Lab Results States */
-  const [labFile, setLabFile] = useState<File | null>(null);
-  const [labResultsSummary, setLabResultsSummary] = useState("");
-
-  /** Appointments (static list for now) */
-  interface Appointment {
-    date: string;
-    time: string;
-    doctor: string;
-    type?: string; // optional, e.g. "Check-up", "Follow-up"d
-  }
-
-  const [appointments] = useState<Appointment[]>([
-    {
-      date: "March 25, 2025",
-      time: "10:00 AM",
-      doctor: "Dr. Smith",
-      type: "General Check-up",
-    },
-    {
-      date: "April 10, 2025",
-      time: "2:00 PM",
-      doctor: "Dr. Johnson",
-      type: "Follow-up",
-    },
+  // Medical History state for adding and removing conditions
+  const [inputValue, setInputValue] = useState<string>('');
+  const [conditions, setConditions] = useState<string[]>([
+    'Chronic migraines', // Example pre-loaded condition
   ]);
 
-  /** Chatbot States */
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatMessages, setChatMessages] = useState<{ sender: string; text: string }[]>([
-    { sender: "bot", text: "Hi there! How can I help you today?" },
+  // Add condition handler
+  const handleAddCondition = () => {
+    const trimmed = inputValue.trim();
+    if (!trimmed) return; // do nothing if empty
+    setConditions((prev) => [...prev, trimmed]);
+    setInputValue('');
+  };
+
+  // Remove condition handler
+  const handleRemoveCondition = (conditionToRemove: string) => {
+    setConditions((prev) => prev.filter((cond) => cond !== conditionToRemove));
+  };
+
+  const handleProcessConditions = () => {
+    console.log('Process Condition clicked. Current conditions:', conditions);
+  };
+
+  //DDI Checker state
+  const [medicineInput, setMedicineInput] = useState<string>('');
+  const [selectedMedicines, setSelectedMedicines] = useState<string[]>([
+    'Aspirin',
+    'Ibuprofen', // Example pre-loaded
   ]);
-  const [chatInput, setChatInput] = useState("");
 
-  /** Sidebar Active Link */
-  const [activeLink, setActiveLink] = useState("dashboard");
-
-  /** --- DDI Checker Handlers --- */
-  const handleDdiInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setDdiInput(value);
-    if (value.trim().length < 3) {
-      setDdiSuggestions([]);
-      return;
-    }
-    const suggestions = medicineDatabase.filter((med) =>
-      med.toLowerCase().includes(value.toLowerCase())
-    );
-    setDdiSuggestions(suggestions.length ? suggestions : ["No medicines found"]);
+  // Handle adding a new medicine from input
+  const handleAddMedicine = () => {
+    const trimmed = medicineInput.trim();
+    if (!trimmed) return; // Do nothing if empty
+    // Add medicine to the array
+    setSelectedMedicines((prev) => [...prev, trimmed]);
+    setMedicineInput('');
   };
 
-  const addDdiMedicine = (medicine: string) => {
-    if (medicine === "No medicines found") return;
-    if (selectedMedicines.find((med) => med.toLowerCase() === medicine.toLowerCase())) return;
-    setSelectedMedicines((prev) => [...prev, medicine]);
+  // Handle removing an existing medicine from the array
+  const handleRemoveMedicine = (medicineToRemove: string) => {
+    setSelectedMedicines((prev) => prev.filter((med) => med !== medicineToRemove));
   };
 
-  const analyzeDdi = () => {
-    if (selectedMedicines.length === 0) {
-      alert("Please add at least one medicine before analyzing interactions.");
-      return;
-    }
-    setDdiResults(`Analyzing interactions for: ${selectedMedicines.join(", ")}...`);
-    setTimeout(() => {
-      setDdiResults("No significant interactions detected.");
-    }, 1500);
+  // Placeholder logic for analyzing interactions
+  const handleAnalyzeInteractions = () => {
+    // In a real scenario, you'd do an API call or advanced logic here
+    console.log('Analyzing interactions for:', selectedMedicines);
   };
 
-  const clearDdi = () => {
+  // Clear all selected medicines
+  const handleClearAll = () => {
     setSelectedMedicines([]);
-    setDdiResults("");
   };
-
-  /** --- Medical History Handlers --- */
-  const processMedicalHistory = () => {
-    if (medicalHistoryText.trim() === "") {
-      alert("Please enter your medical history.");
-      return;
-    }
-    // Simulate an NLP process
-    setHistorySummary(
-      "Extracted Insights: Chronic migraine, seasonal allergies, and previous hypertension detected."
-    );
-  };
-
-    // Handlers for keywords
-    const handleAddKeyword = () => {
-      const trimmed = keywordInput.trim();
-      if (!trimmed) return;
-      if (!keywords.includes(trimmed)) {
-        setKeywords([...keywords, trimmed]);
-      }
-      setKeywordInput("");
-    };
-  
-    const handleRemoveKeyword = (kw: string) => {
-      setKeywords(keywords.filter((k) => k !== kw));
-    };
-
-  const processHistoryFile = () => {
-    if (!historyFile) {
-      alert("Please upload a document.");
-      return;
-    }
-    setHistorySummary("File processed: No abnormal findings detected.");
-  };
-
-  
-
-  /** --- Lab Results Handlers --- */
-  const processLabResults = () => {
-    if (!labFile) {
-      alert("Please upload your lab results.");
-      return;
-    }
-    setLabResultsSummary("Lab Summary: All parameters within normal ranges.");
-  };
-
-  /** --- Chatbot Handlers --- */
-  const sendChatMessage = () => {
-    if (chatInput.trim() === "") return;
-    setChatMessages((prev) => [...prev, { sender: "user", text: chatInput }]);
-    setChatInput("");
-    // Simulate bot response
-    setTimeout(() => {
-      setChatMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: "I'm here to help! Could you please elaborate?" },
-      ]);
-    }, 1000);
-  };
-
-  // Auto-scroll chat messages
-  useEffect(() => {
-    const chatMessagesDiv = document.getElementById("chatMessages");
-    if (chatMessagesDiv) {
-      chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-    }
-  }, [chatMessages]);
 
   return (
-    <div className="patient-portal">
-      {/* Sidebar Navigation */}
-      <aside className="sidebar">
-        <div className="sidebar-logo">
-          <i className="fas fa-heartbeat"></i>
-          <span>MedMatch</span>
-        </div>
-        <ul className="sidebar-nav">
-          <li
-            className={activeLink === "dashboard" ? "active" : ""}
-            onClick={() => setActiveLink("dashboard")}
-          >
-            <i className="fas fa-tachometer-alt"></i> Dashboard
-          </li>
-          <li
-            className={activeLink === "profile" ? "active" : ""}
-            onClick={() => setActiveLink("profile")}
-          >
-            <i className="fas fa-notes-medical"></i> My Profile
-          </li>
-          <li
-            className={activeLink === "lab" ? "active" : ""}
-            onClick={() => setActiveLink("lab")}
-          >
-            <i className="fas fa-flask"></i> Lab Results
-          </li>
-          <li
-            className={activeLink === "medications" ? "active" : ""}
-            onClick={() => setActiveLink("medications")}
-          >
-            <i className="fas fa-pills"></i> Medications
-          </li>
-          <li
-            className={activeLink === "appointments" ? "active" : ""}
-            onClick={() => setActiveLink("appointments")}
-          >
-            <i className="fas fa-calendar-alt"></i> Appointments
-          </li>
-          <li>
-            <i className="fas fa-sign-out-alt"></i> Logout
-          </li>
-        </ul>
-      </aside>
+    <div className="app-container">
+      {/* Header */}
+      
 
-      {/* Main Content */}
-      <div className="main-content">
-        <header>
-          <h1>Patient Portal</h1>
-        </header>
-        <main>
-          {/* Dashboard Section */}
-          <section className="dashboard-section">
-  <div className="dashboard-container">
-    <h2>Your Health Dashboard</h2>
-    <div className="dashboard-cards">
-      <div className="card">
-        <div className="card-icon-wrapper">
-          <i className="fas fa-pills card-icon"></i>
-        </div>
-        <h3>Current Medications</h3>
-        <p>{currentMedications}</p>
-      </div>
+      {/* Hero Section
+      <section className="hero-section">
+        <h1>Empower Your Health Journey</h1>
+        <p>
+          Access personalized care, track your progress, and stay ahead on your path to wellness.
+        </p>
+        <button className="cta-btn">Get Started</button>
+      </section>
+ */}
+      {/* 3-Colu*mn Layout */}
+      <div className="content-container">
+        {/* Left Sidebar (Collapsible) */}
+        <aside className="left-sidebar" id="left-sidebar">
+          <button className="sidebar-toggle" onClick={toggleSidebar}>
+            <i id="toggle-icon" className="fas fa-angle-left"></i>
+          </button>
+          <ul>
+            <li className="active">
+              <i className="fas fa-tachometer-alt"></i>
+              <span className="menu-label">Dashboard</span>
+            </li>
+            <li>
+              <i className="fas fa-user"></i>
+              <span className="menu-label">My Profile</span>
+            </li>
+            <li>
+              <i className="fas fa-flask"></i>
+              <span className="menu-label">Lab Results</span>
+            </li>
+            <li>
+              <i className="fas fa-pills"></i>
+              <span className="menu-label">Medications</span>
+            </li>
+            <li>
+              <i className="fas fa-calendar-alt"></i>
+              <span className="menu-label">Appointments</span>
+            </li>
+            <li>
+              <i className="fas fa-sign-out-alt"></i>
+              <span className="menu-label">Logout</span>
+            </li>
+          </ul>
+        </aside>
 
-      <div className="card">
-        <div className="card-icon-wrapper">
-          <i className="fas fa-calendar-alt card-icon"></i>
-        </div>
-        <h3>Upcoming Appointments</h3>
-        <p>{upcomingAppointments}</p>
-      </div>
+        {/* topbar for smaller devices */}
+        <aside className="topbar" id="tobar">
+          <ul>
+            <li className="active">
+              <i className="fas fa-tachometer-alt"></i>
+            </li>
+            <li>
+              <i className="fas fa-user"></i>
+            </li>
+            <li>
+              <i className="fas fa-flask"></i>
+            </li>
+            <li>
+              <i className="fas fa-pills"></i>
+            </li>
+            <li>
+              <i className="fas fa-calendar-alt"></i>
+            </li>
+            <li>
+              <i className="fas fa-sign-out-alt"></i>
+            </li>
+          </ul>
+        </aside>
 
-      <div className="card">
-        <div className="card-icon-wrapper">
-          <i className="fas fa-file-medical-alt card-icon"></i>
-        </div>
-        <h3>Lab Results Summary</h3>
-        <p>{labSummary}</p>
-      </div>
-
-      <div className="card">
-        <div className="card-icon-wrapper">
-          <i className="fas fa-heart card-icon"></i>
-        </div>
-        <h3>Health Tips</h3>
-        <p>{healthTips}</p>
-      </div>
-    </div>
-  </div>
-</section>
-
+        {/* Middle Main Content */}
+        <main className="middle-content">
+          {/* Dashboard Cards */}
+          <div className="portal-section">
+            <h2>Your Health Dashboard</h2>
+            <div className="cards">
+              <div className="card">
+                <div className="icon"><i className="fas fa-pills"></i></div>
+                <h3>Medications</h3>
+                <p>Aspirin, Ibuprofen</p>
+              </div>
+              <div className="card">
+                <div className="icon"><i className="fas fa-calendar-alt"></i></div>
+                <h3>Appointments</h3>
+                <p>Mar 25, 2025 - 10:00 AM</p>
+              </div>
+              <div className="card">
+                <div className="icon"><i className="fas fa-file-medical-alt"></i></div>
+                <h3>Lab Results</h3>
+                <p>All results normal</p>
+              </div>
+              <div className="card">
+                <div className="icon"><i className="fas fa-heart"></i></div>
+                <h3>Health Tips</h3>
+                <p>Stay hydrated &amp; exercise</p>
+              </div>
+            </div>
+          </div>
 
           {/* Medical History */}
-          <section className="medical-history">
-      <h2>Medical History</h2>
-
-      {/* Keyword Input */}
-      <div className="keyword-input">
-        <label htmlFor="medicalKeyword">Enter Your Medical History:</label>
-        <div className="keyword-row">
-          <input
-            type="text"
-            id="medicalKeyword"
-            value={keywordInput}
-            onChange={(e) => setKeywordInput(e.target.value)}
-            placeholder="e.g., Chronic migraines"
-          />
-          <button onClick={handleAddKeyword} className="btn">
-            Add
-          </button>
-        </div>
-      </div>
-
-      {/* Display Selected Keywords as Pills */}
-      <div className="selected-keywords">
-        {keywords.map((kw, idx) => (
-          <span key={idx} className="keyword-pill">
-            {kw}
-            <button
-              className="remove-pill"
-              onClick={() => handleRemoveKeyword(kw)}
-            >
-              ×
-            </button>
-          </span>
-        ))}
-      </div>
-
-
-      {/* Process History Button */}
-      <button onClick={processMedicalHistory} className="btn">
-        Process History
-      </button>
-
-      {/* Show Summary if available */}
-      {historySummary && (
-        <div className="summary">
-          <p>{historySummary}</p>
-        </div>
-      )}
-
-      {/*
-      <div className="file-upload">
-        <label htmlFor="historyFileUpload">Upload your medical documents:</label>
-        <input
-          type="file"
-          id="historyFileUpload"
-          onChange={(e) => {
-            if (e.target.files && e.target.files.length > 0) {
-              // setHistoryFile(e.target.files[0]);
-            }
-          }}
-        />
-        <button onClick={processHistoryFile} className="btn">
-          Process File
-        </button>
-      </div>
-      */}
-    </section>
-
-          {/* DDI Checker */}
-          <section className="ddi-checker">
-            <h2>Drug Interaction Checker</h2>
-            <div className="input-container">
-              <label htmlFor="ddiInput">Type medicine name:</label>
+          <div className="portal-section">
+            <h2>Medical History</h2>
+            <div className="form-group">
               <input
                 type="text"
-                id="ddiInput"
-                value={ddiInput}
-                onChange={handleDdiInputChange}
-                placeholder="Start typing..."
-                autoComplete="off"
+                placeholder="Enter your condition"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
               />
-              {ddiSuggestions.length > 0 && (
-                <div className="suggestion-list">
-                  {ddiSuggestions.map((suggestion, idx) => (
-                    <div
-                      key={idx}
-                      className={`suggestion-item ${
-                        suggestion === "No medicines found" ? "no-medicine" : ""
-                      }`}
-                      onClick={() => {
-                        if (suggestion !== "No medicines found") {
-                          addDdiMedicine(suggestion);
-                          setDdiInput("");
-                          setDdiSuggestions([]);
-                        }
-                      }}
-                    >
-                      {suggestion}
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
-            <div className="selected-medicines">
-              {selectedMedicines.map((med, idx) => (
-                <span key={idx} className="medicine-pill">
-                  {med}
+            <button className="btn" onClick={handleAddCondition}>
+              Add Condition
+            </button>
+
+            {/* Display conditions as removable pills */}
+            <div className="keyword-pills">
+              {conditions.map((condition, idx) => (
+                <span key={idx} className="pill">
+                  {condition}
                   <button
                     className="remove-pill"
-                    onClick={() =>
-                      setSelectedMedicines(selectedMedicines.filter((m) => m !== med))
-                    }
+                    onClick={() => handleRemoveCondition(condition)}
                   >
                     ×
                   </button>
                 </span>
               ))}
             </div>
-            <div className="buttons">
-              <button onClick={analyzeDdi} className="btn">
-                Analyze Interactions
-              </button>
-              <button onClick={clearDdi} className="btn clear">
-                Clear All
-              </button>
-            </div>
-            {ddiResults && (
-              <div className="results">
-                <h3>Interaction Results</h3>
-                <p>{ddiResults}</p>
-              </div>
-            )}
-          </section>
-
-          {/* Lab Results */}
-          <section className="lab-results">
-          <h2>Lab Results</h2>
-          <div className="file-upload">
-            <label className="custom-file-upload">
-              <input
-                type="file"
-                id="labFileUpload"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    setLabFile(e.target.files[0]);
-                  }
-                }}
-              />
-              Choose File
-            </label>
-
-            {/* Display the selected file name or "No file chosen" */}
-            <span className="file-name">
-              {labFile ? labFile.name : "No file chosen"}
-            </span>
-
-            <button onClick={processLabResults} className="btn summary-btn">
-              Summarize Lab Results
+            <button className="btn" onClick={handleProcessConditions} style={{  marginTop: '0.5rem' }}>
+              Process History
             </button>
           </div>
 
-          {/* Summary Display */}
-          {labResultsSummary && (
-            <div className="summary">
-              <h3>Lab Summary</h3>
-              <p>{labResultsSummary}</p>
-            </div>
-          )}
-        </section>
+          {/* Drug Interaction Checker */}
+          <div className="portal-section">
+          <h2>Drug Interaction Checker</h2>
+          <div className="form-group">
+            <input
+              type="text"
+              placeholder="Type medicine name"
+              value={medicineInput}
+              onChange={(e) => setMedicineInput(e.target.value)}
+            />
+          </div>
 
-          {/* Appointments */}
-          <section className="appointments">
-          <h2>Upcoming Appointments</h2>
-          <div className="appointment-timeline">
-            {appointments.map((apt, idx) => (
-              <div className="appointment-item" key={idx}>
-                {/* Timeline Icon */}
-                <div className="timeline-icon">
-                  <i className="fas fa-calendar-alt"></i>
-                </div>
-
-                {/* Content Card */}
-                <div className="appointment-content">
-                  <h3 className="appointment-date-time">
-                    {apt.date} - {apt.time}
-                  </h3>
-                  <p className="appointment-doctor-type">
-                    With {apt.doctor}
-                    {/* Optional type label */}
-                    {apt.type && <span className="type-label">{apt.type}</span>}
-                  </p>
-                </div>
-              </div>
+          {/* Display selected medicines as pills with removable icons */}
+          <div className="keyword-pills">
+            {selectedMedicines.map((medicine, idx) => (
+              <span key={idx} className="pill">
+                {medicine}
+                <button
+                  className="remove-pill"
+                  onClick={() => handleRemoveMedicine(medicine)}
+                >
+                  ×
+                </button>
+              </span>
             ))}
           </div>
-        </section>
-        </main>
-      </div>
 
-      {/* Chatbot */}
-      <div className="chatbot-container">
-        <div className="chatbot-button" onClick={() => setChatOpen(!chatOpen)}>
-          <i className="fas fa-robot"></i>
+          {/* Buttons: Analyze and Clear All */}
+          <button className="btn" onClick={handleAddMedicine} style={{  margin: '0.5rem' }}>
+            Add Medicine
+          </button>
+          <button className="btn" onClick={handleAnalyzeInteractions} style={{  margin: '0.5rem' }}>
+            Analyze Interactions
+          </button>
+          <button className="btn" style={{ background: 'var(--accent)' }} onClick={handleClearAll}>
+            Clear All
+          </button>
+
+          
         </div>
-        {chatOpen && (
-          <div className="chat-window" id="chatWindow">
-            <div className="chat-header">
-              <h3>Your Health Assistant</h3>
+
+          {/* Lab Results */}
+          <div className="portal-section">
+            <h2>Lab Results</h2>
+            <div className="form-group">
+              <input type="file" />
             </div>
-            <div className="chat-messages" id="chatMessages">
-              {chatMessages.map((msg, idx) => (
-                <div key={idx} className={msg.sender === "bot" ? "bot-message" : "user-message"}>
-                  {msg.text}
-                </div>
-              ))}
-            </div>
-            <div className="chat-input">
-              <input
-                type="text"
-                id="chatInput"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Type your message..."
-              />
-              <button onClick={sendChatMessage} id="chatSendBtn">
-                <i className="fas fa-paper-plane"></i>
-              </button>
+            <p>No file chosen</p>
+            <button className="btn">Summarize Lab Results</button>
+            <div className="lab-summary">
+              <h2>Lab Summary</h2>
+              <p>All parameters are within normal ranges.</p>
             </div>
           </div>
-        )}
+
+          {/* Upcoming Appointments */}
+          <div className="portal-section">
+            <h2>Upcoming Appointments</h2>
+            <div className="timeline">
+              <div className="timeline-item">
+                <div className="time-icon"><i className="fas fa-calendar-alt"></i></div>
+                <div className="content">
+                  <h2>Mar 25, 2025</h2>
+                  <p>10:00 AM – Dr. Smith (General Check-up)</p>
+                </div>
+              </div>
+              <div className="timeline-item">
+                <div className="time-icon"><i className="fas fa-calendar-alt"></i></div>
+                <div className="content">
+                  <h2>Apr 10, 2025</h2>
+                  <p>2:00 PM – Dr. Johnson (Follow-up)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        {/* Right Sidebar: Extra Widgets */}
+        <aside className="right-sidebar">
+          <div className="widget">
+            <h3>Quick Health Tips</h3>
+            <ul className="health-tips">
+              <li>Drink 8 glasses of water</li>
+              <li>Take a 15-minute walk</li>
+              <li>Eat a balanced meal</li>
+            </ul>
+          </div>
+          <div className="widget">
+            <h3>Notifications</h3>
+            <ul className="notification-list">
+              <li>New lab result available</li>
+              <li>Appointment reminder at 9 AM</li>
+              <li>Medication update</li>
+            </ul>
+          </div>
+          <div className="widget alerts">
+            <h3>Reminders &amp; Alerts</h3>
+            <ul>
+              <li>Take Aspirin at 8:00 AM</li>
+              <li>Doctor visit at 3:00 PM</li>
+              <li>Refill prescription: Metformin</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      {/* Floating Chatbot */}
+      <div className="chatbot">
+        <div className="chatbot-btn" onClick={toggleChatbot}>
+          <i className="fas fa-robot"></i>
+        </div>
+        <div className="chat-window" id="chat-window">
+          <div className="chat-header">
+            <h3>Your Health Assistant</h3>
+          </div>
+          <div className="chat-body">
+            <p>Hi there! How can I help you today?</p>
+          </div>
+          <div className="chat-input">
+            <input type="text" placeholder="Type your message..." />
+            <button className="btn-send">
+              <i className="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default PatientPortal;
+export default EnhancedPortal;
