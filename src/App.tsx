@@ -9,6 +9,9 @@ import MedHistory from "./components/medHistory";
 import PatientPortal from "./components/PatientPortal";
 import HowItWorks from './components/HowItWorks';
 import './App.css';
+import MedMatchDoctorPortal from "./components/MedMatchDoctorPortal";
+import PatientDetails from "./components/PatientDetails";
+import CreatePrescription from "./components/CreatePrescription";
 
 function App() {
   return (
@@ -16,11 +19,17 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout><HomePage /></Layout>} />
         <Route path="/Authentication" element={<Layout><Authentication /></Layout>} />
+        
+        //keep one of the below two routes
         <Route path="/DoctorDashboard" element={<Layout><DoctorDashboard /></Layout>} />
+        <Route path="/MedMatchDoctorPortal" element={<Layout><MedMatchDoctorPortal/></Layout>} />
+
         <Route path="/DoctorPatientPrescription" element={<Layout><DoctorPatientPrescription /></Layout>} />
         <Route path="/PatientPortal" element={<Layout><PatientPortal /></Layout>} />
         <Route path="/medical-history" element={<Layout><MedHistory /></Layout>} />
         <Route path="/how-it-works" element={<Layout><HowItWorks /></Layout>} />
+        <Route path="/patient-details/:patientId" element={<Layout><PatientDetails /></Layout>} />
+        <Route path="/create-prescription" element={<Layout><CreatePrescription /></Layout>} />
       </Routes>
       <ToastContainer />
     </Router>
