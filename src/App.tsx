@@ -5,6 +5,7 @@ import HomePage from './components/HomePage';
 import Authentication from './components/Authentication';
 import DoctorDashboard from "./components/DoctorDashboard";
 import DoctorPatientPrescription from "./components/DoctorPatientPrescription";
+import MedHistory from "./components/medHistory";
 import PatientPortal from "./components/PatientPortal";
 import HowItWorks from './components/HowItWorks';
 import './App.css';
@@ -18,6 +19,7 @@ function App() {
         <Route path="/DoctorDashboard" element={<Layout><DoctorDashboard /></Layout>} />
         <Route path="/DoctorPatientPrescription" element={<Layout><DoctorPatientPrescription /></Layout>} />
         <Route path="/PatientPortal" element={<Layout><PatientPortal /></Layout>} />
+        <Route path="/medical-history" element={<Layout><MedHistory /></Layout>} />
         <Route path="/how-it-works" element={<Layout><HowItWorks /></Layout>} />
       </Routes>
       <ToastContainer />
