@@ -1,0 +1,209 @@
+:root {
+    --primary: #16a085;
+    --primary-dark: #13856d;
+    --accent: #fe7f2d;
+    --bg-light: #f7f9fa;
+    --text-dark: #2c3e50;
+    --muted: #7f8c8d;
+    --card-bg: #ffffff;
+    --border-light: #dde3e8;
+    --radius: 8px;
+    --gap: 1rem;
+    --transition: 0.3s ease;
+}
+
+/* Page action buttons */
+.page-actions {
+    display: flex;
+    gap: var(--gap);
+    margin-bottom: var(--gap);
+}
+
+.btn-add,
+.btn-export {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background var(--transition);
+}
+
+.btn-add {
+    background: var(--primary);
+    color: #fff;
+}
+
+.btn-add:hover {
+    background: var(--primary-dark);
+}
+
+.btn-export {
+    background: var(--accent);
+    color: #fff;
+}
+
+.btn-export:hover {
+    background: #e76f2d;
+}
+
+/* Stats cards: force one row of 4 */
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap);
+    margin-bottom: var(--gap);
+}
+
+/* (existing stats-card styles…) */
+.stats-card {
+    background: var(--card-bg);
+    border-left: 4px solid var(--primary);
+    padding: var(--gap);
+    border-radius: var(--radius);
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stats-card .icon {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.stats-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+}
+
+.stats-card h3 {
+    margin: 0.25rem 0 0;
+    font-size: 1.25rem;
+    color: var(--text-dark);
+}
+
+/* Accordion wrapper */
+.accordion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+}
+
+/* Collapsible card */
+.collapsible {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: box-shadow var(--transition);
+}
+
+.collapsible:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.collapsible summary {
+    list-style: none;
+    cursor: pointer;
+    padding: var(--gap);
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-bottom: 1px solid var(--border-light);
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.collapsible summary .summary-icon {
+    margin-right: 0.75rem;
+    color: var(--primary);
+    font-size: 1.2rem;
+    width: 1.2em;
+    text-align: center;
+}
+
+.collapsible summary:hover {
+    background: #f0f3f5;
+}
+
+.collapsible summary::after {
+    content: '▾';
+    margin-left: auto;
+    color: var(--muted);
+    transition: transform var(--transition);
+}
+
+.collapsible[open] summary::after {
+    transform: rotate(180deg);
+}
+
+/* Content inside each panel */
+.collapsible .content {
+    padding: var(--gap);
+    background: #fafafa;
+    animation: fadeIn var(--transition);
+}
+
+/* Tables within collapsibles */
+.collapsible table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--gap);
+}
+
+.collapsible th,
+.collapsible td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border: 1px solid var(--border-light);
+}
+
+.collapsible th {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 500;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+    .stats-cards {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .stats-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .accordion summary,
+    .accordion .content {
+        padding: 0.75rem;
+    }
+
+    .accordion table,
+    .accordion th,
+    .accordion td {
+        font-size: 0.9rem;
+    }
+}
