@@ -46,6 +46,7 @@
 .popup-content {
   text-align: center;
   max-width: 600px;
+  margin: 19vh 20vw;
 }
 
 .popup-content h2 {
