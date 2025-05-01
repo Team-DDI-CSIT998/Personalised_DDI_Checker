@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { NavLink } from 'react-router-dom';
 import './PatientPortal.css';  // layout & sidebar
 import './MedHistory.css';     // updated styles including form + detail cards
-import Chatbot from './chatbot';
+import Chatbot from './chatbotLauncher';
 
 
 interface ConditionEntry {

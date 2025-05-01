@@ -39,7 +39,7 @@ const Header: React.FC = () => {
         <span>MedMatch</span>
       </Link>
 
-      <button 
+      <button
         className="mobile-menu-btn"
         onClick={() => setIsMobileOpen(!isMobileOpen)}
       >
@@ -68,8 +68,8 @@ const Header: React.FC = () => {
             </>
           )}
           {!isAuthPage && (
-            <Link 
-              to="/how-it-works" 
+            <Link
+              to="/how-it-works"
               className={`nav-link ${isHowItWorks ? 'active' : ''}`}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
@@ -131,7 +131,10 @@ const Footer: React.FC = () => {
 
       <div className="footer-container">
         <div className="footer-left">
-          <h2>MedMatch</h2>
+          <div className='footer-logo'>
+            <i className="fas fa-clinic-medical"></i>
+            <h2>MedMatch</h2>
+          </div>
           <p>
             Innovating healthcare with AI-driven solutions and a commitment to patient safety.
           </p>

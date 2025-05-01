@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import Chatbot from './chatbot';
+import ChatbotLauncher from './chatbotLauncher';
 import './PatientPortal.css';
 
 const DashboardPage: React.FC = () => {
@@ -161,7 +161,7 @@ const DashboardPage: React.FC = () => {
         </div>
       </aside>
 
-      <Chatbot />
+      <ChatbotLauncher />
     </div>
   );
 };
