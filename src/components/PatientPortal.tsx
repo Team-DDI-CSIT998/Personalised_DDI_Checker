@@ -37,17 +37,17 @@ const DashboardPage: React.FC = () => {
           )}
         </div>
         <nav className="sidebar-nav">
-          <NavLink to="/dashboard" className={navLinkClass}>
+          <NavLink to="/PatientPortal" className={navLinkClass}>
             <i className="fas fa-tachometer-alt" /><span>Dashboard</span>
           </NavLink>
-          <NavLink to="/medHistory" className={navLinkClass}>
+          <NavLink to="/medical-history" className={navLinkClass}>
             <i className="fas fa-notes-medical" /><span>Medical History</span>
           </NavLink>
           <NavLink to="/lab-results" className={navLinkClass}>
             <i className="fas fa-flask" /><span>Lab Results</span>
           </NavLink>
           <NavLink to="/medications" className={navLinkClass}>
-            <i className="fas fa-pills" /><span>Medications</span>
+            <i className="fas fa-pills" /><span>Prescriptions</span>
           </NavLink>
           <NavLink to="/appointments" className={navLinkClass}>
             <i className="fas fa-calendar-alt" /><span>Appointments</span>
