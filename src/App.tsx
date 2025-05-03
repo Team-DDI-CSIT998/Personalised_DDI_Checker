@@ -25,7 +25,7 @@ function App() {
 
         <Route path="/PatientPortal" element={<Layout><PatientPortal /></Layout>} />
         <Route path="/medical-history" element={<Layout><MedHistory /></Layout>} />
-        <Route path="/MedMatchDoctorPrescription" element={<ProtectedRoute><Layout><MedMatchDoctorPrescription /></Layout></ProtectedRoute>} />
+        <Route path="/MedMatchDoctorPrescription" element={<Layout><MedMatchDoctorPrescription /></Layout>} />
         <Route path="/PatientPortal" element={<ProtectedRoute><Layout><PatientPortal /></Layout></ProtectedRoute>} />
         <Route path="/how-it-works" element={<Layout><HowItWorks /></Layout>} />
         <Route path="/MedMatchDoctorPortal" element={<ProtectedRoute><Layout><MedMatchDoctorPortal/></Layout></ProtectedRoute>} />
@@ -33,7 +33,6 @@ function App() {
         <Route path="*" element={<Layout><NotFound /></Layout>} />
         <Route path="/patient-details/:patientId" element={<Layout><PatientDetails /></Layout>} />
         <Route path="/create-prescription" element={<Layout><CreatePrescription /></Layout>} />
-        <Route path="/chat-patient" element={<ChatPagePatient />} />
       </Routes>
       <ToastContainer />
     </Router>
