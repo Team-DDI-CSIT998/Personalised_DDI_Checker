@@ -1,10 +1,11 @@
-// components/Common.tsx - Modern Redesign
+
+// common.tsx
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FiMenu, FiX } from 'react-icons/fi';
-import { FaCheckCircle, FaLock, FaDatabase } from 'react-icons/fa';
-import './common.css';
 import ThemeToggle from './ThemeToggle';
+import UnderConstructionPopup, { TeamPopup, AboutUsPopup } from './popUp';
+import './common.css';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -24,10 +25,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 const Header: React.FC = () => {
   const location = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  
-  // Determine if we're on the How It Works page
+
   const isHowItWorks = location.pathname === '/how-it-works';
-  // Determine if we're on the Authentication page
   const isAuthPage = location.pathname === '/Authentication';
   const isDoctorPortal = location.pathname === '/MedMatchDoctorPortal';
   const isPrescription = location.pathname === '/MedMatchDoctorPrescription';
@@ -43,7 +42,7 @@ const Header: React.FC = () => {
         <span>MedMatch</span>
       </Link>
 
-      <button 
+      <button
         className="mobile-menu-btn"
         onClick={() => setIsMobileOpen(!isMobileOpen)}
       >
@@ -106,51 +105,90 @@ const Header: React.FC = () => {
             >
               Get Started
             </Link>
-             )}
-            
-          </div>
-       
+          )}
+        </div>
       </nav>
     </header>
   );
 };
 
 const Footer: React.FC = () => {
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [aboutVisible, setAboutVisible] = useState(false);
+  const [teamVisible, setTeamVisible] = useState(false);
+
+  const handlePopupOpen = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setPopupVisible(true);
+  };
+
+  const handleAboutOpen = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setAboutVisible(true);
+  };
+
+  const handleTeamOpen = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setTeamVisible(true);
+  };
+
   return (
-    <footer id="footer" className="footer">
-      <div className="footer-content">
-        <div className="footer-section">
-          <h4>MedMatch</h4>
-          <p>Pioneering safer medication practices through AI-powered solutions.</p>
-          <div className="footer-trust-badges">
-            <p><FaCheckCircle /> HIPAA Compliant</p>
-            <p><FaLock /> 100% Privacy</p>
-            <p><FaDatabase /> Powered by DrugBank</p>
+    <footer className="custom-footer" id="footer">
+      <UnderConstructionPopup visible={popupVisible} onClose={() => setPopupVisible(false)} />
+      <TeamPopup visible={teamVisible} onClose={() => setTeamVisible(false)} />
+      <AboutUsPopup visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+
+      <div className="footer-container">
+        <div className="footer-left">
+          <div className='footer-logo'>
+            <i className="fas fa-clinic-medical"></i>
+            <h2>MedMatch</h2>
+          </div>
+          <p>
+            Innovating healthcare with AI-driven solutions and a commitment to patient safety.
+          </p>
+          <div className="social-links">
+            {/* ... (unchanged social icons) */}
           </div>
         </div>
-        <div className="footer-section">
-          <h4>Solutions</h4>
-          <a href="#">DDI Checker</a>
-          <a href="#">Patient Safety</a>
-          <a href="#">Clinical Decision Support</a>
-        </div>
-        <div className="footer-section">
-          <h4>Company</h4>
-          <a href="#">About Us</a>
-          <a href="#">Contact</a>
-        </div>
-        <div className="footer-section">
-          <h4>Legal</h4>
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Security</a>
+
+        <div className="footer-right">
+          <div className="footer-column">
+            <h3>Company</h3>
+            <ul>
+              <li><a href="#" onClick={handleAboutOpen}>About Us</a></li>
+              <li><a href="#" onClick={handleTeamOpen}>Team</a></li>
+              <li><a href="#" onClick={handlePopupOpen}>Future Plan</a></li>
+              <li><a href="#" onClick={handlePopupOpen}>Blog</a></li>
+            </ul>
+          </div>
+          <div className="footer-column">
+            <h3>Products</h3>
+            <ul>
+              <li><a href="#" onClick={handlePopupOpen}>DDI Checker</a></li>
+              <li><a href="#" onClick={handlePopupOpen}>Clinical Support</a></li>
+              <li><a href="#" onClick={handlePopupOpen}>Patient Safety</a></li>
+              <li><a href="#" onClick={handlePopupOpen}>Data Insights</a></li>
+            </ul>
+          </div>
+          <div className="footer-column">
+            <h3>Support</h3>
+            <ul>
+              <li><a href="#" onClick={handlePopupOpen}>Help Center</a></li>
+              <li><a href="#" onClick={handlePopupOpen}>FAQ</a></li>
+              <li><a href="#" onClick={handlePopupOpen}>Terms of Service</a></li>
+              <li><a href="#" onClick={handlePopupOpen}>Privacy Policy</a></li>
+            </ul>
+          </div>
         </div>
       </div>
+
       <div className="footer-bottom">
-        <p>© 2024 MedMatch Technologies. All rights reserved.</p>
+        <p>&copy; 2024 MedMatch Technologies. All rights reserved.</p>
       </div>
     </footer>
   );
 };
+
 
 export default Layout;
