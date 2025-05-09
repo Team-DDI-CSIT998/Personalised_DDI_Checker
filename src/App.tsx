@@ -10,10 +10,11 @@ import MedMatchDoctorPortal from "./components/MedMatchDoctorPortal";
 import ProfileSetup from "./components/ProfileSetup";
 import NotFound from "./components/NotFound";
 import MedMatchDoctorPrescription from "./components/MedMatchDoctorPrescription";
+import Chatbot from "./components/Chatbot";
 import './App.css';
 
 function App() {
-  return (
+  return ( 
     <Router>
       <Routes>
         <Route path="/" element={<Layout><HomePage /></Layout>} />
@@ -23,6 +24,7 @@ function App() {
         <Route path="/how-it-works" element={<Layout><HowItWorks /></Layout>} />
         <Route path="/MedMatchDoctorPortal" element={<ProtectedRoute><Layout><MedMatchDoctorPortal/></Layout></ProtectedRoute>} />
         <Route path="/ProfileSetup" element={<ProtectedRoute><Layout><ProfileSetup /></Layout></ProtectedRoute>} />
+        <Route path="/Chatbot" element={<ProtectedRoute><Layout><Chatbot /></Layout></ProtectedRoute>} />
         <Route path="*" element={<Layout><NotFound /></Layout>} />
       </Routes>
       <ToastContainer />
