@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+python-multipart          # handle UploadFile in FastAPI
+PyMuPDF                   # PDF → text
+python-docx               # DOCX → text
+python-pptx               # PPT/PPTX → text
+pandas                    # XLS/XLSX → text
+pillow                    # image loading
+pytesseract               # calls the Tesseract engine
+requests                  # OpenRouter call
+pymongo
+aiofiles
+numpy
