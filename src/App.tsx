@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import { Layout } from './styles/common';
 import ProtectedRoute from "./components/ProtectedRoute";
-import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from './components/HomePage';
 import Authentication from './components/Authentication';
 import MedHistory from "./components/medHistory";
@@ -17,7 +16,6 @@ import './App.css';
 import PatientDetails from "./components/PatientDetails";
 import PatientLabResults from "./components/PatientLabResult";
 import CreatePrescription from "./components/CreatePrescription";
-import ChatPagePatient from "./components/chatPagePatient";
 
 function App() {
   return ( 
