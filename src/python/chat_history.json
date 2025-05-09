@@ -1,0 +1,28 @@
+[
+  {
+    "role": "user",
+    "content": "can i take Bivalirudin and Rivaroxaban together? also i have asthama so can i have propanolol?"
+  },
+  {
+    "role": "assistant",
+    "content": {
+      "is_safe": true,
+      "type": "ddi_check, patient_history_check, general",
+      "ddi_prompts": [
+        "Does Bivalirudin interact with Rivaroxaban?"
+      ],
+      "active_drugs": [
+        "Bivalirudin",
+        "Rivaroxaban"
+      ],
+      "past_drugs": null,
+      "current_conditions": [
+        "Asthma"
+      ],
+      "past_conditions": null,
+      "summarised_conditions": "The patient currently has Asthma.",
+      "history_check_summary": "If the beta-blocker proprofolpropnanol (a common prescription for asthma) is prescribed.",
+      "output": "null"
+    }
+  }
+]

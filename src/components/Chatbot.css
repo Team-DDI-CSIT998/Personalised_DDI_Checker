@@ -1,0 +1,419 @@
+/* Chatbot Component Styles - Namespaced under .chat-shell */
+
+.chat-shell {
+    display: flex;
+    min-height: 100vh;
+    /* full viewport height */
+    gap: 1rem;
+    padding: 1rem;
+    overflow: visible;
+    /* allow page scroll if needed */
+    background: var(--bg-light);
+}
+
+/* Main panels sizing */
+.chat-shell .chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(90vh - 2rem);
+    /* account for padding */
+    overflow: visible;
+    background: var(--bg-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.chat-shell .history-rail {
+    flex: 0 0 30%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    max-height: calc(90vh - 2rem);
+}
+
+/* Modal button base */
+.chat-shell .modal .modal-actions .btn {
+    min-width: 4.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e10000;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px);
+    color: #e10000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s ease, transform 0.1s ease;
+    cursor: pointer;
+}
+
+.chat-shell .modal .modal-actions .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Hover / active */
+.chat-shell .modal .modal-actions .btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
+}
+
+.chat-shell .modal .modal-actions .btn:active:not(:disabled) {
+    background: rgba(255, 255, 255, 0.45);
+    transform: translateY(0);
+}
+
+/* “Cancel” (first button) – ghost style */
+.chat-shell .modal .modal-actions .btn:first-child {
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: none;
+}
+
+.chat-shell .modal .modal-actions .btn:first-child:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* “Upload” (last button) – primary style */
+.chat-shell .modal .modal-actions .btn:last-child {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-light);
+}
+
+.chat-shell .modal .modal-actions .btn:last-child:hover:not(:disabled) {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+/* Dark-mode tweaks */
+.chat-shell.dark-mode .modal .modal-actions .btn {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+}
+
+.chat-shell.dark-mode .modal .modal-actions .btn:first-child {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+
+/* Panels base */
+.chat-shell .bordered {
+    border: 1px solid var(--glass);
+    border-radius: var(--border-radius);
+    background: var(--bg-light);
+    box-shadow: var(--shadow);
+}
+
+/* Chat Header */
+.chat-shell .chat-header {
+    background: var(--gradient);
+    color: var(--text-light);
+    padding: 1rem 1.5rem;
+    /* slightly reduced */
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+
+.chat-shell .chat-header h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1.5rem;
+}
+
+.chat-shell .chat-header p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Messages */
+.chat-shell .messages-container {
+    flex: 1;
+    padding: 0.75rem 1rem 1rem;
+    /* extra bottom padding */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border: 1px solid var(--glass);
+    border-top: none;
+}
+
+.chat-shell .message {
+    max-width: 75%;
+    padding: 0.75rem 1rem 1.75rem 1rem;
+    /* bottom padding for timestamp */
+    border-radius: 1.5rem;
+    border: 1px solid var(--glass);
+    position: relative;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    animation: messageAppear 0.3s ease-out;
+}
+
+.chat-shell .user-message {
+    background: var(--primary);
+    color: var(--text-light);
+    margin-left: auto;
+    border-color: #00ffa1;
+}
+
+.chat-shell .bot-message {
+    background: rgb(255 254 231 / 90%);
+    /* lighter for bot */
+    color: var(--text-dark);
+    margin-right: auto;
+    border-color: #00ffa1;
+}
+
+.chat-shell .message-timestamp {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    position: absolute;
+    bottom: 4px;
+    right: 8px;
+}
+
+/* Input sticky to bottom */
+.chat-shell .input-container {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    padding: 0.5rem;
+    /* reduce height */
+    border-top: 1px solid var(--glass);
+    background: var(--messages-bg);
+}
+
+.chat-shell .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.chat-shell textarea {
+    width: 100%;
+    padding: 0.75rem 4rem 0.75rem 3.5rem;
+    border-radius: var(--border-radius);
+    background: #fbfbfb;
+    color: var(--text-dark);
+    resize: none;
+    min-height: 48px;
+    line-height: 2.4;
+    transition: var(--transition);
+}
+
+.chat-shell textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(42, 157, 143, 0.2);
+}
+
+.chat-shell .clip-btn {
+    position: absolute;
+    background: whitesmoke;
+    left: 10px;
+    border-radius: 2rem;
+    border: none;
+    font-size: 1.5rem;
+    padding: 2px;
+}
+
+.chat-shell .send-btn {
+    position: absolute;
+    right: 0.75rem;
+    background: var(--primary);
+    color: var(--text-light);
+    border: 1px solid var(--primary);
+    padding: 0.7rem 1.2rem;
+    border-radius: 1.2rem;
+}
+
+.chat-shell .send-btn:hover:not(:disabled) {
+    background: var(--primary-dark);
+}
+
+/* History Header Styling */
+.chat-shell .history-rail header {
+    background: var(--gradient);
+    color: var(--text-light);
+    padding: 2rem 1rem;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    margin: -1rem -1rem 1rem -1rem;
+    text-align: center;
+}
+
+.chat-shell .history-rail h4 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+/* History list */
+.chat-shell .empty {
+    opacity: 0.6;
+    padding: 0.5rem 0;
+}
+
+.chat-shell .rail-scroll {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-right: 0.25rem;
+}
+
+.chat-shell .history-card {
+    width: 100%;
+    text-align: left;
+    background: var(--primary);
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.75rem;
+    transition: var(--transition);
+}
+
+.chat-shell .history-card:hover {
+    background: var(--primary);
+    color: var(--text-light);
+}
+
+.chat-shell .date {
+    font-weight: 600;
+}
+
+/* Delete All button */
+.chat-shell .wide {
+    margin-top: 1rem;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.chat-shell .btn.danger {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--text-light);
+    box-shadow: var(--shadow);
+    /* Match padding and border-radius to other modal buttons */
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+
+}
+
+.chat-shell .btn.danger:hover:not(:disabled) {
+    opacity: 0.9;
+    box-shadow: 0 4px 12px rgba(231, 111, 81, 0.3);
+}
+
+/* Modals */
+.chat-shell .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.chat-shell .modal {
+    background: whitesmoke;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    max-width: 90%;
+    width: 400px;
+}
+
+.chat-shell .modal.big {
+    max-width: 600px;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-shell .modal h3 {
+    margin-bottom: 1rem;
+}
+
+.chat-shell .modal-text {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--primary);
+    border-radius: var(--border-radius);
+    background: beige;
+    resize: vertical;
+}
+
+.chat-shell .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.chat-shell .file-list {
+    list-style: none;
+    margin: 0.5rem 0;
+    padding: 0;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.chat-shell .file-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chat-shell .file-list .remove-file {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    opacity: 0.7;
+}
+
+.chat-shell .file-list .remove-file:hover {
+    opacity: 1;
+}
+
+/* Animations */
+@keyframes messageAppear {
+    from {
+        opacity: 0;
+        transform: translateY(0.5rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .chat-shell {
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .chat-shell .chat-container {
+        max-height: 60vh;
+    }
+
+    .chat-shell .history-rail {
+        flex: 0 0 auto;
+        width: 100%;
+        height: 40vh;
+        border-top: 1px solid var(--border-color);
+        border-radius: 0;
+    }
+
+    .chat-shell .message {
+        max-width: 85%;
+    }
+}
