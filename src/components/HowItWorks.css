@@ -106,7 +106,7 @@
     padding: 2.5rem;
     border-radius: var(--border-radius);
     max-width: 600px;
-    width: 90%;
+    width: 100%;
     box-shadow: var(--shadow);
     position: relative;
 }

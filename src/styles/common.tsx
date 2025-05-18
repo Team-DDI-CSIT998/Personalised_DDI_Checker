@@ -1,5 +1,3 @@
-
-// common.tsx
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FiMenu, FiX } from 'react-icons/fi';
@@ -11,8 +9,20 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children }) => {
+// 🔹 Centralized logic for hiding nav
+const shouldShowNav = (pathname: string): boolean => {
+  const hiddenRoutes = [
+    '/Authentication',
+    '/MedMatchDoctorPortal',
+    '/patient-details',
+    '/create-prescription',
+    "/chatbot",
+    "/ModelsPlayground"
+  ];
+  return !hiddenRoutes.some(route => pathname.startsWith(route));
+};
 
+export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="app-container">
       <Header />
@@ -25,11 +35,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 const Header: React.FC = () => {
   const location = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-
   const isHowItWorks = location.pathname === '/how-it-works';
-  const isAuthPage = location.pathname === '/Authentication';
-  const isDoctorPortal = location.pathname === '/MedMatchDoctorPortal';
-  const isPrescription = location.pathname === '/MedMatchDoctorPrescription';
+  const showNav = shouldShowNav(location.pathname);
 
   return (
     <header className="header">
@@ -51,44 +58,40 @@ const Header: React.FC = () => {
 
       <nav className={`nav-container ${isMobileOpen ? 'mobile-open' : ''}`}>
         <div className="nav-links">
-        {!isAuthPage && !isDoctorPortal && !isPrescription &&(
-          <Link
-            to="/"
-            className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
-            Home
-          </Link>
+          {showNav && (
+            <Link
+              to="/"
+              className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              Home
+            </Link>
           )}
-          {/* Only show these links if NOT on the Authentication page */}
-          {!isAuthPage && !isDoctorPortal && !isDoctorPortal && !isPrescription &&(
-            <>
-            {!isHowItWorks && (
-              <a href="#features" className="nav-link">
-                Features
-              </a>
-            )}
-              <a href="#footer" className="nav-link">
-                Get in Touch
-              </a>
-            </>
+          {showNav && !isHowItWorks && (
+            <a href="#features" className="nav-link">
+              Features
+            </a>
           )}
-          {!isAuthPage && !isDoctorPortal && !isPrescription &&(
-          <Link 
-            to="/how-it-works" 
-            className={`nav-link ${isHowItWorks ? 'active' : ''}`}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
-            How It Works
-          </Link>
+          {showNav && (
+            <a href="#footer" className="nav-link">
+              Get in Touch
+            </a>
+          )}
+          {showNav && (
+            <Link
+              to="/how-it-works"
+              className={`nav-link ${isHowItWorks ? 'active' : ''}`}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              How It Works
+            </Link>
           )}
         </div>
 
-        {/* Only show auth buttons if not on the Authentication page */}
-          <ThemeToggle />
+        <ThemeToggle />
+
+        {showNav && (
           <div className="auth-buttons">
-            
-            {!isAuthPage && !isDoctorPortal && !isPrescription &&(
             <Link
               to="/Authentication"
               state={{ isSignUp: false }}
@@ -96,8 +99,6 @@ const Header: React.FC = () => {
             >
               Sign In
             </Link>
-             )}
-             {!isAuthPage && !isDoctorPortal && !isPrescription &&(
             <Link
               to="/Authentication"
               state={{ isSignUp: true }}
@@ -105,8 +106,8 @@ const Header: React.FC = () => {
             >
               Get Started
             </Link>
-          )}
-        </div>
+          </div>
+        )}
       </nav>
     </header>
   );
@@ -140,16 +141,14 @@ const Footer: React.FC = () => {
 
       <div className="footer-container">
         <div className="footer-left">
-          <div className='footer-logo'>
+          <div className="footer-logo">
             <i className="fas fa-clinic-medical"></i>
             <h2>MedMatch</h2>
           </div>
           <p>
             Innovating healthcare with AI-driven solutions and a commitment to patient safety.
           </p>
-          <div className="social-links">
-            {/* ... (unchanged social icons) */}
-          </div>
+          <div className="social-links">{/* Social Icons Here */}</div>
         </div>
 
         <div className="footer-right">
@@ -189,6 +188,5 @@ const Footer: React.FC = () => {
     </footer>
   );
 };
-
 
 export default Layout;
