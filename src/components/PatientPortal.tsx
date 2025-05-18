@@ -15,8 +15,11 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="dashboard-container">
       {/* Sidebar */}
-      <PatientSidebar />
-
+      <PatientSidebar
+              profile={{
+                name: `Dr. Siddhanth`
+              }}
+      />
       {/* Main content */}
       <main className="main">
         <div className="alert-banner">

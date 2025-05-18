@@ -6,8 +6,11 @@ import ChatbotLauncher from './chatbotLauncher.tsx';
 const PatientLabResults: React.FC = () => {
     return (
         <div className="lab-results-page">
-            <PatientSidebar />
-
+            <PatientSidebar
+                    profile={{
+                      name: `testing`
+                    }}
+                  />
             <div className="lab-content">
                 {/* Left/Main Column */}
                 <div className="left-col">

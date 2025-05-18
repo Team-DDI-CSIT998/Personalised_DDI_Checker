@@ -12,7 +12,6 @@ dotenv.config({ path: path.resolve(__dirname, '../../../../.env') });
 // Auth middleware using the built‑in RequestHandler type.
 const authMiddleware: express.RequestHandler = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
-    console.log("Auth Header:", req.headers.authorization);
     if (!authHeader) {
         res.status(401).json({ error: "Unauthorized: No token provided." });
         return;
@@ -82,4 +81,29 @@ router.post("/profile/update", authMiddleware, async (req: Request, res: Respons
     }
 });
 
+router.get("/profile/me", authMiddleware, (async function (
+    req: Request,
+    res: Response
+): Promise<void> {
+    try {
+        const accountId = (req as any).accountId;
+        const account: IAccount | null = await Account.findById(accountId);
+
+        if (!account) {
+            res.status(404).json({ error: "Account not found" });
+            return;
+        }
+
+        res.status(200).json({
+            doctorProfile: account.doctorProfile,
+            patientProfile: account.patientProfile,
+            roles: account.roles,
+            email: account.email
+        });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch profile." });
+    }
+}) as express.RequestHandler);
+
+export { authMiddleware };
 export default router;
