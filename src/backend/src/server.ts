@@ -8,15 +8,20 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Account, { IAccount, Role } from "./models/Account";
 import profileRouter from "./routes/profileRouter";
-
+import patientRouter from "./routes/patientRouter";
+import prescriptionRouter from './routes/prescriptionRouter';
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
 app.use("/api", profileRouter);
+app.use("/api", patientRouter);
+app.use('/api/prescriptions', prescriptionRouter);
+
 
 const MONGO_URI = `mongodb+srv://medmatchproject2025:${process.env.MONGO_PASSWORD}@medmatchcluster.rrxor.mongodb.net/MedPortalDB?retryWrites=true&w=majority&appName=MedMatchCluster`;
 
@@ -106,11 +111,13 @@ app.post('/api/simplify_interactions', (req: Request, res: Response): void => {
         try {
             const simplified = await Promise.all(
                 interactions.map(async ({ pair, description }: { pair: string; description: string }) => {
-                    const prompt = `Explain this drug interaction simply and briefly:\n"${description}"`;
+                    const prompt = `Explain this drug interaction in a short, clear, and understandable way. Keep all important details from the description. Do not add any extra commentary or unrelated information.
+
+Description: "${description}"`;
                     const response = await axios.post(
                         'https://openrouter.ai/api/v1/chat/completions',
                         {
-                            model: 'mistralai/mistral-small-3.1-24b-instruct:free',
+                            model: 'meta-llama/llama-3.3-8b-instruct:free',
                             messages: [{ role: 'user', content: prompt }],
                         },
                         {

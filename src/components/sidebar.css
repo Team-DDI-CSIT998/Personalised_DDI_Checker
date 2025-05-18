@@ -1,6 +1,5 @@
 /* Root sidebar */
 .sidebar {
-    grid-area: sidebar;
     width: 250px;
     background: var(--primary-dark);
     color: var(--text-light);
@@ -11,7 +10,8 @@
     padding-top: 1rem;
     position: relative;
     overflow: visible;
-    /* allow toggle to hang outside */
+    flex-shrink: 0;
+    height: 100%;
 }
 
 /* Collapsed state */
@@ -24,9 +24,9 @@
     position: absolute;
     top: 8px;
     right: -22px;
-    width: 20px;
-    height: 28px;
-    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
     border: 2px solid var(--text-light);
     background: var(--primary);
     color: var(--text-light);
@@ -35,7 +35,6 @@
     align-items: center;
     justify-content: center;
     transition: background var(--transition);
-    z-index: 1001;
 }
 
 .sidebar-toggle:hover {
@@ -138,4 +137,8 @@
 
 .sidebar .nav-link.active::after {
     background: none;
+}
+
+.dashboard-container {
+    display: flex;
 }

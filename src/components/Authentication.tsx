@@ -218,7 +218,10 @@ const handleSignUp = async (confirmRoleAddition = false) => {
               console.log("Role linked successfully:", updatedData);
               localStorage.setItem("token", data.token);
               toast.success("Role linked successfully!");
-              navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
+              navigate("/ProfileSetup", {
+                state: { role: userType }   // pass the chosen role
+              });
+              //navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
             } catch (error: any) {
               toast.error(error.response?.data?.error || error.message || "An error occurred linking the role.");
             }

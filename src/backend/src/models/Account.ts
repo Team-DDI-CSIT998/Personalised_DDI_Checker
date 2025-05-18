@@ -14,6 +14,18 @@ export interface IAccount extends Document {
     patientProfile?: any; // replace `any` with your patient profile interface
 }
 
+const PatientSchema = new Schema(
+    {
+        id: { type: String, required: true },
+        name: { type: String, required: true },
+        age: { type: Number },
+        gender: { type: String },
+        dob: { type: String },
+        lastVisit: { type: String }
+    },
+    { _id: false }
+);
+
 const DoctorProfileSchema = new Schema(
     {
         fullName: { type: String, required: true },
@@ -24,6 +36,7 @@ const DoctorProfileSchema = new Schema(
         profileImage: { type: String },
         age: { type: Number, required: true },
         gender: { type: String, enum: ["male", "female", "other"], required: true },
+        patients: { type: [PatientSchema], default: [] }
     },
     { _id: false }
 );
@@ -36,20 +49,13 @@ const PatientProfileSchema = new Schema(
         gender: { type: String, enum: ["male", "female", "other"] },
         height: { type: Number },
         weight: { type: Number },
-        address: { type: String },
-        medicalHistory: {
-            type: String,
-            validate: {
-                validator: function (value: string) {
-                    if (!value) return true;
-                    return value.split(/\s+/).length <= 1000;
-                },
-                message: "Medical history cannot exceed 1000 words.",
-            },
-        },
+        profileImage: { type: String },
     },
     { _id: false }
 );
+
+
+
 
 const AccountSchema = new Schema<IAccount>(
     {
@@ -62,5 +68,6 @@ const AccountSchema = new Schema<IAccount>(
     },
     { timestamps: true }
 );
+
 
 export default mongoose.model<IAccount>("Account", AccountSchema);

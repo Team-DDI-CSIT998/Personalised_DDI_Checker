@@ -22,32 +22,50 @@ const MedicineForm: React.FC<MedicineFormProps> = ({
 }) => {
   return (
     <div className="medicine-form">
-      <input
-        type="text"
-        placeholder="Medicine Name"
-        value={medicine.name}
-        onChange={(e) => onChange('name', e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Dosage"
-        value={medicine.dosage}
-        onChange={(e) => onChange('dosage', e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Frequency"
-        value={medicine.frequency || ''}
-        onChange={(e) => onChange('frequency', e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Duration"
-        value={medicine.duration || ''}
-        onChange={(e) => onChange('duration', e.target.value)}
-      />
-      <button onClick={onSave} disabled={saveDisabled}>Save</button>
-      <button onClick={onCancel} className="cancel-btn">Cancel</button>
+      <div className="form-group">
+        <label>Medicine Name</label>
+        <input
+          type="text"
+          placeholder="e.g., Paracetamol"
+          value={medicine.name}
+          onChange={(e) => onChange('name', e.target.value)}
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Dosage</label>
+        <input
+          type="text"
+          placeholder="e.g., 500 mg"
+          value={medicine.dosage}
+          onChange={(e) => onChange('dosage', e.target.value)}
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Frequency</label>
+        <input
+          type="text"
+          placeholder="e.g., Twice daily"
+          value={medicine.frequency || ''}
+          onChange={(e) => onChange('frequency', e.target.value)}
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Duration</label>
+        <input
+          type="text"
+          placeholder="e.g., 5 days"
+          value={medicine.duration || ''}
+          onChange={(e) => onChange('duration', e.target.value)}
+        />
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
+        <button onClick={onCancel} className="cancel-btn">Cancel</button>
+        <button onClick={onSave} disabled={saveDisabled}>Save</button>
+      </div>
     </div>
   );
 };
