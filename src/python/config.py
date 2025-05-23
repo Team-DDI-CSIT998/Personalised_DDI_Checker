@@ -8,6 +8,6 @@ load_dotenv(dotenv_path)
 MONGO_USER = os.getenv("MONGO_USER")
 MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
 
-MONGO_URI = f"mongodb+srv://{MONGO_USER}:{MONGO_PASSWORD}@medmatchcluster.rrxor.mongodb.net/MedPortalDB?retryWrites=true&w=majority&appName=MedMatchCluster"
-DB_NAME         = "MedPortalDB"
-COLLECTION_NAME = "drugs"
+MONGO_URI = "MONGO_URI"
+DB_NAME         = "DBName"
+COLLECTION_NAME = "CollectionName"
