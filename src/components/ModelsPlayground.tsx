@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './ModelsPlayground.css';
 
 type ModelSection = 'deidentifier' | 'ddi-binary' | 'dl-ddi' | 
-                    'condition-contradiction' | 'deepseeks' | 'deepddi';
+                    'condition-contradiction' | 'deepseeks';
 
 const ModelsPlayground: React.FC = () => {
   const [activeSection, setActiveSection] = useState<ModelSection>('deidentifier');
@@ -249,10 +249,6 @@ const ModelsPlayground: React.FC = () => {
     if (output) output.textContent = `${input} - This is a generated description. Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
   };
 
-  const handleDeepDDI = () => {
-    const output = document.getElementById('deepddi-output');
-    if (output) output.textContent = 'Detailed interaction analysis: These drugs may interact through CYP450 metabolism. Avoid concurrent use.';
-  };
 
   return (
     <div className="models-playground-wrapper">
@@ -276,8 +272,7 @@ const ModelsPlayground: React.FC = () => {
             ['ddi-binary', 'DDI Binary', 'fa-sync'],
             ['dl-ddi', 'DL DDI', 'fa-brain'],
             ['condition-contradiction', 'Condition Check', 'fa-exclamation-triangle'],
-            ['deepseeks', 'Deepseek', 'fa-book'],
-            ['deepddi', 'DeepDDI', 'fa-info-circle']
+            ['deepseeks', 'Deepseek', 'fa-book']
           ].map(([id, label, icon]) => (
             <li key={id}>
               <button
@@ -608,25 +603,6 @@ const ModelsPlayground: React.FC = () => {
           <div className="output" id="deepseeks-output">[Generated description]</div>
         </div>
 
-        {/* DeepDDI Section */}
-        <div id="deepddi" className={`model-section ${activeSection === 'deepddi' ? 'active' : ''}`}>
-          <h2><i className="fas fa-info-circle"></i> DeepDDI</h2>
-          <p className="description">Provide a detailed description of the predicted class for two SMILES inputs.</p>
-          <div className="form-group">
-            <label htmlFor="deepddi-smiles1">SMILES 1</label>
-            <input type="text" id="deepddi-smiles1" placeholder="Enter first SMILES (e.g., CC(C)=O)..." />
-          </div>
-          <div className="form-group">
-            <label htmlFor="deepddi-smiles2">SMILES 2</label>
-            <input type="text" id="deepddi-smiles2" placeholder="Enter second SMILES (e.g., CCNCC)..." />
-          </div>
-          <div className="form-group">
-            <button onClick={handleDeepDDI}>
-              <i className="fas fa-info-circle" /> Get Description
-            </button>
-          </div>
-          <div className="output" id="deepddi-output">[Detailed description]</div>
-        </div>
       </div>
     </div>
     </div>

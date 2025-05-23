@@ -1,3 +1,0 @@
-Prescription	Drug_pair	Interaction_type	Sentence	DDI_prob	DDI_prob_std	Confidence_DDI	Side effects (left)	Side effects (right)	Similar approved drugs (left)	Similar approved drugs (right)	drug1	drug2
-1	Bivalirudin_Rivaroxaban	80	Rivaroxaban may increase the anticoagulant activities of Bivalirudin.	0.9865774	0.020364871	1	Back pain(21.7%);Pain(10.5%)		DB00006		Bivalirudin	Rivaroxaban
-1	Rivaroxaban_Bivalirudin	80	Bivalirudin may increase the anticoagulant activities of Rivaroxaban.	0.5343256	0.41981125	0		Back pain(21.7%);Pain(10.5%)	DB06228	DB00006	Rivaroxaban	Bivalirudin

@@ -67,10 +67,10 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, profile }) => {
 
 export const patientNavItems: NavItem[] = [
   { to: '/PatientPortal', icon: 'fa-tachometer-alt', label: 'Dashboard' },
-  { to: '/medical-history', icon: 'fa-notes-medical', label: 'Medical History' },
-  { to: '/patientLabResults/', icon: 'fa-flask', label: 'Lab Results' },
-  { to: '/medications', icon: 'fa-pills', label: 'Prescriptions' },
-  { to: '/appointments', icon: 'fa-calendar-alt', label: 'Appointments' }
+  { to: '/UnderConstruction', icon: 'fa-notes-medical', label: 'Medical History' },
+  { to: '/UnderConstruction', icon: 'fa-flask', label: 'Lab Results' },
+  { to: '/UnderConstruction', icon: 'fa-pills', label: 'Prescriptions' },
+  { to: '/UnderConstruction', icon: 'fa-calendar-alt', label: 'Appointments' }
 ];
 
 export const doctorNavItems: NavItem[] = [
