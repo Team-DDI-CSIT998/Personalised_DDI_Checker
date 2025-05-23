@@ -158,9 +158,9 @@ const CreatePrescription: React.FC = () => {
   const { patientId } = (state as LocationState) || { patientId: '' };
 
   const [currentMedicines] = useState<Medicine[]>([
-    { id: 1, name: 'Aspirin', dosage: '81 mg', frequency: 'Once daily', duration: '7 days' },
-    { id: 2, name: 'Metformin', dosage: '500 mg', frequency: 'Twice daily', duration: 'Ongoing' },
-    { id: 3, name: 'Lisinopril', dosage: '10 mg', frequency: 'Once daily', duration: '1 month' },
+    { id: 1, name: 'Morphine', dosage: '81 mg', frequency: 'Once daily', duration: '7 days' },
+    { id: 2, name: 'Bivalirudin', dosage: '500 mg', frequency: 'Twice daily', duration: 'Ongoing' },
+    { id: 3, name: 'Apixaban', dosage: '10 mg', frequency: 'Once daily', duration: '1 month' },
   ]);
 
   const [addedMedicines, setAddedMedicines] = useState<Medicine[]>([]);

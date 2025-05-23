@@ -11,3 +11,4 @@ requests                  # OpenRouter call
 pymongo
 aiofiles
 numpy
+python-dotenv

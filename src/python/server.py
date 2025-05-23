@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from pydantic import BaseModel
 from pymongo import MongoClient
+from config import MONGO_URI, COLLECTION_NAME, DB_NAME
 import requests
 from openrouter_config import OPENROUTER_API_URL, HEADERS, MODEL, MODEL_NAME
 
@@ -27,15 +28,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ─── MONGO SETUP ──────────────────────────────────────────────────────
-MONGO_URI = os.getenv(
-    "MONGO_URI",
-    "mongodb+srv://medmatchproject2025:Pzkuw5WLJbda6inb@medmatchcluster.rrxor.mongodb.net/MedPortalDB?retryWrites=true&w=majority&appName=MedMatchCluster"
-)
 mongo_client = MongoClient(MONGO_URI)
-prescriptions_collection = mongo_client["MedPortalDB"]["prescriptions"]
-accounts_collection = mongo_client["MedPortalDB"]["accounts"]
-chatbot_history_collection = mongo_client["MedPortalDB"]["chatbot_histories"]
+prescriptions_collection = mongo_client[DB_NAME]["prescriptions"]
+accounts_collection = mongo_client[DB_NAME]["accounts"]
+chatbot_history_collection = mongo_client[DB_NAME]["chatbot_histories"]
 
 # ─── MODELS ───────────────────────────────────────────────────────────
 class HistoryInput(BaseModel):
