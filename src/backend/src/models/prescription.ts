@@ -9,7 +9,7 @@ export interface IMedicine {
 
 export interface IPrescription extends Document {
     doctor: mongoose.Types.ObjectId;
-    patient: string;           // ← now a string, so you can store "P1234"
+    patient: string;
     medicines: IMedicine[];
     createdAt: Date;
     updatedAt: Date;
@@ -33,7 +33,7 @@ const PrescriptionSchema = new Schema<IPrescription>(
             required: true,
         },
         patient: {
-            type: String,      // ← store your “Pxxxx” patient IDs
+            type: String,
             required: true,
         },
         medicines: {

@@ -108,21 +108,6 @@ const MedMatchDoctorPortal: React.FC = () => {
 
   return (
     <div className="doctor-dashboard">
-      {/* <aside className="dashboard-sidebar">
-        <div className="doctor-profile">
-          <img src={doctorProfile?.profileImage} alt="Doctor" />
-          <h3>Dr. {doctorProfile?.fullName}</h3>
-          <p>{doctorProfile?.specialization}</p>
-          <button className="btn-edit" onClick={() => setShowEditModal(true)}>Edit Profile</button>
-        </div>
-        <nav className="dashboard-nav">
-          {["Patients","Prescriptions","DDI Checker","Appointments","Analytics","Settings"].map((label, i) => (
-            <button key={i} className="nav-item" onClick={() => navigate("/UnderConstruction")}> <i className={`fas ${[
-              'fa-user-injured','fa-prescription','fa-clinic-medical','fa-calendar-alt','fa-chart-line','fa-cog'
-            ][i]}`}></i> {label}</button>
-          ))}
-        </nav>
-      </aside> */}
       <DocSidebar
         profile={{
           name: `Dr. ${doctorProfile?.fullName}`,

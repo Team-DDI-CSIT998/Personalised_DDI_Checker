@@ -10,8 +10,8 @@ export interface IAccount extends Document {
     email: string;
     password: string;
     roles: Role[];
-    doctorProfile?: any; // replace `any` with your doctor profile interface
-    patientProfile?: any; // replace `any` with your patient profile interface
+    doctorProfile?: any;
+    patientProfile?: any;
 }
 
 const PatientSchema = new Schema(

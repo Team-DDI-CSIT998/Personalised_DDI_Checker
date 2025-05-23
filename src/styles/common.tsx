@@ -2,9 +2,16 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FiMenu, FiX } from 'react-icons/fi';
 import ThemeToggle from './ThemeToggle';
-import UnderConstructionPopup, { TeamPopup, AboutUsPopup } from './popUp';
 import { FiLogOut } from 'react-icons/fi';
 import './common.css';
+
+import UnderConstructionPopup, {
+  TeamPopup,
+  AboutUsPopup,
+  TermsOfServicePopup,
+  PrivacyPolicyPopup
+} from './popUp';
+
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -118,6 +125,14 @@ const Header: React.FC = () => {
                     Doctor Portal
                   </Link>
                   <Link 
+                    to="/ModelsPlayground" 
+                    className="dropdown-link"
+                    onClick={() => setIsMobileOpen(false)}
+                  >
+                    <i className="fas fa-vials" style={{ marginRight: '10px' }}></i>
+                    ModelsPlayground
+                  </Link>
+                  <Link 
                     to="/chatbot" 
                     className="dropdown-link"
                     onClick={() => setIsMobileOpen(false)}
@@ -125,6 +140,7 @@ const Header: React.FC = () => {
                     <i className="fas fa-robot" style={{ marginRight: '10px' }}></i>
                     ChatBot
                   </Link>
+                  
                 </div>
               </div>
             </>
@@ -157,6 +173,19 @@ const Footer: React.FC = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [aboutVisible, setAboutVisible] = useState(false);
   const [teamVisible, setTeamVisible] = useState(false);
+  const [termsVisible, setTermsVisible] = useState(false);
+  const [privacyVisible, setPrivacyVisible] = useState(false);
+
+  const handleTermsOpen = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setTermsVisible(true);
+  };
+  
+  const handlePrivacyOpen = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setPrivacyVisible(true);
+  };
+  
 
   const handlePopupOpen = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -178,6 +207,9 @@ const Footer: React.FC = () => {
       <UnderConstructionPopup visible={popupVisible} onClose={() => setPopupVisible(false)} />
       <TeamPopup visible={teamVisible} onClose={() => setTeamVisible(false)} />
       <AboutUsPopup visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+      <TermsOfServicePopup visible={termsVisible} onClose={() => setTermsVisible(false)} />
+      <PrivacyPolicyPopup visible={privacyVisible} onClose={() => setPrivacyVisible(false)} />
+
 
       <div className="footer-container">
         <div className="footer-left">
@@ -215,8 +247,9 @@ const Footer: React.FC = () => {
             <ul>
               <li><a href="#" onClick={handlePopupOpen}>Help Center</a></li>
               <li><a href="#" onClick={handlePopupOpen}>FAQ</a></li>
-              <li><a href="#" onClick={handlePopupOpen}>Terms of Service</a></li>
-              <li><a href="#" onClick={handlePopupOpen}>Privacy Policy</a></li>
+              <li><a href="#" onClick={handleTermsOpen}>Terms of Service</a></li>
+              <li><a href="#" onClick={handlePrivacyOpen}>Privacy Policy</a></li>
+
             </ul>
           </div>
         </div>

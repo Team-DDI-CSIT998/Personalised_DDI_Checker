@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { NavLink } from 'react-router-dom';
-import './PatientPortal.css';  // layout & sidebar
-import './MedHistory.css';     // updated styles including form + detail cards
+import './PatientPortal.css'; 
+import './MedHistory.css';    
 import Chatbot from './chatbotLauncher';
 
 
@@ -82,7 +82,7 @@ const MedHistoryPage: React.FC = () => {
                     <NavLink to="/lab-results" className={navLinkClass}><i className="fas fa-flask" /><span>Lab Results</span></NavLink>
                     <NavLink to="/medications" className={navLinkClass}><i className="fas fa-pills" /><span>Prescriptions</span></NavLink>
                     <NavLink to="/appointments" className={navLinkClass}><i className="fas fa-calendar-alt" /><span>Appointments</span></NavLink>
-                    <NavLink to="/logout" className={navLinkClass}><i className="fas fa-sign-out-alt" /><span>Log Out</span></NavLink>
+                    
                 </nav>
             </aside>
 

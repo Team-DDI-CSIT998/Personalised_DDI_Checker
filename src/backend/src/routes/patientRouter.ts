@@ -3,9 +3,6 @@ import Account, { IAccount, Role } from "../models/Account";
 import jwt from "jsonwebtoken";
 const router = express.Router();
 
-// Reusing authMiddleware from profileRouter
-
-// Define the patient type for inline usage
 type Patient = {
     id: string;
     name: string;

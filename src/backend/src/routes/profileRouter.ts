@@ -23,7 +23,7 @@ const authMiddleware: express.RequestHandler = (req: Request, res: Response, nex
     }
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
-        (req as any).accountId = decoded.id; // attach the account id to the request object
+        (req as any).accountId = decoded.id;
         next();
     } catch (err) {
         res.status(401).json({ error: "Unauthorized: Invalid token." });
@@ -31,8 +31,6 @@ const authMiddleware: express.RequestHandler = (req: Request, res: Response, nex
     }
 };
 
-// This endpoint updates the profile. It expects profileData in the request body.
-// For doctors, profileData should contain a key "doctorProfile". For patients, "patientProfile".
 router.post("/profile/update", authMiddleware, async (req: Request, res: Response) => {
     try {
         const accountId = (req as any).accountId;
@@ -65,7 +63,6 @@ router.post("/profile/update", authMiddleware, async (req: Request, res: Respons
                 ...profileData.patientProfile,
             };
         } else {
-            // Optionally, update common fields if any.
             account.doctorProfile = { ...account.doctorProfile, ...profileData };
             account.patientProfile = { ...account.patientProfile, ...profileData };
         }

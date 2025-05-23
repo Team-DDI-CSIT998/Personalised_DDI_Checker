@@ -216,3 +216,19 @@
 .writer-badge {
   background-color: #90be6d;
 }
+
+.styled-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 1rem;
+}
+
+.styled-list li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #eee;
+}
+
+a {
+  color: var(--primary);
+}

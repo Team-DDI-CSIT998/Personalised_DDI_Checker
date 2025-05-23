@@ -301,7 +301,7 @@ const CreatePrescription: React.FC = () => {
     setIsLoading(true);
   
     try {
-      // 🔍 1. Get latest consultation note
+      // Get latest consultation note
       const notesRes = await axios.get(`http://localhost:8000/api/patient-history?patientId=${patientId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -315,7 +315,7 @@ const CreatePrescription: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
   
-      // 🚨 3. Fetch alerts
+      //  Fetch alerts
       const alerts = await axios.get(`http://localhost:8000/api/check-alerts?patientId=${patientId}`);
       navigate(`/patient-details/${patientId}`, { state: { alerts: alerts.data } });
   
@@ -329,7 +329,14 @@ const CreatePrescription: React.FC = () => {
 
   return (
     <div className="prescription-container">
-      {isLoading && <div className="fullscreen-loading">Saving prescription...</div>}
+      {isLoading && (
+            <div className="fullscreen-loader">
+                <div className="loader-content">
+                <i className="fas fa-spinner fa-spin fa-2x"></i>
+                <p>Loading... Please wait.</p>
+                </div>
+            </div>
+            )}
       <div className="prescription-header">
         <h2>Create New Prescription</h2>
         <p className="subtitle">Add medications for your patient</p>

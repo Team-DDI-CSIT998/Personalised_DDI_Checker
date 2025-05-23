@@ -12,7 +12,7 @@ type LocationState = {
 
 
 
-const MIN_PASSWORD_STRENGTH = 60; // Adjust your password threshold
+const MIN_PASSWORD_STRENGTH = 80;
 
 const Authentication: React.FC = () => {
   const location = useLocation();
@@ -33,7 +33,6 @@ const Authentication: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  // State for custom modal
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalMessage, setModalMessage] = useState("");
@@ -42,7 +41,6 @@ const Authentication: React.FC = () => {
 
   const [isExistingEmail, setIsExistingEmail] = useState<boolean>(false);
 
-  // A helper to open the modal with dynamic content
   const openModal = (
     title: string,
     message: string,
@@ -65,7 +63,6 @@ const Authentication: React.FC = () => {
     setModalCancelCallback(null);
   };
 
-  // Called when user selects patient or doctor
   const handleUserTypeSelect = (type: UserType) => {
     setUserType(type);
     setErrorMessage("");
@@ -151,7 +148,6 @@ const handleSignUp = async (confirmRoleAddition = false) => {
     navigate("/ProfileSetup", {
       state: { role: userType }   // pass the chosen role
     });
-    //navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
   } catch (err: any) {
     if (err instanceof ApiError && err.status === 409 && err.body.addNewRole) {
       // server told us to ask for role addition
@@ -202,7 +198,6 @@ const handleSignUp = async (confirmRoleAddition = false) => {
   
       // Check if this account has the selected role.
       if (!data.user.roles.includes(userType)) {
-        // Ask if we want to link the role.
         openModal(
           "Add New Role?",
           `Your account does not currently have the ${userType} role. Would you like to add it?`,
@@ -217,13 +212,12 @@ const handleSignUp = async (confirmRoleAddition = false) => {
               );
               console.log("Role linked successfully:", updatedData);
               localStorage.setItem("token", data.token);
-              localStorage.setItem("user", JSON.stringify(data.user)); // ✅ Add this line
+              localStorage.setItem("user", JSON.stringify(data.user)); 
 
               toast.success("Role linked successfully!");
               navigate("/ProfileSetup", {
-                state: { role: userType }   // pass the chosen role
+                state: { role: userType } 
               });
-              //navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
             } catch (error: any) {
               toast.error(error.response?.data?.error || error.message || "An error occurred linking the role.");
             }
@@ -241,7 +235,6 @@ const handleSignUp = async (confirmRoleAddition = false) => {
         toast.success("Login successful!");
       }
     } catch (error: any) {
-      // Use error.message if error.response is undefined.
       toast.error(error.response?.data?.error || error.message || "An unknown error occurred.");
     }
   };
@@ -387,7 +380,6 @@ const handleSignUp = async (confirmRoleAddition = false) => {
         </div>
       </div>
 
-      {/* Our custom popup: we pass it the relevant props from state. */}
       <CustomModal
         isOpen={modalOpen}
         title={modalTitle}

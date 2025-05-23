@@ -22,6 +22,8 @@ const HomePage: React.FC = () => {
   const [selectedMedicines, setSelectedMedicines] = useState<string[]>([]);
   const [availableMedicines, setAvailableMedicines] = useState<string[]>([]);
   const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [interactionResults, setInteractionResults] = useState<
     { pair: string; shortDescription: string }[]
   >([]);
@@ -52,7 +54,7 @@ const HomePage: React.FC = () => {
     } else {
       setSuggestions([]);
     }
-    setActiveSuggestion(-1); // reset active suggestion on input change
+    setActiveSuggestion(-1); 
   }, [input, availableMedicines]);
 
   // Add a medicine to selected list
@@ -110,6 +112,7 @@ const HomePage: React.FC = () => {
       setShowPopup(true);
       return;
     }
+    setIsLoading(true);
     try {
       const response = await axios.post("http://localhost:5000/api/interactions", {
         medicines: selectedMedicines,
@@ -136,59 +139,69 @@ const HomePage: React.FC = () => {
       setError("An error occurred while analyzing interactions. Please try again later.");
       setInteractionResults([]);
       setShowPopup(true);
+    } finally{
+      setIsLoading(false);
     }
   };
 
   const features = [
     {
-      title: "Intelligent Interaction Detection",
-      icon: <FaBrain size={24} />,
-      description: "Leveraging AI to pinpoint potential drug interactions with unmatched accuracy."
+      title: "AI-Powered DDI Prediction",
+      icon: <FaBrain size={30} />,
+      description: "Uses deep learning models trained on DrugBank and molecular fingerprints to predict potential drug-drug interactions."
     },
     {
-      title: "Instant Safety Alerts",
+      title: "Real-Time Clinical Alerts",
       icon: <FaBell size={24} />,
-      description: "Receive immediate alerts when risky drug combinations are detected."
+      description: "Instantly flags high-risk interactions or contraindications based on patient history and prescribed medications."
     },
     {
-      title: "Risk Stratification",
-      icon: <FaChartLine size={24} />,
-      description: "In-depth analysis that prioritizes risks and offers actionable guidance."
+      title: "Context-Aware Risk Stratification",
+      icon: <FaChartLine size={40} />,
+      description: "Prioritizes alerts based on severity, patient-specific conditions, and drug classes for safer clinical decisions."
     },
     {
-      title: "Intuitive Chatbot Assistant",
-      icon: <FaComments size={24} />,
-      description: "Access quick, interactive support and receive tailored answers to your drug interaction queries instantly."
+      title: "Interactive Medical Chatbot",
+      icon: <FaComments size={30} />,
+      description: "Allows users to ask natural-language medical questions, with responses tailored to patient history and AI reasoning."
     },
     {
-      title: "Clinician-Centric Interface",
-      icon: <FaUserMd size={24} />,
-      description: "Designed with clinicians in mind for a seamless, intuitive workflow."
+      title: "Doctor & Patient Portals",
+      icon: <FaUserMd size={30} />,
+      description: "Separate role-based portals with workflows designed for clinicians and patients, ensuring clarity and usability."
     },
     {
-      title: "Unified Health Profile",
-      icon: <FaFileMedical size={24} />,
-      description: "Effortlessly consolidate your medications, doctor details, and treatment history in one seamless, easy-to-use interface."
+      title: "Unified Patient Summary",
+      icon: <FaFileMedical size={30} />,
+      description: "Summarizes conditions, medications, and allergies into a clear, structured view using LLM-based processing."
     },
     {
-      title: "Verified Drug Sources",
-      icon: <FaCheckCircle size={24} />,
-      description: "Backed by DrugBank—the gold standard in pharmaceutical data—for trustworthy and clinically validated interaction information."
+      title: "Verified Drug Interaction Sources",
+      icon: <FaCheckCircle size={35} />,
+      description: "All interaction data is sourced from validated databases like DrugBank and FDA drug labels."
     },
     {
-      title: "Fine-Tuned AI Model",
-      icon: <FaCogs size={24} />,
-      description: "Our custom-trained model on DrugBank data delivers precise predictions tailored for real-world clinical scenarios."
+      title: "Custom Trained Models",
+      icon: <FaCogs size={30} />,
+      description: "Includes ChemBERTa and binary classifiers trained in-house for DDI, and a rule-assisted model for contraindications."
     },
     {
-      title: "Private & Secure Predictions",
+      title: "Privacy-Focused Design",
       icon: <FaShieldAlt size={24} />,
-      description: "No third-party data sharing. Your input stays encrypted and securely processed within our system—guaranteed."
+      description: "Patient data is de-identified, encrypted, and processed securely with no third-party sharing."
     }
   ];
-
+  
   return (
     <div className="home-page">
+      {isLoading && (
+            <div className="fullscreen-loader">
+                <div className="loader-content">
+                <i className="fas fa-spinner fa-spin fa-2x"></i>
+                <p>Loading... Please wait.</p>
+                </div>
+            </div>
+            )}
       <section className="hero">
         <div className="container">
           <h2>Real-Time Interaction Alerts for Safer Prescriptions</h2>
