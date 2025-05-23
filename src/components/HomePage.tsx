@@ -125,12 +125,10 @@ const HomePage: React.FC = () => {
         setShowPopup(true);
         return;
       }
-
       const simplified = await axios.post(
         "http://localhost:5000/api/simplify_interactions",
         { interactions }
       );
-
       setInteractionResults(simplified.data);
       setError(null);
       setShowPopup(true);

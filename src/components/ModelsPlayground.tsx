@@ -240,13 +240,13 @@ const ModelsPlayground: React.FC = () => {
   const handleConditionContradiction = () => {
     const drug = (document.getElementById('condition-drug') as HTMLInputElement).value;
     const output = document.getElementById('condition-contradiction-output');
-    if (output) output.textContent = drug ? 'Asthma, Ulcers, Liver disease' : 'Please enter a drug name';
+    if (output) output.textContent = drug ? 'Feature not yet available' : 'Please enter a drug name';
   };
 
   const handleDeepseeks = () => {
     const input = (document.getElementById('deepseeks-input') as HTMLInputElement).value;
     const output = document.getElementById('deepseeks-output');
-    if (output) output.textContent = `${input} - This is a generated description. Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+    if (output) output.textContent = `${input} - Feature not yet available`;
   };
 
 
@@ -442,7 +442,7 @@ const ModelsPlayground: React.FC = () => {
         {/* DL DDI Section */}
         <div id="dl-ddi" className={`model-section ${activeSection === 'dl-ddi' ? 'active' : ''}`}>
           <h2><i className="fas fa-brain"></i> DL-Based DDI Classifier</h2>
-          <p className="description">Predict a class and provide a description based on two SMILES inputs.</p>
+          <p className="description">Predict a class and provide a description based on two Drugs(smiles) inputs.</p>
           <div className="form-group">
           <label htmlFor="dl-ddi-drug1">Drug Name 1</label>
           <input

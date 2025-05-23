@@ -188,7 +188,6 @@ const PatientDetails: React.FC = () => {
       });
   
       const result = await res.json();
-  
       if (res.ok && result.note) {
         // Update notes
         setHistoryNotes(prev => [result.note, ...prev]);

@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import path from 'path';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -9,8 +8,7 @@ import Account, { IAccount, Role } from "./models/Account";
 import profileRouter from "./routes/profileRouter";
 import patientRouter from "./routes/patientRouter";
 import prescriptionRouter from './routes/prescriptionRouter';
-import { MONGO_URI } from './config';
-
+import { MONGO_URI, COLLECTION_NAME, LLM_MODEL, OPENROUTER_API_KEY, OPENROUTER_URL } from './config';
 
 const app = express();
 app.use(cors());
@@ -50,7 +48,7 @@ app.get('/api/medicines', (req: Request, res: Response): void => {
             const db = mongoose.connection.db;
             if (!db) throw new Error('MongoDB not ready');
             const drugs = await db
-                .collection('drugs')
+                .collection(COLLECTION_NAME)
                 .find({}, { projection: { name: 1, _id: 0 } })
                 .toArray();
             res.json(drugs);
@@ -73,7 +71,7 @@ app.post('/api/interactions', (req: Request, res: Response): void => {
             const db = mongoose.connection.db;
             if (!db) throw new Error('MongoDB not ready');
 
-            const drugs = await db.collection('drugs').find({ name: { $in: selectedMedicines } }).toArray();
+            const drugs = await db.collection(COLLECTION_NAME).find({ name: { $in: selectedMedicines } }).toArray();
             const drugMap: Record<string, any[]> = {};
             drugs.forEach((drug) => {
                 drugMap[drug.name.toLowerCase()] = drug.interactions || [];
@@ -102,6 +100,7 @@ app.post('/api/interactions', (req: Request, res: Response): void => {
 // Simplify Interactions
 app.post('/api/simplify_interactions', (req: Request, res: Response): void => {
     (async () => {
+        console.log(req, res);
         const { interactions } = req.body;
         if (!interactions?.length) return res.status(400).json({ error: 'No interactions provided' });
 
@@ -112,14 +111,14 @@ app.post('/api/simplify_interactions', (req: Request, res: Response): void => {
 
 Description: "${description}"`;
                     const response = await axios.post(
-                        'https://openrouter.ai/api/v1/chat/completions',
+                        OPENROUTER_URL,
                         {
-                            model: 'meta-llama/llama-3.3-8b-instruct:free',
+                            model: LLM_MODEL,
                             messages: [{ role: 'user', content: prompt }],
                         },
                         {
                             headers: {
-                                Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                                Authorization: `Bearer ${OPENROUTER_API_KEY}`,
                                 'Content-Type': 'application/json',
                                 'HTTP-Referer': 'http://localhost:5173',
                                 'X-Title': 'MedMatch DDI Checker',
@@ -137,6 +136,7 @@ Description: "${description}"`;
         }
     })();
 });
+
 
 // Updated Registration Endpoint for Multi-Role Account
 app.post("/api/auth/register", async (req: Request, res: Response) => {

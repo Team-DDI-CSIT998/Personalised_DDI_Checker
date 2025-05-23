@@ -13,9 +13,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from pydantic import BaseModel
 from pymongo import MongoClient
-from config import MONGO_URI, COLLECTION_NAME, DB_NAME
+from config import MONGO_URI, COLLECTION_NAME, DB_NAME, MEDS_DB, CHAT_DB, USER_DB
 import requests
-from openrouter_config import OPENROUTER_API_URL, HEADERS, MODEL, MODEL_NAME
+from openrouter_config import OPENROUTER_API_URL, HEADERS, MODEL_NAME
 
 # ─── FASTAPI SETUP ────────────────────────────────────────────────────
 app = FastAPI(title="MedMatch Backend")
@@ -29,9 +29,9 @@ app.add_middleware(
 )
 
 mongo_client = MongoClient(MONGO_URI)
-prescriptions_collection = mongo_client[DB_NAME]["prescriptions"]
-accounts_collection = mongo_client[DB_NAME]["accounts"]
-chatbot_history_collection = mongo_client[DB_NAME]["chatbot_histories"]
+prescriptions_collection = mongo_client[DB_NAME][MEDS_DB]
+accounts_collection = mongo_client[DB_NAME][USER_DB]
+chatbot_history_collection = mongo_client[DB_NAME][CHAT_DB]
 
 # ─── MODELS ───────────────────────────────────────────────────────────
 class HistoryInput(BaseModel):
@@ -52,7 +52,7 @@ def _temp_path(original: str) -> Path:
 
 
 def call_llm(prompt_text: str) -> str:
-    payload = {"model": MODEL, "messages": [{"role": "user", "content": prompt_text}]}
+    payload = {"model": MODEL_NAME, "messages": [{"role": "user", "content": prompt_text}]}
     res = requests.post(OPENROUTER_API_URL, headers=HEADERS, json=payload)
     res.raise_for_status()
     return res.json().get("choices", [{}])[0].get("message", {}).get("content", "")
@@ -158,10 +158,8 @@ Current Medication List (JSON):
 
     try:
         raw = call_llm(prompt)
-        print("[LLM Raw Reply]", raw)
         match = re.search(r"\{.*\}", raw, re.DOTALL)
         if not match:
-            print("[LLM Error]: No JSON found in response")
             return {
                 "summary": "",
                 "conditions": {"current": [], "past": []},
@@ -170,10 +168,8 @@ Current Medication List (JSON):
             }
         cleaned = match.group(0).strip()
         structured_data = json.loads(cleaned)
-        print("[Structured Data]", structured_data)
         return structured_data
     except json.JSONDecodeError as e:
-        print(f"[LLM JSON Error]: {e} - Raw response: {raw}")
         return {
             "summary": "",
             "conditions": {"current": [], "past": []},
@@ -181,7 +177,6 @@ Current Medication List (JSON):
             "allergies": []
         }
     except Exception as e:
-        print(f"[LLM General Error]: {e}")
         return {
             "summary": "",
             "conditions": {"current": [], "past": []},
@@ -196,6 +191,7 @@ Current Medication List (JSON):
 @app.post("/api/patient-history")
 async def save_patient_history(data: HistoryInput):
     try:
+
         past_summaries = get_all_notes_with_dates(data.patientId)
         current_meds = get_current_medications(data.patientId)
         now_ts = datetime.utcnow().isoformat()
@@ -228,7 +224,6 @@ async def save_patient_history(data: HistoryInput):
     except HTTPException:
         raise
     except Exception as e:
-        print(f"[ERROR] Could not save patient history: {e}")
         raise HTTPException(500, f"History processing failed: {e}")
 
 
