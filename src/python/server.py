@@ -194,18 +194,7 @@ Current Medication List (JSON):
         }
 
 
-# def update_patient_profile(patient_id: str, fields: dict):
-#     accounts_collection.update_one(
-#         {"doctorProfile.patients.id": patient_id},
-#         {"$set": {
-#             "doctorProfile.patients.$.currentConditions": fields.get("conditions", {}).get("current", []),
-#             "doctorProfile.patients.$.pastConditions": fields.get("conditions", {}).get("past", []),
-#             "doctorProfile.patients.$.currentMedications": [m for m in fields.get("medications", []) if m.get("status", "").lower() == "active"],
-#             "doctorProfile.patients.$.pastMedications": [m for m in fields.get("medications", []) if m.get("status", "").lower() != "active"],
-#             "doctorProfile.patients.$.allergies": fields.get("allergies", [])
-#         }},
-#         upsert=True
-#     )
+
 
 # ─── SAVE HISTORY TO PRESCRIPTION ───────────────────────────────────────
 @app.post("/api/patient-history")
@@ -391,29 +380,7 @@ def list_user_history(userId: str = Query(...)):
         for doc in docs
     ]
 
-'''@app.get("/history/list")
-def list_history():
-    return HISTORY
 
-@app.put("/history/{item_id}")
-def update_history(item_id: str, body: dict):
-    for it in HISTORY:
-        if it["id"] == item_id:
-            it["summary"] = body.get("summary", "").strip()
-            return it
-    raise HTTPException(404, "History item not found")'''
-
-'''@app.delete("/history/{item_id}")
-def delete_history_item(item_id: str):
-    global HISTORY
-    HISTORY = [it for it in HISTORY if it["id"] != item_id]
-    return {"success": True}
-
-@app.delete("/history")
-def delete_all_history():
-    global HISTORY
-    HISTORY.clear()
-    return {"success": True}'''
 
 # ─── DEBUG ROUTE ──────────────────────────────────────────────────────
 @app.post("/test-token")

@@ -1,3 +1,0 @@
-Prescription	Drug_pair	DDI_type	Sentence	Score	STD
-1	Bivalirudin_Rivaroxaban	80	Rivaroxaban may increase the anticoagulant activities of Bivalirudin.	0.9865774	0.020364871
-1	Rivaroxaban_Bivalirudin	80	Bivalirudin may increase the anticoagulant activities of Rivaroxaban.	0.5343256	0.41981125
