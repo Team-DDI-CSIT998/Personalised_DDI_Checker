@@ -107,7 +107,6 @@ const handleSignUp = async (confirmRoleAddition = false) => {
   // Check email existence using our helper function
   const emailResult = await checkEmail(formData.email);
   setIsExistingEmail(emailResult.exists);
-  console.log("Email exists:", emailResult.exists);
   
   // If the email is new, enforce password validations
   if (!emailResult.exists) {
@@ -194,7 +193,6 @@ const handleSignUp = async (confirmRoleAddition = false) => {
   const handleLogin = async () => {
     try {
       const data = await loginUser(formData.email, formData.password, userType);
-      console.log("Login successful:", data);
   
       // Check if this account has the selected role.
       if (!data.user.roles.includes(userType)) {
@@ -210,7 +208,6 @@ const handleSignUp = async (confirmRoleAddition = false) => {
                 userType,
                 true
               );
-              console.log("Role linked successfully:", updatedData);
               localStorage.setItem("token", data.token);
               localStorage.setItem("user", JSON.stringify(data.user)); 
 
