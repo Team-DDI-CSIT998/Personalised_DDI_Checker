@@ -2,9 +2,9 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IMedicalRecord extends Document {
-    patient: mongoose.Types.ObjectId; // Reference to the Account document (acting as a patient)
-    note: string; // Free text limited to 1000 words
-    attachments?: string[]; // URLs or file paths for any uploaded documents/images
+    patient: mongoose.Types.ObjectId;
+    note: string;
+    attachments?: string[];
 }
 
 const MedicalRecordSchema = new Schema<IMedicalRecord>(
