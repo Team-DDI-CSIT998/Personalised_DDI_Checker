@@ -1,6 +1,5 @@
 /* Authentication.css */
 
-/* Overall authentication page styling */
 .authentication {
     background: var(--gradient);
     min-height: 90vh;
@@ -14,7 +13,6 @@
     min-height: 90vh;
 }
 
-/* Container style for a consistent look */
 .authentication .auth-container {
     background: rgba(255, 255, 255, 0.98);
     padding: 2.5rem;
@@ -52,7 +50,6 @@
 }
 
 /* Back Button Style */
-/* Back Button Styling - Modern Design at Top Left */
 .authentication .back-button {
     position: fixed;
     top: 102px;
@@ -166,7 +163,6 @@
     box-shadow: 0 4px 15px rgba(88, 196, 200, 0.2);
 }
 
-/* Floating Label for all input fields */
 .authentication .floating-label {
     position: absolute;
     left: 15px;

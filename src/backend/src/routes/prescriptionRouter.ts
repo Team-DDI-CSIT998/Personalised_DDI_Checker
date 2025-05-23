@@ -7,7 +7,6 @@ import { authMiddleware } from './profileRouter';
 const router = express.Router();
 
 // ─── GET LATEST PRESCRIPTION ─────────────────────────────────
-// GET /api/prescriptions?patientId=…
 router.get(
     '/',
     authMiddleware,
@@ -35,7 +34,6 @@ router.get(
 );
 
 // ─── CREATE NEW PRESCRIPTION ────────────────────────────────
-// POST /api/prescriptions
 router.post(
     '/',
     authMiddleware,

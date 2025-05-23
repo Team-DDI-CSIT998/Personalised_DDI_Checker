@@ -151,7 +151,6 @@ app.post("/api/auth/register", async (req: Request, res: Response) => {
             return;
         }
 
-        // Find an existing account with the same email.
         const existingAccount: IAccount | null = await Account.findOne({ email });
 
         if (existingAccount) {
@@ -160,9 +159,7 @@ app.post("/api/auth/register", async (req: Request, res: Response) => {
                 res.status(400).json({ error: "User already exists with this role." });
                 return;
             } else {
-                // The account exists but does not have the new role.
                 if (!confirmRoleAddition) {
-                    // Send a 409 response asking the client to confirm role addition.
                     res.status(409).json({
                         error: "Account exists",
                         message:
@@ -171,7 +168,6 @@ app.post("/api/auth/register", async (req: Request, res: Response) => {
                     });
                     return;
                 } else {
-                    // Client confirmed. Add the new role and update the account.
                     existingAccount.roles.push(role);
                     await existingAccount.save();
                     const token = jwt.sign(
@@ -184,7 +180,6 @@ app.post("/api/auth/register", async (req: Request, res: Response) => {
                 }
             }
         } else {
-            // No existing account; create a new one with the provided role.
             const hashed = await bcrypt.hash(password, 10);
             const newAccount = new Account({
                 email,

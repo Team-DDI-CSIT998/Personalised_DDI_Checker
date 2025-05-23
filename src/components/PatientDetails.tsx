@@ -202,14 +202,6 @@ const PatientDetails: React.FC = () => {
           setAllergies(s.allergies || []);
         }
   
-        // 🟡 Fetch new alerts
-        const alertRes = await fetch(`http://localhost:8000/api/check-alerts?patientId=${patientId}`);
-        const alertJson = await alertRes.json();
-        setAlertData(alertJson);
-  
-        // 🟢 Show alert modal after new note
-        setShowAlertModal(true);
-  
         // Cleanup
         setNoteInput('');
         setCurrentPage(1);
@@ -332,7 +324,14 @@ const PatientDetails: React.FC = () => {
 
   return (
     <div className="patient-details-container">
-      {isLoading && <div className="fullscreen-loading">Processing...</div>}
+      {isLoading && (
+            <div className="fullscreen-loader">
+                <div className="loader-content">
+                <i className="fas fa-spinner fa-spin fa-2x"></i>
+                <p>Loading... Please wait.</p>
+                </div>
+            </div>
+            )}
       <DocSidebar
         profile={{
           name: `Dr. ${doctorProfile.fullName}`,
@@ -491,7 +490,7 @@ const PatientDetails: React.FC = () => {
 
             <div className="alert-card">
               <h3>Patient History Alerts</h3>
-              {alertData.pdi.length ? alertData.pdi.map((a, i) => <p key={i}>{a}</p>) : <p>No PDI alerts.</p>}
+              {alertData.pdi.length ? alertData.pdi.map((a, i) => <p key={i}>{a}</p>) : <p>No contraindication alerts.</p>}
             </div>
 
             <button className="close-btn" onClick={() => setShowAlertModal(false)}>Close</button>

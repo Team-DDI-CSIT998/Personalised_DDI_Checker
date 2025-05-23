@@ -32,7 +32,7 @@ const UnderConstructionPopup: React.FC<UnderConstructionPopupProps> = ({ visible
 export default UnderConstructionPopup;
 
 // ------------------------------------------------------------
-// Additional Popups Below (TeamPopup and AboutUsPopup)
+// (TeamPopup and AboutUsPopup)
 // ------------------------------------------------------------
 
 export const TeamPopup: React.FC<UnderConstructionPopupProps> = ({ visible, onClose }) => {
@@ -47,10 +47,10 @@ export const TeamPopup: React.FC<UnderConstructionPopupProps> = ({ visible, onCl
           {/* Supervisor on top, single row */}
           <div className="popup-supervisor-wrapper">
             <div className="popup-member supervisor">
-              <img src="https://img.icons8.com/ios-filled/100/FFFFFF/user-male-circle.png" alt="Chau Nguyen" />
-              <h3>Chau Nguyen</h3>
+              <img src="https://img.icons8.com/ios-filled/100/FFFFFF/user-male-circle.png" alt="Dr. Chau Nguyen" />
+              <h3>Dr. Chau Nguyen</h3>
               <span className="popup-badge supervisor-badge">Supervisor</span>
-              <p className="popup-role">Add sups credentials</p>
+              <p className="popup-role">University of Wollongong</p>
             </div>
           </div>
 
@@ -109,6 +109,60 @@ export const TeamPopup: React.FC<UnderConstructionPopupProps> = ({ visible, onCl
   );
 };
 
+export const TermsOfServicePopup: React.FC<UnderConstructionPopupProps> = ({ visible, onClose }) => {
+  if (!visible) return null;
+  return (
+    <div className="popup-overlay" onClick={onClose}>
+      <div className="popup-box" onClick={(e) => e.stopPropagation()}>
+        <button className="popup-close-btn" onClick={onClose} aria-label="Close Popup">&times;</button>
+        <h2>📄 Terms of Service</h2>
+        <div className="popup-section">
+          <p><strong>Effective Date:</strong> May 23, 2025</p>
+          <p>
+            MedMatch is an academic prototype built by Master’s students at the University of Wollongong.
+            By using this system, you agree to the following:
+          </p>
+          <ul className="styled-list">
+            <li><b>🔬 Educational Use Only:</b> Intended solely for academic demonstration.</li>
+            <li><b>⚕️ No Medical Advice:</b> Not a replacement for clinical judgment or treatment.</li>
+            <li><b>📉 Accuracy Not Guaranteed:</b> Outputs are best-effort and not clinically validated.</li>
+            <li><b>🚫 No Liability:</b> We disclaim responsibility for outcomes from usage.</li>
+            <li><b>🔗 External APIs:</b> Integrates with third-party tools like DrugBank and OpenRouter.</li>
+            <li><b>📅 Terms May Change:</b> Continued use implies agreement with future updates.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const PrivacyPolicyPopup: React.FC<UnderConstructionPopupProps> = ({ visible, onClose }) => {
+  if (!visible) return null;
+  return (
+    <div className="popup-overlay" onClick={onClose}>
+      <div className="popup-box" onClick={(e) => e.stopPropagation()}>
+        <button className="popup-close-btn" onClick={onClose} aria-label="Close Popup">&times;</button>
+        <h2>🔐 Privacy Policy</h2>
+        <div className="popup-section">
+          <p><strong>Effective Date:</strong> May 23, 2025</p>
+          <p>
+            MedMatch prioritizes privacy. Here's how your data is handled:
+          </p>
+          <ul className="styled-list">
+            <li><b>🙈 No Personal Data:</b> We don’t collect or store identifying information.</li>
+            <li><b>📄 Uploads Stay Local:</b> Uploaded files are processed in-session only.</li>
+            <li><b>🧽 De-Identification:</b> All clinical inputs are anonymized.</li>
+            <li><b>🔗 Third-Party APIs:</b> We use OpenRouter and DrugBank under research terms.</li>
+            <li><b>📊 No Analytics:</b> No tracking, cookies, or metrics collection is performed.</li>
+            <li><b>🛠️ Policy Updates:</b> Future changes will be reflected in this section.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 export const AboutUsPopup: React.FC<UnderConstructionPopupProps> = ({ visible, onClose }) => {
   if (!visible) return null;
   return (
@@ -141,16 +195,30 @@ export const AboutUsPopup: React.FC<UnderConstructionPopupProps> = ({ visible, o
         </div>
 
         <div className="popup-section">
-          <h3>🛠️ Powered By</h3>
+          <h3>🔧 Built With</h3>
           <div className="popup-tech-list">
-            <p>React</p>
-            <p>Django / Node.js</p>
-            <p>TensorFlow</p>
-            <p>Scikit-learn</p>
-            <p>DrugBank</p>
-            <p>MongoDB / PostgreSQL</p>
+            <p>React + TypeScript (Frontend)</p>
+            <p>Node.js + FastAPI (Backend + LLM APIs)</p>
+            <p>TensorFlow (DDI Model)</p>
+            <p>OpenRouter API (LLM Reasoning)</p>
+            <p>
+                DrugBank (Academic Dataset)
+            </p>
+            <p>MongoDB (Database)</p>
           </div>
+          <p className="drugbank-note">
+            Drug data sourced from the{' '}
+            <a
+              href="https://go.drugbank.com/releases/latest#datasets"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              DrugBank Academic Dataset
+            </a>{' '}
+            under research license.
+          </p>
         </div>
+
       </div>
     </div>
   );

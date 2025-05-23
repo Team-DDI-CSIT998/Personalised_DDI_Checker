@@ -50,13 +50,6 @@ export default function Chatbot() {
     }
   };
 
-  // Initial fetch
-  // useEffect(() => {
-  //   fetch('http://localhost:8000/history/list')
-  //     .then(res => res.json())
-  //     .then((data: HistoryItem[]) => setHistory(data))
-  //     .catch(() => {});
-  // }, []);
   useEffect(() => {
     fetchHistory();
   }, []);
@@ -162,8 +155,6 @@ export default function Chatbot() {
 
   return (
     <div className="chat-shell">
-      {/* Main chat panel */}
-      {/* Global loader */}
       <LoadingOverlay visible={isUploading} />
       <div className="chat-container bordered">
         <header className="chat-header">

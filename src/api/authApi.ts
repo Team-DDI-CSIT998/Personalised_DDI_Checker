@@ -62,5 +62,5 @@ export const checkEmail = async (email: string) => {
   if (!response.ok) {
     throw new ApiError(data.error || "Email check failed", response.status, data);
   }
-  return data; // { exists: boolean }
+  return data;
 };
