@@ -25,13 +25,3 @@ dist-ssr
 
 # Ignore environment variables
 .env
-
-src/python/check_drug_data.py
-src/python/filter_and_clean_drugs.py
-src/python/search_common_drugs.py
-src/python/test.py
-src/python/XMLParserToCSV.ipynb
-EXTRAS/HTMLScripts
-EXTRAS/drugbank_db_MySQL
-EXTRAS/XML_Parser_DDI_MysqlDB.py
-EXTRAS/IDEAS_AND_FEATURES.md
