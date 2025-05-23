@@ -28,7 +28,7 @@ function App() {
         <Route path="/medical-history" element={<Layout><MedHistory /></Layout>} />
         <Route path="/PatientPortal" element={<ProtectedRoute><Layout><PatientPortal /></Layout></ProtectedRoute>} />
         <Route path="/how-it-works" element={<Layout><HowItWorks /></Layout>} />
-        <Route path="/patientLabResults/:patientId" element={<Layout><PatientLabResults /></Layout>} />
+        <Route path="/patientLabResults" element={<ProtectedRoute><Layout><PatientLabResults /></Layout></ProtectedRoute>} />
         <Route path="/patient-details/:patientId" element={<ProtectedRoute><Layout><PatientDetails /></Layout></ProtectedRoute>} />
         <Route path="/create-prescription" element={<ProtectedRoute><Layout><CreatePrescription /></Layout></ProtectedRoute>} />
         <Route path="/MedMatchDoctorPortal" element={<ProtectedRoute><Layout><MedMatchDoctorPortal/></Layout></ProtectedRoute>} />

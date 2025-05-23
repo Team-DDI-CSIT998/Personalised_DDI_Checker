@@ -35,6 +35,7 @@ MONGO_URI = os.getenv(
 mongo_client = MongoClient(MONGO_URI)
 prescriptions_collection = mongo_client["MedPortalDB"]["prescriptions"]
 accounts_collection = mongo_client["MedPortalDB"]["accounts"]
+chatbot_history_collection = mongo_client["MedPortalDB"]["chatbot_histories"]
 
 # ─── MODELS ───────────────────────────────────────────────────────────
 class HistoryInput(BaseModel):
@@ -213,7 +214,7 @@ async def save_patient_history(data: HistoryInput):
         past_summaries = get_all_notes_with_dates(data.patientId)
         current_meds = get_current_medications(data.patientId)
         now_ts = datetime.utcnow().isoformat()
-        formatted_ts = datetime.utcnow().strftime('%d/%m/%Y %I:%M %p')
+        formatted_ts = datetime.utcnow().isoformat()
         past_summaries.append(f"{formatted_ts}: {data.notes.strip()}")
         result = extract_structured_summary(past_summaries, current_meds)
 
@@ -341,38 +342,56 @@ async def delete_patient_history(note_id: str):
 @app.post("/chat")
 async def chat_endpoint(payload: dict = Body(...)):
     question = payload.get("question", "").strip()
-    if not question:
-        raise HTTPException(400, "No question provided")
+    user_id = payload.get("userId", "").strip()
+    
+    if not question or not user_id:
+        raise HTTPException(400, "Missing question or userId")
+
     try:
-        answer = process_single_question(question)
+        answer = process_single_question(question, user_id)
         return JSONResponse({"answer": answer or "Sorry, I couldn't find an answer."})
     except Exception as e:
         raise HTTPException(500, f"Chat failed: {e}")
 
-# ─── LEGACY FILE UPLOAD HISTORY ─────────────────────────────────────────
-HISTORY = []
 
+# ─── LEGACY FILE UPLOAD HISTORY ─────────────────────────────────────────
 @app.post("/history/upload")
-async def upload_history(files: List[UploadFile] = File(...)):
+async def upload_history(
+    files: List[UploadFile] = File(...),
+    userId: str = Query(...)
+):  
     if not files:
         raise HTTPException(400, "No files received")
+    
     for up in files:
         tmp = _temp_path(up.filename)
         async with aiofiles.open(tmp, "wb") as f:
             await f.write(await up.read())
         try:
-            merged = PHC.ingest_file(tmp)
-            lines = merged.splitlines()
-            idxs = [i for i, ln in enumerate(lines) if ln.startswith('### ')]
-            summary = ("\n".join(lines[idxs[-1]+1:]) if idxs else merged).strip()
-            HISTORY.append({"id": uuid.uuid4().hex, "date": datetime.utcnow().isoformat(), "summary": summary})
+            PHC.ingest_file(tmp, userId)  # ✅ Now stores in MongoDB
         except Exception as e:
             raise HTTPException(422, f"Could not process {up.filename}: {e}")
         finally:
             tmp.unlink(missing_ok=True)
-    return HISTORY
+
+    return {"success": True, "message": "File(s) processed and history saved."}
 
 @app.get("/history/list")
+def list_user_history(userId: str = Query(...)):
+    docs = chatbot_history_collection.find(
+        {"userId": userId, "isSafe": True}
+    ).sort("uploadedAt", -1)
+
+    return [
+        {
+            "id": str(doc["_id"]),
+            "date": doc["uploadedAt"].strftime("%d/%m/%Y %I:%M %p"),
+            "summary": doc["summary"]
+        }
+        for doc in docs
+    ]
+
+'''@app.get("/history/list")
 def list_history():
     return HISTORY
 
@@ -382,9 +401,9 @@ def update_history(item_id: str, body: dict):
         if it["id"] == item_id:
             it["summary"] = body.get("summary", "").strip()
             return it
-    raise HTTPException(404, "History item not found")
+    raise HTTPException(404, "History item not found")'''
 
-@app.delete("/history/{item_id}")
+'''@app.delete("/history/{item_id}")
 def delete_history_item(item_id: str):
     global HISTORY
     HISTORY = [it for it in HISTORY if it["id"] != item_id]
@@ -394,7 +413,7 @@ def delete_history_item(item_id: str):
 def delete_all_history():
     global HISTORY
     HISTORY.clear()
-    return {"success": True}
+    return {"success": True}'''
 
 # ─── DEBUG ROUTE ──────────────────────────────────────────────────────
 @app.post("/test-token")

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FiMenu, FiX } from 'react-icons/fi';
 import ThemeToggle from './ThemeToggle';
 import UnderConstructionPopup, { TeamPopup, AboutUsPopup } from './popUp';
+import { FiLogOut } from 'react-icons/fi';
 import './common.css';
 
 interface LayoutProps {
@@ -10,14 +11,15 @@ interface LayoutProps {
 }
 
 // 🔹 Centralized logic for hiding nav
-const shouldShowNav = (pathname: string): boolean => {
+const shouldShowNavLinks = (pathname: string): boolean => {
   const hiddenRoutes = [
     '/Authentication',
     '/MedMatchDoctorPortal',
     '/patient-details',
     '/create-prescription',
     "/chatbot",
-    "/ModelsPlayground"
+    "/ModelsPlayground",
+    "/PatientPortal"
   ];
   return !hiddenRoutes.some(route => pathname.startsWith(route));
 };
@@ -32,11 +34,21 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 };
 
+
 const Header: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user") || "null"));
+  const isLoggedIn = !!user;
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const isHowItWorks = location.pathname === '/how-it-works';
-  const showNav = shouldShowNav(location.pathname);
+  const showNavLinks = shouldShowNavLinks(location.pathname);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setUser(null);
+    navigate("/Authentication", { state: { isSignUp: false } });
+  };
 
   return (
     <header className="header">
@@ -58,56 +70,84 @@ const Header: React.FC = () => {
 
       <nav className={`nav-container ${isMobileOpen ? 'mobile-open' : ''}`}>
         <div className="nav-links">
-          {showNav && (
-            <Link
-              to="/"
-              className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            >
-              Home
-            </Link>
-          )}
-          {showNav && !isHowItWorks && (
-            <a href="#features" className="nav-link">
-              Features
-            </a>
-          )}
-          {showNav && (
-            <a href="#footer" className="nav-link">
-              Get in Touch
-            </a>
-          )}
-          {showNav && (
-            <Link
-              to="/how-it-works"
-              className={`nav-link ${isHowItWorks ? 'active' : ''}`}
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            >
-              How It Works
-            </Link>
+          {showNavLinks && (
+            <>
+              <Link
+                to="/"
+                className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              >
+                Home
+              </Link>
+              
+              <a href="#features" className="nav-link">
+                Features
+              </a>
+              
+              <Link
+                to="/how-it-works"
+                className={`nav-link ${location.pathname === '/how-it-works' ? 'active' : ''}`}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              >
+                How It Works
+              </Link>
+              
+              <a href="#footer" className="nav-link">
+                Get in Touch
+              </a>
+              
+              <div className={`dropdown ${isMobileOpen ? 'mobile-open' : ''}`}>
+                <div className="nav-link dropdown-toggle">
+                  Other Links <i className="fas fa-chevron-down dropdown-arrow"></i>
+                </div>
+                <div className="dropdown-content">
+                  <Link 
+                    to="/PatientPortal" 
+                    className="dropdown-link"
+                    onClick={() => setIsMobileOpen(false)}
+                  >
+                    <i className="fas fa-user-injured" style={{ marginRight: '10px' }}></i>
+                    Patient Portal
+                  </Link>
+                  <Link 
+                    to="/MedMatchDoctorPortal" 
+                    className="dropdown-link"
+                    onClick={() => setIsMobileOpen(false)}
+                  >
+                    <i className="fas fa-user-md" style={{ marginRight: '10px' }}></i>
+                    Doctor Portal
+                  </Link>
+                  <Link 
+                    to="/chatbot" 
+                    className="dropdown-link"
+                    onClick={() => setIsMobileOpen(false)}
+                  >
+                    <i className="fas fa-robot" style={{ marginRight: '10px' }}></i>
+                    ChatBot
+                  </Link>
+                </div>
+              </div>
+            </>
           )}
         </div>
 
         <ThemeToggle />
 
-        {showNav && (
-          <div className="auth-buttons">
-            <Link
-              to="/Authentication"
-              state={{ isSignUp: false }}
-              className="signin-btn"
-            >
-              Sign In
-            </Link>
-            <Link
-              to="/Authentication"
-              state={{ isSignUp: true }}
-              className="signup-btn"
-            >
-              Get Started
-            </Link>
-          </div>
-        )}
+        <div className="auth-buttons">
+          {isLoggedIn ? (
+            <div className="logout-action" onClick={handleLogout}>
+              <span>Logout</span>
+              <FiLogOut className="logout-icon" />
+            </div>
+          ) : (
+            showNavLinks && (
+              <>
+                <Link to="/Authentication" state={{ isSignUp: false }} className="signin-btn">Sign In</Link>
+                <Link to="/Authentication" state={{ isSignUp: true }} className="signup-btn">Get Started</Link>
+              </>
+            )
+          )}
+        </div>
       </nav>
     </header>
   );

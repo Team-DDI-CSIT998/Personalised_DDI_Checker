@@ -161,7 +161,7 @@
 }
 
 .chat-shell .bot-message {
-    background: rgb(255 254 231 / 90%);
+    background: rgba(231, 255, 232, 0.9);
     /* lighter for bot */
     color: var(--text-dark);
     margin-right: auto;
@@ -274,11 +274,17 @@
     border-radius: var(--border-radius);
     padding: 0.75rem;
     transition: var(--transition);
+
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    border-left: 4px solid var(--primary-dark);
+    transition: all 0.2s ease-in-out;
 }
 
 .chat-shell .history-card:hover {
     background: var(--primary);
     color: var(--text-light);
+    cursor: pointer;
 }
 
 .chat-shell .date {

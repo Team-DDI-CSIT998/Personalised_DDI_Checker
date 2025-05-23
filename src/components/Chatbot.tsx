@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { LoadingOverlay } from './LoadingOverlay';
+import { parse, isToday, isYesterday, format } from 'date-fns';
 import './Chatbot.css';
 
 
@@ -15,6 +16,8 @@ interface HistoryItem {
 
 export default function Chatbot() {
   // Chat state
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const userId = user._id || "guest";
   const [messages, setMessages] = useState<Message[]>([
     { text: `Hello! I'm MedChat, your AI medical assistant. How can I help you today?`, sender: 'bot' }
   ]);
@@ -37,12 +40,25 @@ export default function Chatbot() {
   const [draft, setDraft] = useState('');
   const [showHisModal, setShowHisModal] = useState(false);
 
+  const fetchHistory = async () => {
+    try {
+      const res = await fetch(`http://localhost:8000/history/list?userId=${userId}`);
+      const data: HistoryItem[] = await res.json();
+      setHistory(data);
+    } catch (err) {
+      console.error("Failed to fetch history:", err);
+    }
+  };
+
   // Initial fetch
+  // useEffect(() => {
+  //   fetch('http://localhost:8000/history/list')
+  //     .then(res => res.json())
+  //     .then((data: HistoryItem[]) => setHistory(data))
+  //     .catch(() => {});
+  // }, []);
   useEffect(() => {
-    fetch('http://localhost:8000/history/list')
-      .then(res => res.json())
-      .then((data: HistoryItem[]) => setHistory(data))
-      .catch(() => {});
+    fetchHistory();
   }, []);
 
   // File-upload modal state
@@ -60,10 +76,12 @@ export default function Chatbot() {
       for (const f of files) {
         const fd = new FormData();
         fd.append('files', f);
-        await fetch('http://localhost:8000/history/upload', { method: 'POST', body: fd });
+        await fetch(`http://localhost:8000/history/upload?userId=${userId}`, {
+          method: 'POST',
+          body: fd
+        });
       }
-      const updated = await fetch('http://localhost:8000/history/list').then(r => r.json());
-      setHistory(updated);
+      await fetchHistory();
       setFiles([]);
       setShowUpload(false);
     } catch (err) {
@@ -72,6 +90,7 @@ export default function Chatbot() {
       setIsUploading(false);
     }
   }
+  
 
   // Chat send
   async function sendToBackend(question: string): Promise<string> {
@@ -79,7 +98,7 @@ export default function Chatbot() {
       const res = await fetch('http://localhost:8000/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question })
+        body: JSON.stringify({ question, userId })
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const { answer } = await res.json();
@@ -115,6 +134,7 @@ export default function Chatbot() {
     setDraft(item.summary);
     setShowHisModal(true);
   }
+  
   async function saveHistory() {
     if (!active) return;
     await fetch(`http://localhost:8000/history/${active.id}`, {
@@ -129,6 +149,15 @@ export default function Chatbot() {
     await fetch(`http://localhost:8000/history/${id}`, { method: 'DELETE' });
     setHistory(h => h.filter(it => it.id !== id));
     if (active?.id === id) setShowHisModal(false);
+  }
+
+  function formatUploadDate(dateStr: string): string {
+    const parsed = parse(dateStr, 'dd/MM/yyyy hh:mm a', new Date());
+    if (isNaN(parsed.getTime())) return 'Invalid date';
+  
+    if (isToday(parsed)) return `Today at ${format(parsed, 'h:mm a')}`;
+    if (isYesterday(parsed)) return `Yesterday at ${format(parsed, 'h:mm a')}`;
+    return `${format(parsed, 'dd MMM yyyy, h:mm a')}`;
   }
 
   return (
@@ -176,11 +205,17 @@ export default function Chatbot() {
         <header><h4>Patient History</h4></header>
         {history.length === 0 && <p className="empty">No history uploaded yet.</p>}
         <div className="rail-scroll">
-          {history.map(item => (
-            <button key={item.id} type="button" className="history-card btn" title="Click to view summary" onClick={() => openHistoryModal(item)}>
-              <span className="date">{item.date}</span>
-            </button>
-          ))}
+        {history.map((item, index) => (
+          <button
+            key={item.id}
+            type="button"
+            className="history-card btn"
+            title="Click to view summary"
+            onClick={() => openHistoryModal(item)}
+          >
+            📄 Upload #{history.length - index} — {formatUploadDate(item.date)}
+          </button>
+        ))}
         </div>
         <button
           type="button"

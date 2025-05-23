@@ -142,9 +142,53 @@ const ModelsPlayground: React.FC = () => {
   
   
 
-  const handleDDIBinary = () => {
-    const output = document.getElementById('ddi-binary-output');
-    if (output) output.textContent = Math.random() > 0.5 ? '1' : '0';
+  const handleDDIBinary = async () => {
+    if (!drug1 || !drug2 || !smiles1 || !smiles2) {
+      const output = document.getElementById('ddi-binary-output');
+      if (output) output.innerHTML = `<p style="color:red">Please select both drugs and ensure SMILES are loaded.</p>`;
+      return;
+    }
+  
+    setIsLoading(true);
+  
+    try {
+      const res = await fetch('http://localhost:9000/predict-hybrid-binary-ddi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ smiles1, smiles2 })
+      });
+  
+      const data = await res.json();
+      const label = data.label;
+      const prob = parseFloat(data.probability).toFixed(4);
+  
+      const verdictText = label === 1 ? "⚠️ Drug interaction likely" : "✅ No interaction detected";
+      const verdictColor = label === 1 ? "#e76f51" : "#2a9d8f";
+  
+      const html = `
+        <div class="ddi-result-summary">
+          <h3>🧪 Drug Input Summary</h3>
+          <p><strong>Drug 1:</strong> ${drug1}<br/><code>${smiles1}</code></p>
+          <p><strong>Drug 2:</strong> ${drug2}<br/><code>${smiles2}</code></p>
+  
+          <h3>📋 Binary DDI Prediction</h3>
+          <div style="background: ${verdictColor}20; border-left: 5px solid ${verdictColor}; padding: 1rem; border-radius: 8px;">
+            <strong style="color: ${verdictColor}">${verdictText}</strong><br/>
+            <span style="opacity: 0.8">Confidence: ${prob}</span>
+          </div>
+        </div>
+      `;
+  
+      const output = document.getElementById('ddi-binary-output');
+      if (output) output.innerHTML = html;
+  
+    } catch (err) {
+      console.error('Binary DDI fetch error:', err);
+      const output = document.getElementById('ddi-binary-output');
+      if (output) output.innerHTML = `<p style="color:red">Server error. Please try again.</p>`;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDLDDI = async () => {
@@ -232,7 +276,7 @@ const ModelsPlayground: React.FC = () => {
             ['ddi-binary', 'DDI Binary', 'fa-sync'],
             ['dl-ddi', 'DL DDI', 'fa-brain'],
             ['condition-contradiction', 'Condition Check', 'fa-exclamation-triangle'],
-            ['deepseeks', 'Deepseeks', 'fa-book'],
+            ['deepseeks', 'Deepseek', 'fa-book'],
             ['deepddi', 'DeepDDI', 'fa-info-circle']
           ].map(([id, label, icon]) => (
             <li key={id}>
@@ -276,22 +320,129 @@ const ModelsPlayground: React.FC = () => {
         {/* DDI Binary Section */}
         <div id="ddi-binary" className={`model-section ${activeSection === 'ddi-binary' ? 'active' : ''}`}>
           <h2><i className="fas fa-sync"></i> DDI Classifier Binary</h2>
-          <p className="description">Check if an interaction occurs between two drugs using SMILES strings (0 = No, 1 = Yes).</p>
+          <p className="description">Predict whether a binary interaction exists between two selected drugs.</p>
           <div className="form-group">
-            <label htmlFor="ddi-binary-smiles1">SMILES 1</label>
-            <input type="text" id="ddi-binary-smiles1" placeholder="Enter first SMILES (e.g., CC(C)=O)..." />
+            <label htmlFor="ddi-binary-drug1">Drug Name 1</label>
+            <input
+              id="ddi-binary-drug1"
+              value={drug1}
+              onChange={(e) => {
+                const val = e.target.value;
+                setDrug1(val);
+                if (val.trim().length >= 3) fetchSuggestions(val, setSuggestions1);
+                else setSuggestions1([]);
+                setHighlightIndex1(-1);
+              }}
+              onKeyDown={(e) => {
+                if (suggestions1.length === 0) return;
+                if (e.key === 'ArrowDown') {
+                  e.preventDefault();
+                  setHighlightIndex1(prev => (prev + 1) % suggestions1.length);
+                } else if (e.key === 'ArrowUp') {
+                  e.preventDefault();
+                  setHighlightIndex1(prev => (prev - 1 + suggestions1.length) % suggestions1.length);
+                } else if (e.key === 'Enter' && highlightIndex1 >= 0) {
+                  e.preventDefault();
+                  const selected = suggestions1[highlightIndex1];
+                  setDrug1(selected);
+                  fetchSmiles(selected, setSmiles1);
+                  setSuggestions1([]);
+                  setHighlightIndex1(-1);
+                }
+              }}
+              onBlur={() => {
+                setTimeout(() => {
+                  setSuggestions1([]);
+                  setHighlightIndex1(-1);
+                }, 100);
+                if (drug1) fetchSmiles(drug1, setSmiles1);
+              }}
+              placeholder="Type to search drug..."
+            />
+            {suggestions1.length > 0 && (
+              <ul className="suggestion-list">
+                {suggestions1.map((name, idx) => (
+                  <li
+                    key={idx}
+                    className={highlightIndex1 === idx ? 'highlighted' : ''}
+                    onMouseDown={() => {
+                      setDrug1(name);
+                      fetchSmiles(name, setSmiles1);
+                      setSuggestions1([]);
+                      setHighlightIndex1(-1);
+                    }}
+                  >
+                    {name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="form-group">
-            <label htmlFor="ddi-binary-smiles2">SMILES 2</label>
-            <input type="text" id="ddi-binary-smiles2" placeholder="Enter second SMILES (e.g., CCNCC)..." />
+            <label htmlFor="ddi-binary-drug2">Drug Name 2</label>
+            <input
+              id="ddi-binary-drug2"
+              value={drug2}
+              onChange={(e) => {
+                const val = e.target.value;
+                setDrug2(val);
+                if (val.trim().length >= 3) fetchSuggestions(val, setSuggestions2);
+                else setSuggestions2([]);
+                setHighlightIndex2(-1);
+              }}
+              onKeyDown={(e) => {
+                if (suggestions2.length === 0) return;
+                if (e.key === 'ArrowDown') {
+                  e.preventDefault();
+                  setHighlightIndex2(prev => (prev + 1) % suggestions2.length);
+                } else if (e.key === 'ArrowUp') {
+                  e.preventDefault();
+                  setHighlightIndex2(prev => (prev - 1 + suggestions2.length) % suggestions2.length);
+                } else if (e.key === 'Enter' && highlightIndex2 >= 0) {
+                  e.preventDefault();
+                  const selected = suggestions2[highlightIndex2];
+                  setDrug2(selected);
+                  fetchSmiles(selected, setSmiles2);
+                  setSuggestions2([]);
+                  setHighlightIndex2(-1);
+                }
+              }}
+              onBlur={() => {
+                setTimeout(() => {
+                  setSuggestions2([]);
+                  setHighlightIndex2(-1);
+                }, 100);
+                if (drug2) fetchSmiles(drug2, setSmiles2);
+              }}
+              placeholder="Type to search drug..."
+            />
+            {suggestions2.length > 0 && (
+              <ul className="suggestion-list">
+                {suggestions2.map((name, idx) => (
+                  <li
+                    key={idx}
+                    className={highlightIndex2 === idx ? 'highlighted' : ''}
+                    onMouseDown={() => {
+                      setDrug2(name);
+                      fetchSmiles(name, setSmiles2);
+                      setSuggestions2([]);
+                      setHighlightIndex2(-1);
+                    }}
+                  >
+                    {name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="form-group">
             <button onClick={handleDDIBinary}>
-              <i className="fas fa-sync" /> Check Interaction
+              <i className="fas fa-sync" /> Predict Interaction
             </button>
           </div>
-          <div className="output" id="ddi-binary-output">[Result]</div>
+          <div className="output" id="ddi-binary-output">[Prediction result will appear here]</div>
         </div>
+
 
         {/* DL DDI Section */}
         <div id="dl-ddi" className={`model-section ${activeSection === 'dl-ddi' ? 'active' : ''}`}>
@@ -443,7 +594,7 @@ const ModelsPlayground: React.FC = () => {
 
         {/* Deepseeks Section */}
         <div id="deepseeks" className={`model-section ${activeSection === 'deepseeks' ? 'active' : ''}`}>
-          <h2><i className="fas fa-book"></i> Deepseeks Finetuned</h2>
+          <h2><i className="fas fa-book"></i> Deepseek Finetuned</h2>
           <p className="description">Generate a short description from the input text.</p>
           <div className="form-group">
             <label htmlFor="deepseeks-input">Input Text</label>

@@ -8,7 +8,7 @@ const ChatbotLauncher: React.FC = () => {
     return (
         <button
             className="chatbot-launcher"
-            onClick={() => navigate('/chat-patient')}
+            onClick={() => navigate('/chatbot')}
             aria-label="Open Chat"
         >
             <i className="fas fa-robot"></i>
