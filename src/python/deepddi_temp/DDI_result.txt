@@ -1,3 +1,0 @@
-Drug pair	Predicted class	Score	STD
-1_Bivalirudin_Rivaroxaban	80	0.9865774	0.020364871
-1_Rivaroxaban_Bivalirudin	80	0.5343256	0.41981125
