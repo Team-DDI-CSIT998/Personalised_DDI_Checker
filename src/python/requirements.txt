@@ -1,14 +1,20 @@
 fastapi
 uvicorn[standard]
-python-multipart          # handle UploadFile in FastAPI
-PyMuPDF                   # PDF → text
-python-docx               # DOCX → text
-python-pptx               # PPT/PPTX → text
-pandas                    # XLS/XLSX → text
-pillow                    # image loading
-pytesseract               # calls the Tesseract engine
-requests                  # OpenRouter call
+python-multipart
+PyMuPDF
+python-docx
+python-pptx
+pandas
+pillow
+pytesseract
+requests
 pymongo
 aiofiles
 numpy
 python-dotenv
+transformers
+accelerate
+datasets
+bitsandbytes
+peft
+lxml
