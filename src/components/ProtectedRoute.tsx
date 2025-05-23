@@ -22,11 +22,13 @@ const ProtectedRoute: React.FC<Props> = ({ children }) => {
     const isExpired = decoded.exp * 1000 < Date.now();
     if (isExpired) {
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       return <Navigate to="/Authentication" replace />;
     }
   } catch (error) {
     // If token is invalid/corrupt
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     return <Navigate to="/Authentication" replace />;
   }
 

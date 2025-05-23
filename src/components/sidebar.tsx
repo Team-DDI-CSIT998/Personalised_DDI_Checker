@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import './Sidebar.css';
+import './sidebar.css';
 import './MedMatchDoctorPortal.css';
 
 type NavItem = {
@@ -46,6 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, profile }) => {
         )}
       </div>
 
+
       <nav className="sidebar-nav">
         {navItems.map(item => (
           <NavLink
@@ -67,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, profile }) => {
 export const patientNavItems: NavItem[] = [
   { to: '/PatientPortal', icon: 'fa-tachometer-alt', label: 'Dashboard' },
   { to: '/medical-history', icon: 'fa-notes-medical', label: 'Medical History' },
-  { to: '/patientLabResults/:patientId', icon: 'fa-flask', label: 'Lab Results' },
+  { to: '/patientLabResults/', icon: 'fa-flask', label: 'Lab Results' },
   { to: '/medications', icon: 'fa-pills', label: 'Prescriptions' },
   { to: '/appointments', icon: 'fa-calendar-alt', label: 'Appointments' }
 ];

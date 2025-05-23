@@ -1,17 +1,3 @@
-:root {
-    --primary: #16a085;
-    --primary-dark: #13856d;
-    --accent: #E76F51;
-    --bg-light: #f7f9fa;
-    --text-dark: #2c3e50;
-    --muted: #7f8c8d;
-    --card-bg: #ffffff;
-    --border-light: #dde3e8;
-    --radius: 8px;
-    --gap: 1rem;
-    --transition: 0.3s ease;
-}
-
 /* Page action buttons */
 .page-actions {
     display: flex;
@@ -443,4 +429,29 @@
     .accordion td {
         font-size: 0.9rem;
     }
+}
+
+.dashboard-container {
+    display: grid;
+    grid-template-areas: "sidebar main";
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+    gap: 1rem;
+    background: var(--bg-light);
+}
+
+.dashboard-container.sidebar-collapsed {
+    grid-template-columns: 80px 1fr;
+}
+
+.sidebar {
+    grid-area: sidebar;
+}
+
+.main {
+    grid-area: main;
+    padding: 2rem;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
 }

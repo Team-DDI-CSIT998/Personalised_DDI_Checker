@@ -138,7 +138,7 @@ const MedMatchDoctorPortal: React.FC = () => {
         </div>
 
         <div className="metrics-grid">
-          {[{label:'Total Patients',value:patients.length},{label:'New Today',value:1},{label:'Appointments',value:5},{label:'DDI Alerts',value:2}].map((m,i)=>(
+          {[{label:'Total Patients',value:patients.length},{label:'New Today',value:1},{label:'Appointments',value:5},{label:'Critical Cases',value:2}].map((m,i)=>(
             <div key={i} className="metric-card"><h3>{m.value}</h3><p>{m.label}</p></div>
           ))}
         </div>
