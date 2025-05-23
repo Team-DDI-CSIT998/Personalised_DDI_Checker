@@ -217,6 +217,8 @@ const handleSignUp = async (confirmRoleAddition = false) => {
               );
               console.log("Role linked successfully:", updatedData);
               localStorage.setItem("token", data.token);
+              localStorage.setItem("user", JSON.stringify(data.user)); // ✅ Add this line
+
               toast.success("Role linked successfully!");
               navigate("/ProfileSetup", {
                 state: { role: userType }   // pass the chosen role
@@ -234,6 +236,7 @@ const handleSignUp = async (confirmRoleAddition = false) => {
       } else {
         // Already has this role.
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
         navigate(userType === "patient" ? "/PatientPortal" : "/MedMatchDoctorPortal");
         toast.success("Login successful!");
       }
