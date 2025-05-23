@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
 import axios from 'axios';
@@ -10,8 +9,8 @@ import Account, { IAccount, Role } from "./models/Account";
 import profileRouter from "./routes/profileRouter";
 import patientRouter from "./routes/patientRouter";
 import prescriptionRouter from './routes/prescriptionRouter';
+import { MONGO_URI } from './config';
 
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const app = express();
 app.use(cors());
@@ -22,8 +21,6 @@ app.use("/api", profileRouter);
 app.use("/api", patientRouter);
 app.use('/api/prescriptions', prescriptionRouter);
 
-
-const MONGO_URI = `mongodb+srv://medmatchproject2025:${process.env.MONGO_PASSWORD}@medmatchcluster.rrxor.mongodb.net/MedPortalDB?retryWrites=true&w=majority&appName=MedMatchCluster`;
 
 mongoose
     .connect(MONGO_URI)

@@ -2,19 +2,12 @@ from dotenv import load_dotenv
 import os
 import pymongo
 from pymongo.errors import PyMongoError
-
-# Load environment variables from .env file in src directory
-load_dotenv('src/.env')
-password = os.getenv('MONGO_PASSWORD')
-if not password:
-    print("Error: MONGO_PASSWORD environment variable is not set. Please check your .env file in the src directory.")
-    exit(1)
+from config import MONGO_URI
 
 # Connect to MongoDB
 try:
-    client = pymongo.MongoClient(f"mongodb+srv://medmatchproject2025:{password}@medmatchcluster.rrxor.mongodb.net/?retryWrites=true&w=majority&appName=MedMatchCluster")
-    db = client['drugbank_db']  # Your database name
-    collection = db['drugs']    # Your collection name
+    db = MONGO_URI['drugbank_db']  
+    collection = db['drugs']    
 
     # Step 1: Count the total number of drugs in the collection
     total_drugs = collection.count_documents({})
@@ -40,4 +33,4 @@ except Exception as e:
     print(f"Unexpected error: {e}")
     exit(1)
 finally:
-    client.close()
+    MONGO_URI.close()

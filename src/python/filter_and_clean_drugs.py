@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+from config import MONGO_URI
 import pymongo
 from pymongo.errors import PyMongoError
 
