@@ -4,7 +4,6 @@ import { Layout } from './styles/common';
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from './components/HomePage';
 import Authentication from './components/Authentication';
-import MedHistory from "./components/medHistory";
 import PatientPortal from "./components/PatientPortal";
 import HowItWorks from './components/HowItWorks';
 import MedMatchDoctorPortal from "./components/MedMatchDoctorPortal";
@@ -24,8 +23,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout><HomePage /></Layout>} />
         <Route path="/Authentication" element={<Layout><Authentication /></Layout>} />
-
-        <Route path="/medical-history" element={<Layout><MedHistory /></Layout>} />
         <Route path="/PatientPortal" element={<ProtectedRoute><Layout><PatientPortal /></Layout></ProtectedRoute>} />
         <Route path="/how-it-works" element={<Layout><HowItWorks /></Layout>} />
         <Route path="/patientLabResults" element={<ProtectedRoute><Layout><PatientLabResults /></Layout></ProtectedRoute>} />
