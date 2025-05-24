@@ -25,6 +25,9 @@ dist-ssr
 
 # Ignore environment variables
 .env
-src\python2\__pycache__
+
+# Python cache
+src/python2/__pycache__/
 __pycache__/
 *.pyc
+**/__pycache__/
