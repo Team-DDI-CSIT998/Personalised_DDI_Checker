@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import './MedMatchDoctorPortal.css';
 import './PatientDetails.css';
 import { DocSidebar } from './PortalSidebar';
+import { BASE_URL_1, BASE_URL_2 } from '../base';
 
 interface DoctorProfile {
   fullName: string;
@@ -104,7 +105,7 @@ const PatientDetails: React.FC = () => {
     }
 
     if (!location.state?.alerts) {
-      fetch(`http://localhost:8000/api/check-alerts?patientId=${patientId}`)
+      fetch(`${BASE_URL_2}/api/check-alerts?patientId=${patientId}`)
         .then(res => res.json())
         .then(data => {
           if (data.ddi.length || data.pdi.length) {
@@ -115,7 +116,7 @@ const PatientDetails: React.FC = () => {
     }
 
     // Fetch doctor profile
-    fetch('http://localhost:5000/api/profile/me', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${BASE_URL_1}/api/profile/me`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
       .then(data => {
         if (data.doctorProfile) {
@@ -126,7 +127,7 @@ const PatientDetails: React.FC = () => {
       .catch(() => setError('Failed to fetch doctor profile'));
 
     // Fetch patient bio
-    fetch('http://localhost:5000/api/patients', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${BASE_URL_1}/api/patients`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
       .then(data => {
         const found = data.patients.find((p: Patient) => p.id === patientId);
@@ -137,7 +138,7 @@ const PatientDetails: React.FC = () => {
       .catch(() => setError('Failed to fetch patient bio'));
 
     // Fetch prescriptions
-    fetch(`http://localhost:5000/api/prescriptions?patientId=${patientId}`, { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${BASE_URL_1}/api/prescriptions?patientId=${patientId}`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
       .then((data: PrescriptionResp) => {
         if (data.prescription?.medicines) {
@@ -147,7 +148,7 @@ const PatientDetails: React.FC = () => {
       .catch(() => setError('Failed to fetch prescriptions'));
 
     // Fetch history notes
-    fetch(`http://localhost:8000/api/patient-history?patientId=${patientId}`, { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${BASE_URL_2}/api/patient-history?patientId=${patientId}`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
       .then(data => {
         if (data.notes) {
@@ -181,7 +182,7 @@ const PatientDetails: React.FC = () => {
     setIsLoading(true); // 🔄 Show loading
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:8000/api/patient-history', {
+      const res = await fetch(`${BASE_URL_2}/api/patient-history`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ patientId, notes: noteInput })
@@ -233,7 +234,7 @@ const PatientDetails: React.FC = () => {
     if (!window.confirm('Are you sure you want to delete this note?')) return;
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:8000/api/patient-history/${selectedNote.id}`, {
+      const res = await fetch(`${BASE_URL_2}/api/patient-history/${selectedNote.id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -267,7 +268,7 @@ const PatientDetails: React.FC = () => {
     setError(null);
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:8000/api/patient-history/${selectedNote.id}`, {
+      const res = await fetch(`${BASE_URL_2}/api/patient-history/${selectedNote.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ rawText: editText })
@@ -310,7 +311,7 @@ const PatientDetails: React.FC = () => {
 
   const handleEditSave = async () => {
     const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:5000/api/profile/update', {
+    const res = await fetch(`${BASE_URL_1}/api/profile/update`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ profileData: { doctorProfile: editForm } })

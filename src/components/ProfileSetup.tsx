@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./Profile.css";
+import { BASE_URL_1 } from "../base";
 
 type LocationState = {
   role: "doctor" | "patient";
@@ -129,7 +130,7 @@ const ProfileSetup: React.FC = () => {
 
 
     try {
-      const response = await fetch("http://localhost:5000/api/profile/update", {
+      const response = await fetch(`${BASE_URL_1}/api/profile/update`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

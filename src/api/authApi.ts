@@ -1,4 +1,6 @@
 // src/api/authApi.ts
+import { BASE_URL_1 } from '../base';
+
 
 export class ApiError extends Error {
   status: number;
@@ -15,7 +17,7 @@ export const loginUser = async (
   password: string,
   role?: string
 ) => {
-  const url = "http://localhost:5000/api/auth/login";
+  const url = `${BASE_URL_1}/api/auth/login`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -34,7 +36,7 @@ export const registerUser = async (
   role: string,
   confirmRoleAddition: boolean = false
 ) => {
-  const url = "http://localhost:5000/api/auth/register";
+  const url = `${BASE_URL_1}/api/auth/register`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -52,7 +54,7 @@ export const registerUser = async (
 };
 
 export const checkEmail = async (email: string) => {
-  const url = "http://localhost:5000/api/auth/check-email";
+  const url = `${BASE_URL_1}/api/auth/check-email`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

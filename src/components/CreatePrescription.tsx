@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './CreatePrescription.css';
+import { BASE_URL_1, BASE_URL_2 } from '../base';
 
 interface Medicine {
   id: number;
@@ -178,7 +179,7 @@ const CreatePrescription: React.FC = () => {
     const fetchConsultationNote = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await axios.get(`http://localhost:8000/api/patient-history?patientId=${patientId}`, {
+        const response = await axios.get(`${BASE_URL_2}/api/patient-history?patientId=${patientId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.data.notes && response.data.notes.length > 0) {
@@ -197,7 +198,7 @@ const CreatePrescription: React.FC = () => {
     const fetchMedicines = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get("http://localhost:5000/api/medicines", {
+        const response = await axios.get(`${BASE_URL_1}/api/medicines`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setAvailableMedicines(
@@ -302,13 +303,13 @@ const CreatePrescription: React.FC = () => {
   
     try {
       // Get latest consultation note
-      const notesRes = await axios.get(`http://localhost:8000/api/patient-history?patientId=${patientId}`, {
+      const notesRes = await axios.get(`${BASE_URL_2}/api/patient-history?patientId=${patientId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const latestNote = notesRes.data.notes[0];
       if (!latestNote) return alert('No consultation note found.');
   
-      await axios.put(`http://localhost:8000/api/patient-history/${latestNote.id}`, {
+      await axios.put(`${BASE_URL_2}/api/patient-history/${latestNote.id}`, {
         rawText: latestNote.rawText || '',
         medicines: addedMedicines   // send manually added medicines
       }, {
@@ -316,7 +317,7 @@ const CreatePrescription: React.FC = () => {
       });
   
       //  Fetch alerts
-      const alerts = await axios.get(`http://localhost:8000/api/check-alerts?patientId=${patientId}`);
+      const alerts = await axios.get(`${BASE_URL_2}/api/check-alerts?patientId=${patientId}`);
       navigate(`/patient-details/${patientId}`, { state: { alerts: alerts.data } });
   
     } catch (err: any) {

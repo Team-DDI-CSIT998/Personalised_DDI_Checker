@@ -4,6 +4,7 @@ import ChatbotLauncher from './CBotLauncher';
 import { PatientSidebar } from './PortalSidebar';
 import './PatientPortal.css';
 import axios from 'axios';
+import { BASE_URL_1 } from '../base';
 
 interface PatientProfile {
   fullName: string;
@@ -29,7 +30,7 @@ const DashboardPage: React.FC = () => {
 
   useEffect(() => {
       const token = localStorage.getItem("token");
-      fetch("http://localhost:5000/api/profile/me", { headers: { Authorization: `Bearer ${token}` } })
+      fetch(`${BASE_URL_1}/api/profile/me`, { headers: { Authorization: `Bearer ${token}` } })
         .then(res => res.json())
         .then(data => {
           if (data.patientProfile) {

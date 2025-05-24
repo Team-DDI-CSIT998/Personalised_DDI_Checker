@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MedMatchDoctorPortal.css";
 import { DocSidebar } from './PortalSidebar';
+import { BASE_URL_1 } from "../base";
 
 interface DoctorProfile {
   fullName: string;
@@ -44,7 +45,7 @@ const MedMatchDoctorPortal: React.FC = () => {
   // Fetch profile and patients
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:5000/api/profile/me", { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${BASE_URL_1}/api/profile/me`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
       .then(data => {
         if (data.doctorProfile) {
@@ -52,7 +53,7 @@ const MedMatchDoctorPortal: React.FC = () => {
           setEditForm(data.doctorProfile);
         }
       });
-    fetch("http://localhost:5000/api/patients", { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${BASE_URL_1}/api/patients`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
       .then(data => {
         if (data.patients) setPatients(data.patients);
@@ -75,7 +76,7 @@ const MedMatchDoctorPortal: React.FC = () => {
 
   const handleEditSave = async () => {
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:5000/api/profile/update", {
+    const response = await fetch(`${BASE_URL_1}/api/profile/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ profileData: { doctorProfile: editForm } }),
@@ -95,7 +96,7 @@ const MedMatchDoctorPortal: React.FC = () => {
     if (!entry.name || entry.age <= 0 || !entry.gender || !entry.dob) {
       alert("All fields are required"); return;
     }
-    const res = await fetch("http://localhost:5000/api/patients/add", {
+    const res = await fetch(`${BASE_URL_1}/api/patients/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify(entry),
@@ -138,7 +139,7 @@ const MedMatchDoctorPortal: React.FC = () => {
                   <button><i className="fas fa-edit"></i></button>
                   <button onClick={e=>{e.stopPropagation();if(window.confirm('Delete?')){
                     const token=localStorage.getItem('token');
-                    fetch(`http://localhost:5000/api/patients/${p.id}`,{method:'DELETE',headers:{Authorization:`Bearer ${token}`}})
+                    fetch(`${BASE_URL_1}/api/patients/${p.id}`,{method:'DELETE',headers:{Authorization:`Bearer ${token}`}})
                     .then(r=>r.json()).then(d=>{if(d.message==='Patient deleted')setPatients(prev=>prev.filter(x=>x.id!==p.id));});
                   }}}><i className="fas fa-trash-alt"></i></button>
                 </div>

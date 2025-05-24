@@ -14,6 +14,7 @@ import {
   FaShieldAlt,
 } from 'react-icons/fa';
 import './HomePage.css';
+import { BASE_URL_1 } from '../base';
 
 const HomePage: React.FC = () => {
   const [input, setInput] = useState<string>("");
@@ -33,7 +34,7 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const fetchMedicines = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/medicines");
+        const response = await axios.get(`${BASE_URL_1}/api/medicines`);
         setAvailableMedicines(
           response.data.map((drug: { name: string }) => drug.name)
         );
@@ -114,7 +115,7 @@ const HomePage: React.FC = () => {
     }
     setIsLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/interactions", {
+      const response = await axios.post(`${BASE_URL_1}/api/interactions`, {
         medicines: selectedMedicines,
       });
       const interactions = response.data;
@@ -126,7 +127,7 @@ const HomePage: React.FC = () => {
         return;
       }
       const simplified = await axios.post(
-        "http://localhost:5000/api/simplify_interactions",
+        `${BASE_URL_1}/api/simplify_interactions`,
         { interactions }
       );
       setInteractionResults(simplified.data);

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { LoadingOverlay } from './LoadingOverlay';
 import { parse, isToday, isYesterday, format } from 'date-fns';
 import './Chatbot.css';
+import { BASE_URL_2 } from '../base';
 
 
 interface Message {
@@ -42,7 +43,7 @@ export default function Chatbot() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/history/list?userId=${userId}`);
+      const res = await fetch(`${BASE_URL_2}/history/list?userId=${userId}`);
       const data: HistoryItem[] = await res.json();
       setHistory(data);
     } catch (err) {
@@ -69,7 +70,7 @@ export default function Chatbot() {
       for (const f of files) {
         const fd = new FormData();
         fd.append('files', f);
-        await fetch(`http://localhost:8000/history/upload?userId=${userId}`, {
+        await fetch(`${BASE_URL_2}/history/upload?userId=${userId}`, {
           method: 'POST',
           body: fd
         });
@@ -88,7 +89,7 @@ export default function Chatbot() {
   // Chat send
   async function sendToBackend(question: string): Promise<string> {
     try {
-      const res = await fetch('http://localhost:8000/chat', {
+      const res = await fetch(`${BASE_URL_2}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question, userId })
@@ -130,7 +131,7 @@ export default function Chatbot() {
   
   async function saveHistory() {
     if (!active) return;
-    await fetch(`http://localhost:8000/history/${active.id}`, {
+    await fetch(`${BASE_URL_2}/history/${active.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ summary: draft })
@@ -139,7 +140,7 @@ export default function Chatbot() {
     setShowHisModal(false);
   }
   async function deleteHistory(id: string) {
-    await fetch(`http://localhost:8000/history/${id}`, { method: 'DELETE' });
+    await fetch(`${BASE_URL_2}/history/${id}`, { method: 'DELETE' });
     setHistory(h => h.filter(it => it.id !== id));
     if (active?.id === id) setShowHisModal(false);
   }

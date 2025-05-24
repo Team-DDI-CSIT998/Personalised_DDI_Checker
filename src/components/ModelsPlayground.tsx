@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ModelsPlayground.css';
+import { BASE_URL_3 } from '../base';
 
 type ModelSection = 'deidentifier' | 'ddi-binary' | 'dl-ddi' | 
                     'condition-contradiction' | 'deepseeks';
@@ -56,7 +57,7 @@ const ModelsPlayground: React.FC = () => {
     }
   
     try {
-      const res = await fetch(`http://localhost:9000/search-drugs?q=${query}`);
+      const res = await fetch(`${BASE_URL_3}/search-drugs?q=${query}`);
       const data = await res.json();
       setter(data || []);
     } catch (err) {
@@ -72,7 +73,7 @@ const ModelsPlayground: React.FC = () => {
     }
   
     try {
-      const res = await fetch(`http://localhost:9000/get-smiles?name=${encodeURIComponent(name)}`);
+      const res = await fetch(`${BASE_URL_3}/get-smiles?name=${encodeURIComponent(name)}`);
       const data = await res.json();
       setter(data.smiles || '');
     } catch (err) {
@@ -94,7 +95,7 @@ const ModelsPlayground: React.FC = () => {
     setIsLoading(true);
   
     try {
-      const response = await fetch('http://localhost:9000/deidentify', {
+      const response = await fetch(`${BASE_URL_3}/deidentify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: input }),
@@ -152,7 +153,7 @@ const ModelsPlayground: React.FC = () => {
     setIsLoading(true);
   
     try {
-      const res = await fetch('http://localhost:9000/predict-hybrid-binary-ddi', {
+      const res = await fetch(`${BASE_URL_3}/predict-hybrid-binary-ddi`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ smiles1, smiles2 })
@@ -199,7 +200,7 @@ const ModelsPlayground: React.FC = () => {
 
     try {
         setIsLoading(true);
-        const res = await fetch('http://localhost:9000/predict-chemberta-ddi', {
+        const res = await fetch(`${BASE_URL_3}/predict-chemberta-ddi`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ smiles1, smiles2 }),
