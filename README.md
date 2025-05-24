@@ -43,9 +43,7 @@
 
 ## 📸 UI Snapshots
 
-> *(Include screenshots or gifs if possible)*  
-> `![Doctor Portal](./assets/doctor_portal.png)`  
-> `![DDI Alerts](./assets/ddi_alerts.gif)`
+yet to upload 
 
 ---
 
@@ -59,14 +57,14 @@ DDI Checker ← Drug & History DB ← Patient Notes
 
 
 
-*(See full architecture diagram in `/docs/architecture.pdf`)*
+full architecture diagram yet to upload
 
 ---
 
 ## 🧠 AI Models Used
 
 - 🤖 **ChemBERTa** – Classifies drug interaction severity
-- 🔬 **DeepDDI** – SMILES-based interaction prediction
+- 🔬 **Binary DDI** – SMILES-based interaction prediction
 - 💬 **Custom LLMs** – GPT-based chatbot for plain-language explanations
 - 🧹 **Deidentifier** – Removes sensitive data from patient records
 
@@ -92,16 +90,16 @@ cd Personalised_DDI_Checker
 npm install  # for frontend
 pip install -r requirements.txt  # for backend Python API
 
-# Start both servers
+# Start 4 servers
 npm run dev  # frontend
-uvicorn src.python.main:app --reload  # backend
+npm run dev # node backend
+uvicorn server:app --reload --port 8000  # python backend
+uvicorn server2:app --reload --port 9000 --reload  # python2 backend
 
 🔑 Be sure to configure your .env file with MONGO_URI, OPENROUTER_API_KEY, etc.
 
 📚 References
 🧬 DrugBank Database
-
-🧠 DeepDDI Paper (PNAS)
 
 🔒 HIPAA Guidelines
 
@@ -118,7 +116,7 @@ Well, let’s just say: **we coded this with caffeine and deadlines.**
 
 💬 **Seriously though**, we're aware this project isn't flawless.  
 It was built under tight academic deadlines and limited bandwidth – so we appreciate your understanding.  
-Feel free to report issues or weirdness [here](https://github.com/Team-DDI-CSIT998/Personalised_DDI_Checker/issues) and we’ll do our best to patch it up! 🧰
+Feel free to report issues or weirdness [here] (https://github.com/Team-DDI-CSIT998/Personalised_DDI_Checker/issues) and we’ll do our best to patch it up! 🧰
 
 
 📬 Contact
