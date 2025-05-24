@@ -1,7 +1,7 @@
 import React from 'react';
 import { PatientSidebar } from './PortalSidebar';
 import './PatientLabResult.css';
-import ChatbotLauncher from './chatbotLauncher';
+import ChatbotLauncher from './CBotLauncher';
 
 const PatientLabResults: React.FC = () => {
     return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import ChatbotLauncher from './chatbotLauncher';
+import ChatbotLauncher from './CBotLauncher';
 import { PatientSidebar } from './PortalSidebar';
 import './PatientPortal.css';
 import axios from 'axios';

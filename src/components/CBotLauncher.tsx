@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ChatbotLauncher.css';
+import './CBotLauncher.css';
 
 const ChatbotLauncher: React.FC = () => {
     const navigate = useNavigate();
