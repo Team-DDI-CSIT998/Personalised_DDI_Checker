@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MedMatchDoctorPortal.css";
-import { DocSidebar } from './sidebar';
+import { DocSidebar } from './PortalSidebar';
 
 interface DoctorProfile {
   fullName: string;

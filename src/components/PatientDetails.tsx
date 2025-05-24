@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import './MedMatchDoctorPortal.css';
 import './PatientDetails.css';
-import { DocSidebar } from './sidebar';
+import { DocSidebar } from './PortalSidebar';
 
 interface DoctorProfile {
   fullName: string;

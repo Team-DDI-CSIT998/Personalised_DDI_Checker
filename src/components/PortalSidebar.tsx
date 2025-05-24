@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import './sidebar.css';
+import './PortalSidebar.css';
 import './MedMatchDoctorPortal.css';
 
 type NavItem = {

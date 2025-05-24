@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import ChatbotLauncher from './chatbotLauncher';
-import { PatientSidebar } from './sidebar';
+import { PatientSidebar } from './PortalSidebar';
 import './PatientPortal.css';
 import axios from 'axios';
 

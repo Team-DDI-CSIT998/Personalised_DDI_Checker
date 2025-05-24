@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "./profile.css";
+import "./Profile.css";
 
 type LocationState = {
   role: "doctor" | "patient";
