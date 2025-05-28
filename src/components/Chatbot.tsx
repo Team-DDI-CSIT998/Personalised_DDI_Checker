@@ -284,11 +284,11 @@ export default function Chatbot() {
         <aside className="history-sidebar">
           <div className="history-header">
             <h2><IconHistory /> Med History</h2>
-            {/* Functionality for "New Chat" to be implemented as needed */}
             <button 
               type="button" 
               className="new-chat-btn" 
               onClick={() => window.location.reload()}
+              disabled 
             >
               <IconPlus /> New Chat
             </button>
