@@ -952,15 +952,11 @@ body {
     box-shadow: var(--shadow) !important;
 }
 
-/* Specific Button Styles */
-
-/* Close/Cancel Button */
 .btn-modal-close {
     background-color: transparent !important;
     color: var(--text-dark) !important;
     border: 1px solid var(--chatbot-border-color) !important;
     cursor: pointer !important;
-    /* Added cursor pointer here as well, if it's not inheriting from .btn-modal-action */
 }
 
 .dark .btn-modal-close {
@@ -981,13 +977,11 @@ body {
     border-color: #4a5867 !important;
 }
 
-/* Delete Button */
 .btn-modal-delete {
     background-color: var(--accent) !important;
     color: var(--text-light) !important;
     border-color: var(--accent) !important;
     cursor: pointer !important;
-    /* Added cursor pointer here as well */
 }
 
 .btn-modal-delete:hover:not(:disabled) {
@@ -1000,7 +994,6 @@ body {
     border-color: var(--accent) !important;
 }
 
-/* Save Changes / Upload Button */
 .btn-modal-savechanges {
     background-color: var(--primary) !important;
     color: var(--text-light) !important;
@@ -1019,7 +1012,6 @@ body {
     border-color: #89c2bb !important;
 }
 
-/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
