@@ -126,7 +126,7 @@ const handleSignUp = async (confirmRoleAddition = false) => {
       return;
     }
     if (passwordStrength < MIN_PASSWORD_STRENGTH) {
-      openModal("Weak Password", "Please use a stronger password.");
+      openModal("Weak Password", "Please use a stronger password. It needs at least 8 characters, including one uppercase letter, one number, and one special character.");
       setIsLoading(false);
       return;
     }

@@ -10,13 +10,13 @@ import fitz                       # PyMuPDF
 import pandas as pd
 from pptx import Presentation
 from PIL import Image
-import pytesseract
+#import pytesseract
 from docx import Document
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
 load_dotenv()
-pytesseract.pytesseract.tesseract_cmd = os.getenv("TESSERACT_CMD", "/usr/bin/tesseract")
+#pytesseract.pytesseract.tesseract_cmd = os.getenv("TESSERACT_CMD", "/usr/bin/tesseract")
 
 
 from openrouter_config import OPENROUTER_API_URL, HEADERS, MODEL_NAME
@@ -86,21 +86,22 @@ def _ppt(path):
         for shp in slide.shapes:
             if hasattr(shp, "text"): out += shp.text + "\n"
     return out
-def _img(path):
-    try:
-        if not os.path.exists(path):
-            return "[ERROR] File not found"
+# def _img(path):
+#     try:
+#         if not os.path.exists(path):
+#             return "[ERROR] File not found"
 
-        img = Image.open(path).convert("L").point(lambda x: 0 if x < 128 else 255)
-        text = pytesseract.image_to_string(img)
-        return text.strip() if text.strip() else "[NO TEXT DETECTED]"
+#         img = Image.open(path).convert("L").point(lambda x: 0 if x < 128 else 255)
+#         text = pytesseract.image_to_string(img)
+#         return text.strip() if text.strip() else "[NO TEXT DETECTED]"
     
-    except FileNotFoundError:
-        return "[ERROR] Tesseract executable not found"
-    except pytesseract.pytesseract.TesseractNotFoundError:
-        return "[ERROR] Tesseract is not installed or not in PATH"
-    except Exception as e:
-        return f"[ERROR] Unexpected: {str(e)}"
+#     except FileNotFoundError:
+#         return "[ERROR] Tesseract executable not found"
+#     except pytesseract.pytesseract.TesseractNotFoundError:
+#         return "[ERROR] Tesseract is not installed or not in PATH"
+#     except Exception as e:
+#         return f"[ERROR] Unexpected: {str(e)}"
+
 def _docx(path):     return "\n".join(p.text for p in Document(path).paragraphs)
 
 def extract_text(path: str) -> str:
@@ -109,7 +110,7 @@ def extract_text(path: str) -> str:
     if ext == ".pdf":               return _pdf(path)
     if ext in (".xls", ".xlsx"):    return _excel(path)
     if ext in (".ppt", ".pptx"):    return _ppt(path)
-    if ext in (".jpg", ".jpeg", ".png", ".bmp"): return _img(path)
+    #if ext in (".jpg", ".jpeg", ".png", ".bmp"): return _img(path)
     if ext == ".docx":              return _docx(path)
     return ""
 

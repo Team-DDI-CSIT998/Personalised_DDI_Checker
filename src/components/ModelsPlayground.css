@@ -37,8 +37,8 @@
 }
 
 .models-playground-wrapper .sidebar {
-    position: fixed;
-    top: 64px;
+    position: absolute;
+    top: 80px;
     left: 0;
     bottom: 64px;
     width: var(--sidebar-width);
