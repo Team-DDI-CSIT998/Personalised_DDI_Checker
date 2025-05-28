@@ -103,6 +103,12 @@
     border-radius: 2px;
 }
 
+.dark .authentication .form-header p {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--primary);
+}
+
 /* User Type Selector */
 .authentication .user-type-selector {
     display: grid;
@@ -120,6 +126,18 @@
     text-align: center;
     position: relative;
     overflow: hidden;
+}
+
+.dark .authentication .user-type-card {
+    padding: 1.5rem;
+    border: 2px solid #afafaf;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: var(--primary);
 }
 
 .authentication .user-type-card:hover {
